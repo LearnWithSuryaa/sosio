@@ -22,7 +22,7 @@ async function getStats() {
       schools: BASE_SCHOOLS + realSchools,
       students: BASE_STUDENTS + realSchools * 300,
     };
-  } catch (e) {
+  } catch {
     // Graceful degradation when not connected yet
     return { schools: BASE_SCHOOLS, students: BASE_STUDENTS };
   }

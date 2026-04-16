@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { BookOpen, Quote } from "lucide-react";
 
 export default function StudiKasusPage() {
-  const [cases, setCases] = useState<any[]>([]);
+  const [cases, setCases] = useState<Record<string, unknown>[]>([]);
 
   useEffect(() => {
     async function fetchCases() {
@@ -74,7 +74,7 @@ export default function StudiKasusPage() {
             </div>
             
             <p className="text-gray-700 leading-relaxed text-sm">
-              "{cs.isi}"
+              &quot;{cs.isi}&quot;
             </p>
           </Card>
         ))}

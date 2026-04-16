@@ -131,7 +131,7 @@ export default function KuisPage() {
             </div>
             
             <p className="text-lg text-gray-700 max-w-lg mx-auto mb-10 leading-relaxed">
-              "{result.advice}"
+              &quot;{result.advice}&quot;
             </p>
             
             <Button onClick={resetQuiz} variant="outline" className="flex items-center gap-2 mx-auto">

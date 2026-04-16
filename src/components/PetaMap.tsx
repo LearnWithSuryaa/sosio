@@ -35,7 +35,7 @@ const iconGray = new L.Icon({
 });
 
 export default function PetaKomponen() {
-  const [schools, setSchools] = useState<any[]>([]);
+  const [schools, setSchools] = useState<Record<string, unknown>[]>([]);
 
   useEffect(() => {
     async function fetchSchools() {
