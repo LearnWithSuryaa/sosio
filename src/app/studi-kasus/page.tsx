@@ -5,8 +5,16 @@ import { supabase } from "@/lib/supabase";
 import { Card } from "@/components/ui/Card";
 import { BookOpen, Quote } from "lucide-react";
 
+interface CaseStudy {
+  id: string | number;
+  judul: string;
+  sekolah: string;
+  penulis: string;
+  isi: string;
+}
+
 export default function StudiKasusPage() {
-  const [cases, setCases] = useState<Record<string, unknown>[]>([]);
+  const [cases, setCases] = useState<CaseStudy[]>([]);
 
   useEffect(() => {
     async function fetchCases() {

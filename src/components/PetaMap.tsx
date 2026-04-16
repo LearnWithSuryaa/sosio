@@ -34,8 +34,16 @@ const iconGray = new L.Icon({
   shadowSize: [41, 41]
 });
 
+interface School {
+  id: string;
+  nama_sekolah: string;
+  latitude: number;
+  longitude: number;
+  status: string;
+}
+
 export default function PetaKomponen() {
-  const [schools, setSchools] = useState<Record<string, unknown>[]>([]);
+  const [schools, setSchools] = useState<School[]>([]);
 
   useEffect(() => {
     async function fetchSchools() {
