@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { supabase } from "@/lib/supabase";
@@ -42,7 +42,24 @@ interface School {
   status: string;
 }
 
-export default function PetaKomponen() {
+interface Props {
+  schoolId?: string;
+}
+
+function MapController({ schools, targetId }: { schools: School[], targetId?: string }) {
+  const map = useMap();
+  useEffect(() => {
+    if (targetId && schools.length > 0) {
+      const target = schools.find(s => s.id === targetId);
+      if (target) {
+        map.flyTo([target.latitude, target.longitude], 12);
+      }
+    }
+  }, [schools, targetId, map]);
+  return null;
+}
+
+export default function PetaKomponen({ schoolId }: Props) {
   const [schools, setSchools] = useState<School[]>([]);
 
   useEffect(() => {
@@ -77,6 +94,7 @@ export default function PetaKomponen() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
+        <MapController schools={schools} targetId={schoolId} />
         
         {schools.map((school) => (
           <Marker 
@@ -87,13 +105,21 @@ export default function PetaKomponen() {
             <Popup>
               <div className="text-center font-sans">
                 <h3 className="font-bold text-kominfo-navy mb-1">{school.nama_sekolah}</h3>
-                <span className={`px-2 py-1 text-xs rounded-md uppercase tracking-wider font-semibold ${
+                <span className={`inline-block px-2 py-1 text-xs rounded-md uppercase tracking-wider font-semibold ${
                   school.status === 'komitmen' ? 'bg-green-100 text-green-700' : 
                   school.status === 'survei' ? 'bg-yellow-100 text-amber-700' : 
                   'bg-gray-100 text-gray-700'
                 }`}>
                   {school.status}
                 </span>
+
+                {school.status !== 'komitmen' && (
+                  <div className="mt-4 border-t pt-3">
+                     <a href="/komitmen" className="block text-xs bg-kominfo-blue text-white px-3 py-2 rounded-md hover:bg-blue-700 transition">
+                       Sahkan Komitmen
+                     </a>
+                  </div>
+                )}
               </div>
             </Popup>
           </Marker>

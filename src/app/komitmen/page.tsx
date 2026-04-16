@@ -7,12 +7,19 @@ import { generateKomitmenPDF } from "@/lib/pdfGenerator";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PenTool, Download, RefreshCw, CheckCircle2 } from "lucide-react";
+import { JourneyBar } from "@/components/JourneyBar";
+import { SchoolAutocomplete } from "@/components/SchoolAutocomplete";
+import { useRouter } from "next/navigation";
 
 export default function KomitmenPage() {
+  const router = useRouter();
   const sigCanvas = useRef<SignatureCanvas>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [form, setForm] = useState({ sekolah: "", penanggungJawab: "" });
+  const [selectedSchoolStatus, setSelectedSchoolStatus] = useState<string | null>(null);
+
+  const isLocked = form.sekolah.length > 0 && selectedSchoolStatus !== "survei" && selectedSchoolStatus !== "komitmen";
 
   const clearSignature = () => {
     sigCanvas.current?.clear();
@@ -60,15 +67,19 @@ export default function KomitmenPage() {
       if (dbError) throw dbError;
 
       // 3. Update schools table status
-      await supabase
+      const { data: updatedSchool } = await supabase
         .from("schools")
         .update({ status: "komitmen" })
-        .eq("nama_sekolah", form.sekolah);
+        .eq("nama_sekolah", form.sekolah)
+        .select();
 
       // 4. Generate & Download PDF Locally
       generateKomitmenPDF(form.sekolah, form.penanggungJawab, signatureDataUrl);
 
       setSuccess(true);
+      setTimeout(() => {
+        router.push(`/peta?schoolId=${updatedSchool?.[0]?.id || ''}`);
+      }, 3500);
     } catch (error) {
       console.error(error);
       alert("Terjadi kesalahan. Pastikan database dan storage Supabase sudah dikonfigurasi.");
@@ -94,6 +105,7 @@ export default function KomitmenPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
+      <JourneyBar />
       <div className="text-center mb-10">
         <div className="inline-flex p-3 rounded-2xl bg-blue-50 text-kominfo-blue mb-4">
           <PenTool className="w-8 h-8" />
@@ -138,14 +150,23 @@ export default function KomitmenPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Nama Sekolah <span className="text-red-500">*</span>
               </label>
-              <input
-                required
-                type="text"
-                value={form.sekolah}
-                onChange={e => setForm({ ...form, sekolah: e.target.value })}
-                className="w-full rounded-xl border-gray-300 px-4 py-3 border outline-none focus:border-kominfo-blue"
-                placeholder="Cth: SMAN 1 Jakarta"
+              <SchoolAutocomplete 
+                value={form.sekolah} 
+                onChange={(val, school) => {
+                  setForm(prev => ({ ...prev, sekolah: val }));
+                  setSelectedSchoolStatus(school ? school.status : null);
+                }} 
+                placeholder="Cari sekolah (SMAN 1 Jakarta)"
               />
+              
+              {isLocked && (
+                <div className="mt-4 p-4 rounded-xl bg-orange-50 border border-orange-200 text-orange-800 text-sm flex flex-col items-start gap-2 animate-in fade-in slide-in-from-top-2">
+                  <p><strong>Akses Terkunci:</strong> Sekolah &quot;{form.sekolah}&quot; belum menyelesaikan tahap Survei Diagnostik. Anda tidak dapat melompati langkah.</p>
+                  <Button type="button" onClick={() => window.location.href='/survei'} variant="outline" className="bg-white hover:bg-orange-100 border-orange-300 text-orange-700 mt-2">
+                    Kembali ke Langkah 1 (Survei)
+                  </Button>
+                </div>
+              )}
             </div>
             
             <div>
@@ -164,8 +185,9 @@ export default function KomitmenPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Tanda Tangan Digital <span className="text-red-500">*</span></label>
-              <div className="border border-gray-300 rounded-xl overflow-hidden bg-gray-50 relative">
-                <SignatureCanvas 
+              <div className={`border border-gray-300 rounded-xl overflow-hidden relative ${isLocked ? 'bg-gray-100 opacity-50 cursor-not-allowed' : 'bg-gray-50'}`}>
+                {isLocked && <div className="absolute inset-0 z-10" title="Selesaikan langkah 1 terlebih dahulu" />}
+                <SignatureCanvas  
                   ref={sigCanvas}
                   canvasProps={{ className: "w-full h-40 cursor-crosshair" }}
                 />
@@ -179,7 +201,7 @@ export default function KomitmenPage() {
               </div>
             </div>
 
-            <Button type="submit" size="lg" className="w-full" disabled={loading}>
+            <Button type="submit" size="lg" className="w-full" disabled={loading || isLocked || form.sekolah.length === 0}>
               {loading ? "Menyimpan & Mengunduh PDF..." : "Sahkan & Unduh Sertifikat PDF"}
             </Button>
           </form>

@@ -2,6 +2,9 @@
 
 import dynamic from "next/dynamic";
 import { Map, Info } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import { JourneyBar } from "@/components/JourneyBar";
 
 // Dynamically import Leaflet map, disable SSR
 const PetaMap = dynamic(() => import("@/components/PetaMap"), {
@@ -13,9 +16,16 @@ const PetaMap = dynamic(() => import("@/components/PetaMap"), {
   )
 });
 
+function PetaContent() {
+  const searchParams = useSearchParams();
+  const schoolId = searchParams.get("schoolId");
+  return <PetaMap schoolId={schoolId || undefined} />;
+}
+
 export default function PetaPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
+      <JourneyBar />
       <div className="mb-10 text-center flex flex-col items-center">
         <div className="inline-flex p-3 rounded-2xl bg-blue-50 text-kominfo-blue mb-4">
           <Map className="w-8 h-8" />
@@ -27,7 +37,9 @@ export default function PetaPage() {
       </div>
 
       <div className="relative">
-        <PetaMap />
+        <Suspense fallback={<div className="w-full h-[600px] bg-gray-100 border border-gray-200 animate-pulse rounded-2xl" />}>
+          <PetaContent />
+        </Suspense>
         
         {/* Floating Legend */}
         <div className="md:absolute top-4 right-4 z-[999] bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-lg border border-gray-100 w-full md:w-auto mt-4 md:mt-0">

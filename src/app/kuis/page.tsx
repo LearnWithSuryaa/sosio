@@ -134,9 +134,14 @@ export default function KuisPage() {
               &quot;{result.advice}&quot;
             </p>
             
-            <Button onClick={resetQuiz} variant="outline" className="flex items-center gap-2 mx-auto">
-              <RotateCcw className="w-4 h-4" /> Ulangi Refleksi
-            </Button>
+            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center">
+              <Button onClick={resetQuiz} variant="outline" className="flex items-center gap-2">
+                <RotateCcw className="w-4 h-4" /> Ulangi Refleksi
+              </Button>
+              <Button onClick={() => window.location.href='/survei'} className="flex items-center gap-2">
+                Evaluasi Sekolah Anda di Peta
+              </Button>
+            </div>
           </div>
         ) : loading ? (
           <div className="py-20 text-center text-gray-500 animate-pulse font-medium text-lg">

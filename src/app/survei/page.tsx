@@ -6,6 +6,8 @@ import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Activity, CheckCircle2 } from "lucide-react";
+import { JourneyBar } from "@/components/JourneyBar";
+import { SchoolAutocomplete } from "@/components/SchoolAutocomplete";
 
 export default function SurveiPage() {
   const router = useRouter();
@@ -39,7 +41,6 @@ export default function SurveiPage() {
       if (surveyError) throw surveyError;
 
       // 2. Insert or update school in schools
-      // We do an upsert via RPC, or just a simple insert for demo focusing on low friction
       const { data: existingSchools } = await supabase
         .from("schools")
         .select("id, status")
@@ -47,18 +48,28 @@ export default function SurveiPage() {
 
       if (!existingSchools || existingSchools.length === 0) {
         // Create new
-        await supabase.from("schools").insert({
+        const { data: newSchool } = await supabase.from("schools").insert({
           nama_sekolah: form.namaSekolah,
           latitude: -2.5489 + (Math.random() < 0.5 ? -1 : 1) * Math.random() * 5, // random coordinate in Indo
           longitude: 118.0149 + (Math.random() < 0.5 ? -1 : 1) * Math.random() * 10,
           status: "survei"
-        });
+        }).select();
+        
+        setSuccess(true);
+        setTimeout(() => {
+          router.push(`/peta?schoolId=${newSchool?.[0]?.id || ''}`);
+        }, 3000);
+      } else {
+        const school = existingSchools[0];
+        // Only update if it's "belum", DO NOT downgrade "komitmen"
+        if (school.status === "belum") {
+          await supabase.from("schools").update({ status: "survei" }).eq("id", school.id);
+        }
+        setSuccess(true);
+        setTimeout(() => {
+          router.push(`/peta?schoolId=${school.id}`);
+        }, 3000);
       }
-
-      setSuccess(true);
-      setTimeout(() => {
-        router.push("/peta");
-      }, 3000);
 
     } catch (error) {
       console.error("Error submitting survey:", error);
@@ -82,6 +93,7 @@ export default function SurveiPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
+      <JourneyBar />
       <div className="mb-10 text-center">
         <div className="inline-flex p-3 rounded-2xl bg-blue-50 text-kominfo-blue mb-4">
           <Activity className="w-8 h-8" />
@@ -109,14 +121,9 @@ export default function SurveiPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Nama Sekolah <span className="text-red-500">*</span></label>
-              <input
-                type="text"
-                name="namaSekolah"
-                required
-                value={form.namaSekolah}
-                onChange={handleChange}
-                placeholder="Contoh: SMAN 1 Jakarta"
-                className="w-full rounded-xl border-gray-300 shadow-sm focus:border-kominfo-blue focus:ring-kominfo-blue px-4 py-3 border outline-none transition-all"
+              <SchoolAutocomplete 
+                value={form.namaSekolah} 
+                onChange={(val) => setForm(prev => ({ ...prev, namaSekolah: val }))} 
               />
             </div>
           </div>
