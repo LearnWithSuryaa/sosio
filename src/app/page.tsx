@@ -1,29 +1,35 @@
 import { supabase } from "@/lib/supabase";
 import { HeroSection } from "@/components/landing/HeroSection";
-import { StatsSection } from "@/components/landing/StatsSection";
-import { PilarSection } from "@/components/landing/PilarSection";
+import { ProblemSection } from "@/components/landing/ProblemSection";
+import { SolutionSection } from "@/components/landing/SolutionSection";
+import { ParticipationFlow } from "@/components/landing/ParticipationFlow";
+import { MapPreview } from "@/components/landing/MapPreview";
+import { LiveStatsSection } from "@/components/landing/LiveStatsSection";
+import { CaseStudySection } from "@/components/landing/CaseStudySection";
+import { QuizSection } from "@/components/landing/QuizSection";
+import { FinalCTA } from "@/components/landing/FinalCTA";
 
 // Fallback numbers to provide immediate context & social proof
 const BASE_SCHOOLS = 500;
-const BASE_STUDENTS = 12000;
+const BASE_COMMITMENTS = 320;
 
 async function getStats() {
   try {
-    const { count: currentSchools } = await supabase
+    const { count: totalSchools } = await supabase
       .from("schools")
       .select("*", { count: "exact", head: true });
 
-    // As a demonstration we calculate "students" assuming avg 300 per school
-    // or just fetch real ones if we had a students table.
-    const realSchools = currentSchools || 0;
+    const { count: totalCommitments } = await supabase
+      .from("schools")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "komitmen");
 
     return {
-      schools: BASE_SCHOOLS + realSchools,
-      students: BASE_STUDENTS + realSchools * 300,
+      schools: BASE_SCHOOLS + (totalSchools || 0),
+      commitments: BASE_COMMITMENTS + (totalCommitments || 0),
     };
   } catch {
-    // Graceful degradation when not connected yet
-    return { schools: BASE_SCHOOLS, students: BASE_STUDENTS };
+    return { schools: BASE_SCHOOLS, commitments: BASE_COMMITMENTS };
   }
 }
 
@@ -31,10 +37,33 @@ export default async function Home() {
   const stats = await getStats();
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col">
+      {/* 1. Hero - Entry Point */}
       <HeroSection />
-      <StatsSection schools={stats.schools} students={stats.students} />
-      <PilarSection />
+
+      {/* 2. Problem - Awareness */}
+      <ProblemSection />
+
+      {/* 3. Solution - Platform Value */}
+      <SolutionSection />
+
+      {/* 4. Participation Flow - User Journey */}
+      <ParticipationFlow />
+
+      {/* 5. Map Preview - Social Proof */}
+      <MapPreview />
+
+      {/* 6. Live Statistics - Data Driven */}
+      <LiveStatsSection schools={stats.schools} commitments={stats.commitments} />
+
+      {/* 7. Case Studies - Inspiration */}
+      <CaseStudySection />
+
+      {/* 8. Quiz - Personal Hook */}
+      <QuizSection />
+
+      {/* 9. Final CTA - Conversion */}
+      <FinalCTA />
     </div>
   );
 }
