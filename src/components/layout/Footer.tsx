@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Zap, ExternalLink, Globe, Mail, Heart } from "lucide-react";
 
 const navLinks = [
   { href: "/survei", label: "Survei" },
@@ -29,14 +28,30 @@ export function Footer() {
               yang lebih sehat, terukur, dan berdampak pada kualitas pendidikan.
             </p>
             <div className="flex items-center gap-3 mt-6">
-              {[Globe, Mail, ExternalLink].map((Icon, i) => (
-                <button
-                  key={i}
-                  className="w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center text-gray-500 hover:text-orange-500 hover:border-orange-200 hover:bg-orange-50 transition-all duration-200"
+              <a
+                href="https://www.instagram.com/gesamega.official?igsh=YjZ5cGJzcDk3MHV2"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center text-gray-500 hover:text-orange-500 hover:border-orange-200 hover:bg-orange-50 transition-all duration-200"
+                aria-label="Instagram"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-4 h-4"
                 >
-                  <Icon className="w-4 h-4" />
-                </button>
-              ))}
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+                </svg>
+              </a>
             </div>
           </div>
 
@@ -76,8 +91,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-gray-200 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-gray-500 text-sm font-medium">
-            © {new Date().getFullYear()} Program Ekosistem Digital 2026. Hak
-            Cipta Dilindungi.
+            © {new Date().getFullYear()} GESAMEGA. Hak Cipta Dilindungi.
           </p>
         </div>
       </div>

@@ -6,33 +6,46 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { supabase } from "@/lib/supabase";
 
-// Fix generic leaflet icon issues with webpack/next
-const iconGreen = new L.Icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
+// ── Lucide SVG paths (inline, no CDN) ─────────────────────────────────────
+// BadgeCheck — komitmen
+const ICON_CHECK =
+  `<path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/>` +
+  `<path d="m9 12 2 2 4-4"/>`;
 
-const iconYellow = new L.Icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
+// ClipboardList — survei
+const ICON_CLIPBOARD =
+  `<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>` +
+  `<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>` +
+  `<path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>`;
 
-const iconGray = new L.Icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-grey.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
+// MapPin — belum ikut
+const ICON_MAP_PIN =
+  `<path d="M20 10c0 6-8 13-8 13s-8-7-8-13a8 8 0 0 1 16 0Z"/>` +
+  `<circle cx="12" cy="10" r="3"/>`;
+
+function makeLucideMarker(svgPaths: string, bg: string, border: string): L.DivIcon {
+  const html = `
+    <div style="
+      width:28px; height:28px;
+      background:${bg};
+      border-radius:50%;
+      border:2px solid ${border};
+      box-shadow:0 2px 8px ${bg}90;
+      display:flex; align-items:center; justify-content:center;
+    ">
+      <svg width="14" height="14" viewBox="0 0 24 24"
+        fill="none" stroke="white"
+        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        ${svgPaths}
+      </svg>
+    </div>`;
+  return L.divIcon({ html, className: "", iconSize: [28, 28], iconAnchor: [14, 14], popupAnchor: [0, -16] });
+}
+
+const iconGreen  = makeLucideMarker(ICON_CHECK,     "#10B981", "#059669");
+const iconYellow = makeLucideMarker(ICON_CLIPBOARD, "#F59E0B", "#D97706");
+const iconGray   = makeLucideMarker(ICON_MAP_PIN,   "#94A3B8", "#64748B");
+
 
 interface School {
   id: string;
