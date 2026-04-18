@@ -1,4 +1,7 @@
-import { Card } from "@/components/ui/Card";
+"use client";
+
+import { motion, useInView } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
 import { School, Handshake, TrendingUp } from "lucide-react";
 
 interface LiveStatsSectionProps {
@@ -6,59 +9,85 @@ interface LiveStatsSectionProps {
   commitments: number;
 }
 
+function AnimatedNumber({ value, suffix = "" }: { value: number; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true });
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    const duration = 2200;
+    const start = Date.now();
+    const tick = () => {
+      const elapsed = Date.now() - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      setCount(Math.floor(eased * value));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [inView, value]);
+
+  return (
+    <span ref={ref} className="tabular-nums">
+      {count.toLocaleString("id-ID")}{suffix}
+    </span>
+  );
+}
+
 export function LiveStatsSection({ schools, commitments }: LiveStatsSectionProps) {
   const participationRate = schools > 0 ? Math.round((commitments / schools) * 100) : 0;
 
-  return (
-    <section className="py-20 px-4 bg-kominfo-navy relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5" />
-      <div className="absolute top-0 right-0 w-80 h-80 bg-kominfo-blue rounded-full filter blur-[100px] opacity-30" />
-      <div className="absolute bottom-0 left-0 w-60 h-60 bg-blue-400 rounded-full filter blur-[80px] opacity-20" />
+  const stats = [
+    { icon: School,     value: schools,           suffix: "+", label: "Sekolah Terdaftar",   color: "text-sky-500", bg: "bg-sky-50 border-sky-100" },
+    { icon: Handshake,  value: commitments,        suffix: "+", label: "Komitmen Tersahkan",  color: "text-emerald-500", bg: "bg-emerald-50 border-emerald-100" },
+    { icon: TrendingUp, value: participationRate,  suffix: "%", label: "Rasio Partisipasi",   color: "text-amber-500", bg: "bg-amber-50 border-amber-100" },
+  ];
 
+  return (
+    <section className="py-24 px-4 relative overflow-hidden bg-white">
       <div className="max-w-5xl mx-auto relative z-10">
-        <div className="text-center mb-14">
-          <span className="inline-block px-4 py-1.5 text-xs font-bold text-blue-200 bg-white/10 rounded-full uppercase tracking-wider mb-4 backdrop-blur-md border border-white/10">
-            Data Real-Time
-          </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
-            Statistik Partisipasi Terkini
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <span className="section-label-light bg-sky-50 text-sky-600 mb-5">Data Real-Time</span>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-5 mb-4 leading-tight tracking-tight">
+            Statistik{" "}
+            <span className="text-sky-500">Partisipasi</span>{" "}
+            Terkini
           </h2>
-          <p className="text-blue-200/70 max-w-xl mx-auto">
-            Data langsung dari sistem kami, diperbarui secara otomatis setiap
-            kali sekolah baru berpartisipasi.
+          <p className="text-gray-600 font-medium max-w-xl mx-auto text-lg">
+            Data langsung dari sistem kami, diperbarui secara otomatis setiap kali sekolah baru berpartisipasi.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-8 text-center bg-white/10 backdrop-blur-lg border-white/10 hover:-translate-y-1 transition-all">
-            <div className="inline-flex p-3 rounded-2xl bg-blue-400/20 text-blue-300 mb-4">
-              <School className="w-8 h-8" />
-            </div>
-            <h3 className="text-4xl font-extrabold text-white mb-1">
-              {schools.toLocaleString("id-ID")}+
-            </h3>
-            <p className="text-blue-200/70 font-medium">Sekolah Terdaftar</p>
-          </Card>
+          {stats.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              className="clean-card bg-white rounded-3xl p-8 text-center flex flex-col items-center"
+            >
+              <div
+                className={`inline-flex p-4 rounded-2xl ${stat.bg} mb-6 shadow-sm border`}
+              >
+                <stat.icon className={`w-8 h-8 ${stat.color}`} />
+              </div>
 
-          <Card className="p-8 text-center bg-white/10 backdrop-blur-lg border-white/10 hover:-translate-y-1 transition-all">
-            <div className="inline-flex p-3 rounded-2xl bg-emerald-400/20 text-emerald-300 mb-4">
-              <Handshake className="w-8 h-8" />
-            </div>
-            <h3 className="text-4xl font-extrabold text-white mb-1">
-              {commitments.toLocaleString("id-ID")}+
-            </h3>
-            <p className="text-blue-200/70 font-medium">Komitmen Tersahkan</p>
-          </Card>
-
-          <Card className="p-8 text-center bg-white/10 backdrop-blur-lg border-white/10 hover:-translate-y-1 transition-all">
-            <div className="inline-flex p-3 rounded-2xl bg-amber-400/20 text-amber-300 mb-4">
-              <TrendingUp className="w-8 h-8" />
-            </div>
-            <h3 className="text-4xl font-extrabold text-white mb-1">
-              {participationRate}%
-            </h3>
-            <p className="text-blue-200/70 font-medium">Rasio Partisipasi</p>
-          </Card>
+              <h3 className="text-5xl font-black text-gray-900 mb-2 tracking-tight">
+                <AnimatedNumber value={stat.value} suffix={stat.suffix} />
+              </h3>
+              <p className="text-gray-500 font-semibold uppercase text-xs tracking-wide">{stat.label}</p>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

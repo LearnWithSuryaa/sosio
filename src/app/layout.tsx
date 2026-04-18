@@ -1,22 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Program Ekosistem Digital 2026",
-  description: "Mendorong Pemanfaatan Gadget untuk Pendidikan yang Lebih Berkualitas",
+  title: "Program Ekosistem Digital 2026 — Membangun Pendidikan Digital Indonesia",
+  description: "Platform kolaboratif nasional untuk mendorong penggunaan gadget yang sehat, terukur, dan berdampak pada kualitas pendidikan Indonesia.",
+  keywords: ["ekosistem digital", "pendidikan digital", "sekolah", "kominfo", "indonesia"],
 };
 
 export default function RootLayout({
@@ -25,11 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="id"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col bg-slate-50">
+    <html lang="id" className={`${inter.variable} h-full`}>
+      <body className="min-h-full flex flex-col bg-[#FAFAFA] text-gray-800">
         <Navbar />
         <main className="flex-grow">{children}</main>
         <Footer />

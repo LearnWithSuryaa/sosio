@@ -1,76 +1,82 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { Activity, Map, ShieldCheck, BookOpen } from "lucide-react";
-import { Card } from "@/components/ui/Card";
 
 const features = [
   {
     icon: Activity,
     title: "Survei Diagnostik",
-    description:
-      "Evaluasi anonim penggunaan gadget di lingkungan sekolah untuk memetakan tingkat kesiapan digital.",
-    gradient: "from-blue-500 to-blue-600",
+    description: "Evaluasi penggunaan gadget di lingkungan sekolah untuk memetakan tingkat kesiapan digital.",
+    iconColor: "text-orange-500",
+    bg: "bg-orange-50",
   },
   {
     icon: Map,
     title: "Peta Partisipasi",
-    description:
-      "Visualisasi real-time sebaran sekolah yang telah berkontribusi dalam gerakan sadar digital nasional.",
-    gradient: "from-emerald-500 to-emerald-600",
+    description: "Visualisasi sebaran sekolah yang telah berkontribusi dalam gerakan sadar digital nasional.",
+    iconColor: "text-emerald-500",
+    bg: "bg-emerald-50",
   },
   {
     icon: ShieldCheck,
     title: "Komitmen Digital",
-    description:
-      "Penandatanganan kontrak digital resmi dengan sertifikat PDF sebagai bukti tanggung jawab bersama.",
-    gradient: "from-violet-500 to-violet-600",
+    description: "Penandatanganan kontrak digital resmi sebagai bukti tanggung jawab bersama ekosistem sekolah.",
+    iconColor: "text-violet-500",
+    bg: "bg-violet-50",
   },
   {
     icon: BookOpen,
     title: "Studi Kasus",
-    description:
-      "Kumpulan praktik terbaik dari sekolah-sekolah yang berhasil mengelola ekosistem digital secara efektif.",
-    gradient: "from-amber-500 to-amber-600",
+    description: "Kumpulan praktik terbaik dari sekolah yang berhasil mengelola ekosistem digital secara efektif.",
+    iconColor: "text-rose-500",
+    bg: "bg-rose-50",
   },
 ];
 
 export function SolutionSection() {
   return (
-    <section className="py-20 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-14">
-          <span className="inline-block px-4 py-1.5 text-xs font-bold text-kominfo-blue bg-blue-50 rounded-full uppercase tracking-wider mb-4">
-            Solusi
-          </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-kominfo-navy mb-4">
-            Solusi Kolaboratif Berbasis Partisipasi
+    <section className="py-24 px-4 bg-white relative overflow-hidden">
+      <div className="max-w-6xl mx-auto relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <span className="section-label-light bg-orange-50 text-orange-600 mb-5">Solusi Utama</span>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-5 mb-4 leading-tight tracking-tight">
+            Langkah Nyata{" "}
+            <span className="text-orange-500">Kolaboratif</span>
+            <br />Berbasis Partisipasi
           </h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">
-            Empat pilar utama yang menjadi fondasi platform ini dalam membangun
-            ekosistem pendidikan digital yang lebih sehat dan terukur.
+          <p className="text-gray-600 max-w-2xl mx-auto text-lg font-medium">
+            Empat layanan utama yang menjadi fondasi platform ini dalam mendampingi sekolah membangun ekosistem digital yang sehat.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature) => (
-            <Card
+          {features.map((feature, i) => (
+            <motion.div
               key={feature.title}
-              className="p-6 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              className="clean-card p-6 flex flex-col items-start bg-white"
             >
-              {/* Gradient accent top */}
+              {/* Icon */}
               <div
-                className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${feature.gradient}`}
-              />
-              <div
-                className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} text-white flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-lg`}
+                className={`w-14 h-14 rounded-2xl ${feature.bg} flex items-center justify-center mb-6 shadow-sm`}
               >
-                <feature.icon className="w-6 h-6" />
+                <feature.icon className={`w-7 h-7 ${feature.iconColor}`} />
               </div>
-              <h3 className="font-bold text-kominfo-navy mb-2 text-lg">
-                {feature.title}
-              </h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                {feature.description}
-              </p>
-            </Card>
+
+              <h3 className="font-bold text-gray-900 mb-3 text-lg leading-snug">{feature.title}</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
+            </motion.div>
           ))}
         </div>
       </div>

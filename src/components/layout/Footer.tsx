@@ -1,19 +1,84 @@
+import Link from "next/link";
+import { Zap, ExternalLink, Globe, Mail, Heart } from "lucide-react";
+
+const navLinks = [
+  { href: "/survei", label: "Survei" },
+  { href: "/peta", label: "Peta" },
+  { href: "/komitmen", label: "Komitmen" },
+  { href: "/studi-kasus", label: "Studi Kasus" },
+  { href: "/kuis", label: "Kuis Digital" },
+];
+
 export function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-100 py-12 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-4 md:mb-0">
-            <p className="text-kominfo-navy font-semibold">
-              Program Ekosistem Digital 2026
+    <footer className="bg-white border-t border-gray-200 relative overflow-hidden mt-auto pt-20 pb-10">
+      {/* Decorative gradient top bar */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 via-rose-400 to-amber-400" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+          {/* Brand */}
+          <div className="col-span-1 md:col-span-1">
+            <div className="flex items-center mb-5">
+              <span className="font-extrabold text-2xl tracking-tighter text-gray-900 uppercase">
+                GESA<span className="text-orange-500">MEGA</span>
+              </span>
+            </div>
+            <p className="text-gray-600 text-sm leading-relaxed max-w-xs">
+              Platform kolaboratif nasional untuk mendorong penggunaan gadget
+              yang lebih sehat, terukur, dan berdampak pada kualitas pendidikan.
             </p>
-            <p className="text-sm text-gray-500 mt-1">
-              Mendorong Pemanfaatan Gadget untuk Pendidikan Berkualitas.
+            <div className="flex items-center gap-3 mt-6">
+              {[Globe, Mail, ExternalLink].map((Icon, i) => (
+                <button
+                  key={i}
+                  className="w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center text-gray-500 hover:text-orange-500 hover:border-orange-200 hover:bg-orange-50 transition-all duration-200"
+                >
+                  <Icon className="w-4 h-4" />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <div>
+            <h4 className="text-sm font-bold tracking-wider uppercase text-gray-900 mb-6">
+              Platform
+            </h4>
+            <ul className="space-y-4">
+              {navLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-600 hover:text-orange-600 text-sm font-medium transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-300 opacity-0 transition-opacity" />
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* CTA Card */}
+          <div className="clean-card p-6 bg-gradient-warm border-orange-100">
+            <h4 className="text-gray-900 font-bold mb-2">Siap Bergabung?</h4>
+            <p className="text-gray-700 text-sm mb-6 leading-relaxed">
+              Sekolah Anda bisa menjadi bagian dari gerakan nasional sadar
+              digital. Mari ciptakan ekosistem pendidikan yang lebih baik.
             </p>
+            <Link href="/survei" className="btn-pill-primary text-sm w-full">
+              Mulai Sekarang
+            </Link>
           </div>
-          <div className="text-sm text-gray-400">
-            © {new Date().getFullYear()} Hak Cipta Dilindungi.
-          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="border-t border-gray-200 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-gray-500 text-sm font-medium">
+            © {new Date().getFullYear()} Program Ekosistem Digital 2026. Hak
+            Cipta Dilindungi.
+          </p>
         </div>
       </div>
     </footer>

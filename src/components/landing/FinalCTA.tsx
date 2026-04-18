@@ -1,45 +1,96 @@
+"use client";
+
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 export function FinalCTA() {
   return (
-    <section className="py-24 px-4 bg-gradient-to-br from-kominfo-navy via-[#0e4a73] to-kominfo-blue relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-400/15 rounded-full filter blur-[100px]" />
+    <section className="py-32 px-4 relative overflow-hidden bg-white">
+      {/* Warm Gradient Background Elements */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-orange-400/20 rounded-[100%] blur-[120px]" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-rose-400/20 rounded-full blur-[100px]" />
+      </div>
 
       <div className="max-w-3xl mx-auto text-center relative z-10">
-        <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
+
+        {/* Badge */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: "backOut" }}
+          className="inline-flex items-center gap-2 px-5 py-2 rounded-full section-label-light bg-orange-50 text-orange-600 mb-8"
+        >
+          <Sparkles className="w-3.5 h-3.5" />
+          Bergabung Sekarang
+        </motion.div>
+
+        {/* Headline */}
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="text-4xl md:text-6xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight"
+        >
           Mari Berpartisipasi Membangun{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-white">
-            Ekosistem Digital yang Lebih Baik
+          <span className="text-orange-500">
+            Ekosistem Pendidikan Digital
           </span>
-        </h2>
+        </motion.h2>
 
-        <p className="text-blue-100/70 text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-          Setiap sekolah yang berpartisipasi membawa Indonesia selangkah lebih
-          dekat menuju pendidikan digital yang aman, terukur, dan berkualitas.
-        </p>
+        {/* Sub */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.25, ease: "easeOut" }}
+          className="text-gray-600 font-medium text-lg max-w-xl mx-auto mb-12 leading-relaxed"
+        >
+          Setiap sekolah yang berpartisipasi membawa Indonesia selangkah lebih dekat menuju pendidikan digital yang aman, terukur, dan berkualitas.
+        </motion.p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/survei">
-            <Button
-              size="lg"
-              className="bg-white text-kominfo-navy hover:bg-gray-50 border-0 font-bold text-base px-10 gap-2"
+        {/* CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+        >
+          <Link href="/survei" className="w-full sm:w-auto">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="btn-pill-primary w-full sm:w-auto px-10 py-4 shadow-orange-500/20 text-base"
             >
-              Mulai Survei Sekarang <ArrowRight className="w-5 h-5" />
-            </Button>
+              Mulai Survei Sekarang
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </motion.button>
           </Link>
-          <Link href="/peta">
-            <Button
-              variant="outline"
-              size="lg"
-              className="text-white border-white/30 hover:bg-white/10 hover:text-white font-medium px-8"
+          <Link href="/peta" className="w-full sm:w-auto">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="btn-pill-outline w-full sm:w-auto px-8 py-4 text-base"
             >
               Lihat Peta Partisipasi
-            </Button>
+            </motion.button>
           </Link>
-        </div>
+        </motion.div>
+
+        {/* Social proof */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="mt-10 text-gray-500 text-sm font-medium"
+        >
+          Bergabung bersama <strong className="text-gray-900">500+ sekolah</strong> yang telah berpartisipasi dari seluruh Indonesia
+        </motion.p>
       </div>
     </section>
   );
