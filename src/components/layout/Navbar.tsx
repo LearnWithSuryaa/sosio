@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 import {
   Activity,
   Map,
@@ -12,6 +13,8 @@ import {
   Menu,
   X,
   ChevronDown,
+  FileText,
+  Newspaper,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -32,12 +35,13 @@ export function Navbar() {
     { href: "/peta", label: "Peta", icon: Map },
     { href: "/kuis", label: "Kuis", icon: Lightbulb },
   ];
-
   // === SECONDARY (DROPDOWN)
   const insightLinks = [
-    { href: "/komitmen", label: "Komitmen", icon: PenTool },
     { href: "/studi-kasus", label: "Studi Kasus", icon: BookOpen },
+    { href: "/artikel", label: "Artikel & Edukasi", icon: Newspaper },
+    { href: "/panduan", label: "Panduan Kebijakan", icon: FileText },
   ];
+
 
   const aboutLinks = [
     { href: "/tentang", label: "Tentang Kami" },
@@ -172,10 +176,12 @@ export function Navbar() {
               </div>
             </div>
 
-            {/* Desktop CTA — hidden on mobile, shown only in drawer */}
-            <div className="hidden md:block">
-              <Link href="/survei" className="btn-pill-primary text-sm">
-                Mulai Survei
+            {/* Right side - Desktop */}
+            <div className="hidden lg:flex items-center gap-4">
+              <Link href="/survei" className="relative group">
+                <Button variant="primary" className="text-sm px-6 py-2">
+                  Mulai Survei
+                </Button>
               </Link>
             </div>
 
@@ -348,10 +354,14 @@ export function Navbar() {
               <div className="px-5 py-5 border-t border-gray-100">
                 <Link
                   href="/survei"
-                  onClick={closeMobile}
-                  className="btn-pill-primary w-full text-center text-sm block"
                 >
-                  Mulai Survei
+                  <Button 
+                    variant="primary"
+                    className="w-full text-center text-sm"
+                    onClick={closeMobile}
+                  >
+                    Mulai Survei Sekarang
+                  </Button>
                 </Link>
               </div>
             </motion.div>

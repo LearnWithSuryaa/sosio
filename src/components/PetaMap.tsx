@@ -23,7 +23,7 @@ const ICON_MAP_PIN =
   `<path d="M20 10c0 6-8 13-8 13s-8-7-8-13a8 8 0 0 1 16 0Z"/>` +
   `<circle cx="12" cy="10" r="3"/>`;
 
-function makeLucideMarker(svgPaths: string, bg: string, border: string): L.DivIcon {
+function makeLucideMarker(svgPaths: string, bg: string, border: string, isPending: boolean = false): L.DivIcon {
   const html = `
     <div style="
       width:28px; height:28px;
@@ -31,6 +31,7 @@ function makeLucideMarker(svgPaths: string, bg: string, border: string): L.DivIc
       border-radius:50%;
       border:2px solid ${border};
       box-shadow:0 2px 8px ${bg}90;
+      opacity: ${isPending ? 0.5 : 1};
       display:flex; align-items:center; justify-content:center;
     ">
       <svg width="14" height="14" viewBox="0 0 24 24"
@@ -39,12 +40,16 @@ function makeLucideMarker(svgPaths: string, bg: string, border: string): L.DivIc
         ${svgPaths}
       </svg>
     </div>`;
-  return L.divIcon({ html, className: "", iconSize: [28, 28], iconAnchor: [14, 14], popupAnchor: [0, -16] });
+  return L.divIcon({ html, className: "", iconSize: isPending ? [24, 24] : [28, 28], iconAnchor: isPending ? [12, 12] : [14, 14], popupAnchor: [0, -16] });
 }
 
 const iconGreen  = makeLucideMarker(ICON_CHECK,     "#10B981", "#059669");
 const iconYellow = makeLucideMarker(ICON_CLIPBOARD, "#F59E0B", "#D97706");
 const iconGray   = makeLucideMarker(ICON_MAP_PIN,   "#94A3B8", "#64748B");
+
+const iconGreenPending  = makeLucideMarker(ICON_CHECK,     "#10B981", "#059669", true);
+const iconYellowPending = makeLucideMarker(ICON_CLIPBOARD, "#F59E0B", "#D97706", true);
+const iconGrayPending   = makeLucideMarker(ICON_MAP_PIN,   "#94A3B8", "#64748B", true);
 
 
 interface School {
@@ -53,6 +58,7 @@ interface School {
   latitude: number;
   longitude: number;
   status: string;
+  status_validasi: string;
 }
 
 interface Props {
@@ -89,10 +95,11 @@ export default function PetaKomponen({ schoolId }: Props) {
     fetchSchools();
   }, []);
 
-  const getIcon = (status: string) => {
-    if (status === "komitmen") return iconGreen;
-    if (status === "survei") return iconYellow;
-    return iconGray;
+  const getIcon = (status: string, validasi: string) => {
+    const isPending = validasi === "pending";
+    if (status === "komitmen") return isPending ? iconGreenPending : iconGreen;
+    if (status === "survei") return isPending ? iconYellowPending : iconYellow;
+    return isPending ? iconGrayPending : iconGray;
   };
 
   return (
@@ -109,11 +116,11 @@ export default function PetaKomponen({ schoolId }: Props) {
         />
         <MapController schools={schools} targetId={schoolId} />
         
-        {schools.map((school) => (
+        {schools.filter(s => s.status_validasi !== 'flagged').map((school) => (
           <Marker 
             key={school.id} 
             position={[school.latitude, school.longitude]} 
-            icon={getIcon(school.status)}
+            icon={getIcon(school.status, school.status_validasi)}
           >
             <Popup>
               <div className="text-center font-sans">

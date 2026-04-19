@@ -24,7 +24,7 @@ const ICON_MAP_PIN =
   `<circle cx="12" cy="10" r="3"/>`;
 
 /** Buat L.divIcon dari SVG path Lucide dengan warna tertentu */
-function makeLucideMarker(svgPaths: string, bg: string, border: string): L.DivIcon {
+function makeLucideMarker(svgPaths: string, bg: string, border: string, isPending: boolean = false): L.DivIcon {
   const html = `
     <div style="
       width:28px; height:28px;
@@ -32,6 +32,7 @@ function makeLucideMarker(svgPaths: string, bg: string, border: string): L.DivIc
       border-radius:50%;
       border:2px solid ${border};
       box-shadow:0 2px 8px ${bg}90;
+      opacity: ${isPending ? 0.5 : 1};
       display:flex; align-items:center; justify-content:center;
     ">
       <svg width="14" height="14" viewBox="0 0 24 24"
@@ -44,8 +45,8 @@ function makeLucideMarker(svgPaths: string, bg: string, border: string): L.DivIc
   return L.divIcon({
     html,
     className: "",       // hapus class default leaflet (background kotak)
-    iconSize: [28, 28],
-    iconAnchor: [14, 14],
+    iconSize: isPending ? [24, 24] : [28, 28],
+    iconAnchor: isPending ? [12, 12] : [14, 14],
   });
 }
 
@@ -54,12 +55,17 @@ const iconGreen  = makeLucideMarker(ICON_CHECK,     "#10B981", "#059669"); // em
 const iconYellow = makeLucideMarker(ICON_CLIPBOARD, "#F59E0B", "#D97706"); // amber
 const iconGray   = makeLucideMarker(ICON_MAP_PIN,   "#94A3B8", "#64748B"); // slate
 
+const iconGreenPending  = makeLucideMarker(ICON_CHECK,     "#10B981", "#059669", true);
+const iconYellowPending = makeLucideMarker(ICON_CLIPBOARD, "#F59E0B", "#D97706", true);
+const iconGrayPending   = makeLucideMarker(ICON_MAP_PIN,   "#94A3B8", "#64748B", true);
+
 interface School {
   id: string;
   nama_sekolah: string;
   latitude: number;
   longitude: number;
   status: string;
+  status_validasi: string;
 }
 
 /** Disable semua interaksi map untuk mode preview */
@@ -79,10 +85,11 @@ function DisableInteractions() {
   return null;
 }
 
-function getIcon(status: string) {
-  if (status === "komitmen") return iconGreen;
-  if (status === "survei") return iconYellow;
-  return iconGray;
+function getIcon(status: string, validasi: string) {
+  const isPending = validasi === "pending";
+  if (status === "komitmen") return isPending ? iconGreenPending : iconGreen;
+  if (status === "survei") return isPending ? iconYellowPending : iconYellow;
+  return isPending ? iconGrayPending : iconGray;
 }
 
 export default function MapPreviewInner() {
@@ -91,7 +98,7 @@ export default function MapPreviewInner() {
   useEffect(() => {
     supabase
       .from("schools")
-      .select("id, nama_sekolah, latitude, longitude, status")
+      .select("id, nama_sekolah, latitude, longitude, status, status_validasi")
       .limit(300)
       .then(({ data }) => {
         if (data) setSchools(data);
@@ -110,11 +117,11 @@ export default function MapPreviewInner() {
       <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
       <DisableInteractions />
 
-      {schools.map((school) => (
+      {schools.filter(s => s.status_validasi !== 'flagged').map((school) => (
         <Marker
           key={school.id}
           position={[school.latitude, school.longitude]}
-          icon={getIcon(school.status)}
+          icon={getIcon(school.status, school.status_validasi)}
           interactive={false}
         />
       ))}

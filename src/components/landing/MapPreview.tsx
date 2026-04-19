@@ -3,6 +3,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/Button";
 import { Info, BadgeCheck, ClipboardList, MapPin } from "lucide-react";
 
 // ── Load Leaflet hanya di client side (tidak SSR) ──────────────────────────
@@ -81,10 +82,10 @@ export function MapPreview() {
                 <p className="text-gray-500 text-sm mb-5">
                   Klik untuk melihat peta lengkap dengan data real-time
                 </p>
-                <Link href="/peta">
-                  <button className="btn-pill-primary w-full shadow-orange-500/20 text-sm">
-                    Buka Peta Lengkap
-                  </button>
+                <Link href="/survei" className="block">
+                  <Button variant="primary" className="w-full text-sm py-2">
+                    Mulai Survei Instansi
+                  </Button>
                 </Link>
               </motion.div>
             </div>

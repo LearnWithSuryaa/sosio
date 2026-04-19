@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { Button } from "@/components/ui/Button";
+
 const navLinks = [
   { href: "/survei", label: "Survei" },
   { href: "/peta", label: "Peta" },
@@ -82,8 +84,10 @@ export function Footer() {
               Sekolah Anda bisa menjadi bagian dari gerakan nasional sadar
               digital. Mari ciptakan ekosistem pendidikan yang lebih baik.
             </p>
-            <Link href="/survei" className="btn-pill-primary text-sm w-full">
-              Mulai Sekarang
+            <Link href="/survei" className="block w-full">
+               <Button variant="primary" className="text-sm w-full py-2">
+                 Mulai Survei
+               </Button>
             </Link>
           </div>
         </div>

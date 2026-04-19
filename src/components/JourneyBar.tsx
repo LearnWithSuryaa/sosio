@@ -1,53 +1,89 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { CheckCircle2 } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const steps = [
-  { path: "/survei", label: "1. Diagnostik", id: 1 },
-  { path: "/peta", label: "2. Pemetaan", id: 2 },
-  { path: "/komitmen", label: "3. Komitmen", id: 3 },
+  { path: "/survei",   label: "Diagnostik",  hint: "Isi Survei",      id: 1 },
+  { path: "/peta",     label: "Pemetaan",    hint: "Lihat Peta",      id: 2 },
+  { path: "/komitmen", label: "Komitmen",    hint: "Tanda Tangan",    id: 3 },
 ];
 
 export function JourneyBar() {
   const pathname = usePathname();
-
-  // Find current step index (1-based)
   const currentStep = steps.find(s => s.path === pathname)?.id || 0;
 
+  // Progress width between connectors
+  const progressPct =
+    currentStep === 1 ? "0%"
+    : currentStep === 2 ? "50%"
+    : currentStep === 3 ? "100%"
+    : "0%";
+
   return (
-    <div className="w-full max-w-2xl mx-auto mb-10 mt-6 relative">
-      <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -translate-y-1/2 rounded-full -z-10 px-8">
-        <div 
-          className="h-full bg-kominfo-blue transition-all duration-500 rounded-full"
-          style={{ width: currentStep === 1 ? '10%' : currentStep === 2 ? '50%' : currentStep === 3 ? '100%' : '0%' }}
+    <div id="tour-journey-bar" className="w-full max-w-2xl mx-auto mb-10 mt-4 px-2">
+      {/* Step track */}
+      <div className="relative flex items-center justify-between">
+        {/* Background connector */}
+        <div className="absolute top-5 left-0 right-0 h-[2px] bg-gray-200 mx-[2.5rem]" />
+
+        {/* Active connector */}
+        <div
+          className="absolute top-5 left-0 h-[2px] mx-[2.5rem] transition-all duration-700 ease-out"
+          style={{
+            width: progressPct,
+            background: "linear-gradient(90deg, #f97316, #fb7185)",
+          }}
         />
-      </div>
-      
-      <div className="flex justify-between items-center w-full px-4">
+
         {steps.map((step) => {
-          const isActive = currentStep === step.id;
-          const isPassed = currentStep > step.id;
+          const isActive  = currentStep === step.id;
+          const isPassed  = currentStep > step.id;
+          const isFuture  = currentStep < step.id;
 
           return (
-            <div key={step.id} className="flex flex-col items-center bg-transparent group">
-              <div 
+            <div key={step.id} className="relative z-10 flex flex-col items-center gap-2 w-1/3">
+              {/* Circle */}
+              <div
                 className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center transition-all bg-white border-2",
-                  isPassed ? "bg-kominfo-blue border-kominfo-blue text-white" : 
-                  isActive ? "border-kominfo-blue text-kominfo-blue border-4" : 
-                  "border-gray-300 text-gray-400"
+                  "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-400 border-2",
+                  isPassed
+                    ? "bg-gradient-to-br from-orange-400 to-rose-500 border-orange-400 text-white shadow-lg shadow-orange-400/30"
+                    : isActive
+                    ? "bg-white border-orange-400 text-orange-500 shadow-lg shadow-orange-400/20 animate-pulse-ring"
+                    : "bg-white border-gray-200 text-gray-400"
                 )}
               >
-                {isPassed ? <CheckCircle2 className="w-6 h-6" /> : <span className="font-bold">{step.id}</span>}
+                {isPassed
+                  ? <Check className="w-5 h-5 stroke-[3]" />
+                  : <span className="text-sm font-bold">{step.id}</span>
+                }
               </div>
-              <span className={cn(
-                "text-xs sm:text-sm font-semibold mt-2 absolute translate-y-11 transition-colors bg-blue-50/80 backdrop-blur-sm px-2 py-1 rounded-md",
-                isActive ? "text-kominfo-navy" : isPassed ? "text-kominfo-blue" : "text-gray-400"
-              )}>
-                {step.label}
-              </span>
+
+              {/* Label */}
+              <div className="flex flex-col items-center text-center">
+                <span
+                  className={cn(
+                    "text-xs font-bold tracking-wide transition-colors",
+                    isActive  ? "text-orange-600"
+                    : isPassed ? "text-orange-400"
+                    : "text-gray-400"
+                  )}
+                >
+                  {step.label}
+                </span>
+                {isActive && (
+                  <span className="text-[10px] text-orange-400 font-medium mt-0.5 hidden sm:block">
+                    ← Sekarang
+                  </span>
+                )}
+                {isFuture && step.id === currentStep + 1 && (
+                  <span className="text-[10px] text-gray-400 font-medium mt-0.5 hidden sm:block flex items-center gap-0.5">
+                    Berikutnya <ArrowRight className="w-2.5 h-2.5 inline" />
+                  </span>
+                )}
+              </div>
             </div>
           );
         })}

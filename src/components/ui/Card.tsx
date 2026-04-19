@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-interface CardProps {
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   className?: string;
   variant?: "glass" | "glass-dark" | "solid";
@@ -16,7 +16,7 @@ const glowMap = {
   none:   "",
 };
 
-export function Card({ children, className, variant = "glass", glow = "none" }: CardProps) {
+export function Card({ children, className, variant = "glass", glow = "none", ...props }: CardProps) {
   return (
     <div
       className={cn(
@@ -27,6 +27,7 @@ export function Card({ children, className, variant = "glass", glow = "none" }: 
         glow !== "none" && glowMap[glow],
         className
       )}
+      {...props}
     >
       {children}
     </div>

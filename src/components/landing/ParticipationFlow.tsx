@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ClipboardList, MapPin, Handshake, TrendingUp, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 const steps = [
   {
@@ -115,10 +116,9 @@ export function ParticipationFlow() {
           className="text-center mt-14"
         >
           <Link href="/survei">
-            <button className="btn-pill-primary px-8 py-3.5 mx-auto">
-              Mulai Langkah Pertama
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </button>
+            <Button variant="primary" className="px-8 py-3.5 mx-auto">
+              Ikuti Tahap 1: Survei Diagnostik
+            </Button>
           </Link>
         </motion.div>
       </div>

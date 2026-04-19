@@ -1,0 +1,122 @@
+"use server";
+
+import { headers } from "next/headers";
+import { supabase } from "@/lib/supabase";
+
+export async function submitSurvey(data: {
+  nama: string;
+  namaSekolah: string;
+  wilayah: string;
+  q1: string;
+  q2: string;
+  q3: string;
+  captchaToken: string;
+}) {
+  try {
+    const headersList = await headers();
+    const ip = headersList.get("x-forwarded-for") || "unknown_ip";
+
+    // Mock CAPTCHA validation
+    if (!data.captchaToken) {
+      return {
+        success: false,
+        error: "Validasi CAPTCHA gagal. Silakan coba lagi.",
+      };
+    }
+
+    // Rate Limiting Logic (Simplified IP check)
+    // We check how many submissions today from this IP
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const { count: rateLimitCount } = await supabase
+      .from("schools")
+      .select("id", { count: "exact" })
+      .eq("ip_address", ip)
+      .gte("submit_timestamp", today.toISOString());
+
+    if (rateLimitCount !== null && rateLimitCount >= 3) {
+      return {
+        success: false,
+        error: "Batas pengiriman harian terlampaui. Coba lagi besok.",
+      };
+    }
+
+    // 1. Cek apakah sekolah sudah terdaftar (Berdasarkan Nama Sekolah)
+    // Catatan: Jika wilayah di DB null (misal dari seed data), maka tidak akan match jika kita filter wilayah sekalian.
+    // Oleh karena itu, kita cari berdasarkan nama sekolah.
+    const { data: existingSchools, error: lookupError } = await supabase
+      .from("schools")
+      .select("id, status, wilayah")
+      .eq("nama_sekolah", data.namaSekolah);
+
+    if (lookupError) {
+      console.error("Supabase Lookup Error:", lookupError);
+      return {
+        success: false,
+        error:
+          "Gagal memverifikasi sekolah di database.(" +
+          lookupError.message +
+          ")",
+      };
+    }
+
+    if (!existingSchools || existingSchools.length === 0) {
+      return {
+        success: false,
+        error:
+          "Sekolah belum terdaftar di sistem. Survei hanya dapat diisi oleh sekolah yang sudah terdaftar.",
+      };
+    }
+
+    // Jika ada lebih dari satu sekolah dengan nama sama, prioritas yang wilayahnya sama (jika ada), kalau tidak pilih yang pertama.
+    let school = existingSchools[0];
+    const matchRegion = existingSchools.find((s) => s.wilayah === data.wilayah);
+    if (matchRegion) {
+      school = matchRegion;
+    }
+
+    const finalSchoolId = school.id;
+
+    // 2. Insert to survey_results karena sekolah valid
+    const { error: surveyError } = await supabase
+      .from("survey_results")
+      .insert({
+        nama: data.nama || "Anonim",
+        nama_sekolah: data.namaSekolah,
+        jawaban: { q1: data.q1, q2: data.q2, q3: data.q3 },
+      });
+
+    if (surveyError) throw surveyError;
+
+    // 3. Update status sekolah (Hanya update jika status saat ini 'belum')
+    if (school.status === "belum") {
+      await supabase
+        .from("schools")
+        .update({
+          status: "survei",
+          status_validasi: "pending",
+          pengirim_nama: data.nama || "Anonim",
+          wilayah: school.wilayah || data.wilayah, // mengisi wilayah jika sebelumnya kosong
+          ip_address: ip,
+          submit_timestamp: new Date().toISOString(),
+        })
+        .eq("id", school.id);
+    } else {
+      // Jika status sudah 'survei' atau 'komitmen', kita hanya update timestamp tracking
+      await supabase
+        .from("schools")
+        .update({
+          wilayah: school.wilayah || data.wilayah,
+          ip_address: ip,
+          submit_timestamp: new Date().toISOString(),
+        })
+        .eq("id", school.id);
+    }
+
+    return { success: true, schoolId: finalSchoolId };
+  } catch (error: any) {
+    console.error("Server Action Error:", error);
+    return { success: false, error: error.message };
+  }
+}

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { ShieldCheck, Users, ArrowRight, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 function useCountUp(target: number, inView: boolean, duration = 2000) {
   const [count, setCount] = useState(0);
@@ -157,23 +158,23 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 mb-10 w-full"
           >
-            <Link href="/survei" className="w-full sm:w-auto">
-              <button className="btn-pill-primary w-full sm:w-auto text-base">
-                Ikuti Survei Sekarang
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </button>
-            </Link>
-            <Link href="/peta" className="w-full sm:w-auto">
-              <button className="btn-pill-outline w-full sm:w-auto text-base">
-                Lihat Partisipasi
-              </button>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <Link href="/survei" className="w-full sm:w-auto">
+                <Button variant="primary" className="w-full sm:w-auto text-base shadow-orange-500/20 px-8 py-4">
+                  Survei Sekarang <ArrowRight className="w-5 h-5" />
+                </Button>
+              </Link>
+              <Link href="/peta" className="w-full sm:w-auto">
+                <Button variant="outline" className="w-full sm:w-auto text-base px-8 py-4">
+                  Lihat Peta Nasional
+                </Button>
+              </Link>
+            </div>
           </motion.div>
 
           {/* Mobile Stats display */}
-          <div className="flex md:hidden gap-6 justify-center">
+          <div className="flex md:hidden gap-6 justify-center mt-10">
             <div className="flex flex-col items-center">
               <p className="text-2xl font-black text-orange-500">
                 {schools.toLocaleString("id-ID")}+

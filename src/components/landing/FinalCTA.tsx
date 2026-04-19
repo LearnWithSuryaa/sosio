@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { FileText, ArrowRight, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 export function FinalCTA() {
   return (
@@ -60,24 +61,17 @@ export function FinalCTA() {
           transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <Link href="/survei" className="w-full sm:w-auto">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="btn-pill-primary w-full sm:w-auto px-10 py-4 shadow-orange-500/20 text-base"
-            >
-              Mulai Survei Sekarang
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </motion.button>
+          <Link href="/komitmen" className="w-full sm:w-auto relative group">
+            <Button variant="primary" className="w-full sm:w-auto px-10 py-4 shadow-orange-500/20 text-base relative z-10 transition-transform active:scale-95 hover:shadow-orange-500/40">
+              <span className="flex items-center gap-2">
+                Buat Komitmen Sekarang <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </span>
+            </Button>
           </Link>
-          <Link href="/peta" className="w-full sm:w-auto">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="btn-pill-outline w-full sm:w-auto px-8 py-4 text-base"
-            >
-              Lihat Peta Partisipasi
-            </motion.button>
+          <Link href="/studi-kasus" className="w-full sm:w-auto">
+            <Button variant="outline" className="w-full sm:w-auto px-8 py-4 text-base">
+              Lihat Panduan
+            </Button>
           </Link>
         </motion.div>
 

@@ -152,6 +152,19 @@
     box-shadow: 0 4px 12px rgba(251, 146, 60, 0.1);
   }
 
+  /* ---- Form Elements ---- */
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all;
+  }
+
+  .input-error {
+    @apply border-red-400 focus:border-red-500 focus:ring-red-100;
+  }
+
+  .inline-error {
+    @apply text-sm text-red-600 mt-1 flex items-center gap-1;
+  }
+
   /* ---- Section Labels ---- */
   .section-label-light {
     display: inline-flex;
@@ -167,7 +180,20 @@
     color: #EA580C; /* Orange-600 */
   }
 
-  /* ---- Decorative Vector Layers ---- */
+  /* ---- Modern Big Action Tile Radio ---- */
+  .tile-radio {
+    @apply w-full p-5 rounded-2xl border-2 border-gray-100 bg-white/70 backdrop-blur-sm cursor-pointer transition-all duration-300 relative overflow-hidden text-left flex flex-col justify-center shadow-sm;
+  }
+
+  .tile-radio:hover {
+    @apply border-orange-200 bg-orange-50/50 -translate-y-0.5 shadow-md shadow-orange-500/5;
+  }
+
+  .tile-radio.selected {
+    @apply border-orange-500 bg-orange-50 ring-4 ring-orange-500/10 shadow-lg shadow-orange-500/10 scale-[1.02];
+  }
+
+  /* ---- Form Input — Consistent across all feature pages ---- */
   .vector-cloud {
     position: absolute;
     background: white;
@@ -192,6 +218,88 @@
   100% { transform: translateX(0) translateY(0); }
 }
 
+@keyframes success-pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 /* ---- Animation Utility Classes ---- */
 .animate-cloud-slow { animation: float-cloud-slow 12s ease-in-out infinite; }
 .animate-cloud-fast { animation: float-cloud-fast 8s ease-in-out infinite; }
+.animate-success { animation: success-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+/* ============================================================
+   TOUR GUIDE THEME (Driver.js overrides)
+   ============================================================ */
+.gesamega-tour-theme {
+  border-radius: 1.25rem !important;
+  border: 1px solid #fed7aa !important; /* orange-200 */
+  box-shadow: 0 15px 40px -10px rgba(249, 115, 22, 0.25) !important;
+  font-family: inherit !important;
+  padding: 1.25rem !important;
+}
+
+.gesamega-tour-theme .driver-popover-title {
+  color: #ea580c !important; /* orange-600 */
+  font-weight: 800 !important;
+  font-size: 1.125rem !important;
+  margin-bottom: 0.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.gesamega-tour-theme .driver-popover-description {
+  color: #4b5563 !important; /* gray-600 */
+  font-size: 0.9375rem !important;
+  line-height: 1.5 !important;
+  font-weight: 500 !important;
+}
+
+.gesamega-tour-theme .driver-popover-footer {
+  margin-top: 1.25rem !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.gesamega-tour-theme .driver-popover-progress-text {
+  color: #9ca3af !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.gesamega-tour-theme .driver-popover-next-btn, 
+.gesamega-tour-theme .driver-popover-prev-btn {
+  border-radius: 9999px !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
+  padding: 5px 12px !important;
+  transition: all 0.2s !important;
+  font-size: 0.75rem !important;
+}
+
+.gesamega-tour-theme .driver-popover-next-btn {
+  background: linear-gradient(135deg, #fb923c, #fb7185) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(251, 146, 60, 0.2) !important;
+}
+
+.gesamega-tour-theme .driver-popover-next-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(251, 146, 60, 0.35) !important;
+}
+
+.gesamega-tour-theme .driver-popover-prev-btn {
+  background: white !important;
+  border: 2px solid #fed7aa !important;
+  color: #ea580c !important;
+  box-shadow: none !important;
+}
+
+.gesamega-tour-theme .driver-popover-prev-btn:hover {
+  background: #fff7ed !important;
+  border-color: #fb923c !important;
+}

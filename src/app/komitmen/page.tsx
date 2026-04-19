@@ -6,20 +6,41 @@ import { supabase } from "@/lib/supabase";
 import { generateKomitmenPDF } from "@/lib/pdfGenerator";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { PenTool, Download, RefreshCw, CheckCircle2 } from "lucide-react";
+import {
+  PenTool,
+  Download,
+  RefreshCw,
+  CheckCircle2,
+  ChevronDown,
+  Lock,
+  ShieldCheck,
+  AlertTriangle,
+} from "lucide-react";
 import { JourneyBar } from "@/components/JourneyBar";
+import { TourGuide } from "@/components/TourGuide";
 import { SchoolAutocomplete } from "@/components/SchoolAutocomplete";
 import { useRouter } from "next/navigation";
+import { submitKomitmen } from "@/app/actions/komitmen";
 
 export default function KomitmenPage() {
   const router = useRouter();
   const sigCanvas = useRef<SignatureCanvas>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [form, setForm] = useState({ sekolah: "", penanggungJawab: "" });
-  const [selectedSchoolStatus, setSelectedSchoolStatus] = useState<string | null>(null);
+  const [showPillars, setShowPillars] = useState(false);
 
-  const isLocked = form.sekolah.length > 0 && selectedSchoolStatus !== "survei" && selectedSchoolStatus !== "komitmen";
+  const [form, setForm] = useState({ sekolah: "", penanggungJawab: "" });
+  const [selectedSchoolStatus, setSelectedSchoolStatus] = useState<
+    string | null
+  >(null);
+  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string>("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const isLocked =
+    form.sekolah.length > 0 &&
+    selectedSchoolStatus !== "survei" &&
+    selectedSchoolStatus !== "komitmen";
 
   const clearSignature = () => {
     sigCanvas.current?.clear();
@@ -27,62 +48,85 @@ export default function KomitmenPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (sigCanvas.current?.isEmpty()) {
-      alert("Harap isi tanda tangan terlebih dahulu.");
+    setErrors({});
+    let validationErrors: Record<string, string> = {};
+
+    if (!form.sekolah)
+      validationErrors.sekolah = "Pilih sekolah yang terdaftar";
+    if (!form.penanggungJawab)
+      validationErrors.penanggungJawab = "Nama penanggung jawab wajib diisi";
+    if (sigCanvas.current?.isEmpty())
+      validationErrors.signature = "Harap isi tanda tangan digital";
+    if (!captchaToken)
+      validationErrors.captcha = "Mohon selesaikan validasi keamanan";
+    if (isLocked)
+      validationErrors.locked =
+        "Sekolah harus menyelesaikan survei terlebih dahulu";
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
+
     setLoading(true);
 
     try {
-      const signatureDataUrl = sigCanvas.current!.getTrimmedCanvas().toDataURL("image/png");
+      const signatureDataUrl = sigCanvas
+        .current!.getTrimmedCanvas()
+        .toDataURL("image/png");
 
-      // 1. Storage to supabase (optional depending on strict DB requirements, but asked to save to Storage)
-      // Convert data url to blob
-      const res = await fetch(signatureDataUrl);
-      const blob = await res.blob();
-      const fileName = `signature_${Date.now()}_${form.sekolah.replace(/[^a-z0-9]/gi, '_')}.png`;
-
-      // Wait for upload - gracefully degrading if not fully configured 
       let storageUrl = "";
       try {
-         const { data: storageData, error: storageError } = await supabase.storage
+        const res = await fetch(signatureDataUrl);
+        const blob = await res.blob();
+        const fileName = `signature_${Date.now()}_${form.sekolah.replace(/[^a-z0-9]/gi, "_")}.png`;
+
+        const { data: storageData, error: storageError } =
+          await supabase.storage
+            .from("signatures")
+            .upload(fileName, blob, { contentType: "image/png" });
+
+        if (storageError) throw storageError;
+
+        const { data: publicUrlData } = supabase.storage
           .from("signatures")
-          .upload(fileName, blob, { contentType: "image/png" });
-
-          if (storageError) throw storageError;
-
-          const { data: publicUrlData } = supabase.storage.from("signatures").getPublicUrl(fileName);
-          storageUrl = publicUrlData.publicUrl;
-      } catch(e) {
-          console.warn("Storage failed/unconfigured, defaulting to base64 inline", e);
-          storageUrl = signatureDataUrl; // fallback
+          .getPublicUrl(fileName);
+        storageUrl = publicUrlData.publicUrl;
+      } catch (e) {
+        console.warn(
+          "Storage failed/unconfigured, defaulting to base64 inline",
+          e,
+        );
+        storageUrl = signatureDataUrl;
       }
 
-      // 2. Insert to commitments table
-      const { error: dbError } = await supabase.from("commitments").insert({
-        nama_sekolah: form.sekolah,
-        penanggung_jawab: form.penanggungJawab,
-        signature_url: storageUrl
+      // Call Server Action
+      const result = await submitKomitmen({
+        sekolahId: selectedSchoolId || undefined,
+        sekolah: form.sekolah,
+        penanggungJawab: form.penanggungJawab,
+        signatureUrl: storageUrl,
+        captchaToken,
       });
-      if (dbError) throw dbError;
 
-      // 3. Update schools table status
-      const { data: updatedSchool } = await supabase
-        .from("schools")
-        .update({ status: "komitmen" })
-        .eq("nama_sekolah", form.sekolah)
-        .select();
+      if (!result.success) {
+        setErrors({ submit: result.error || "Terjadi kesalahan" });
+        setLoading(false);
+        return;
+      }
 
-      // 4. Generate & Download PDF Locally
+      // Generate & Download PDF Locally
       generateKomitmenPDF(form.sekolah, form.penanggungJawab, signatureDataUrl);
 
       setSuccess(true);
       setTimeout(() => {
-        router.push(`/peta?schoolId=${updatedSchool?.[0]?.id || ''}`);
-      }, 3500);
+        router.push(`/peta?schoolId=${result.schoolId || ""}&from=komitmen`);
+      }, 4000);
     } catch (error) {
       console.error(error);
-      alert("Terjadi kesalahan. Pastikan database dan storage Supabase sudah dikonfigurasi.");
+      setErrors({
+        submit: "Terjadi kesalahan sistem. Silakan coba beberapa saat lagi.",
+      });
     } finally {
       setLoading(false);
     }
@@ -90,123 +134,382 @@ export default function KomitmenPage() {
 
   if (success) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
-        <CheckCircle2 className="w-24 h-24 text-green-500 mb-6 animate-pulse" />
-        <h2 className="text-3xl font-bold text-kominfo-navy mb-4">Komitmen Berhasil Disahkan!</h2>
-        <p className="text-gray-600 max-w-lg mb-8">
-          Sertifikat PDF komitmen digital Anda telah diunduh. Terima kasih atas partisipasi aktif {form.sekolah} dalam menjaga ekosistem pendidikan digital.
+      <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center success-card">
+        <div className="w-24 h-24 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mb-6 check-pop">
+          <CheckCircle2 className="w-12 h-12" />
+        </div>
+        <h2 className="text-3xl font-extrabold text-gray-900 mb-4 tracking-tight">
+          Komitmen Berhasil Disahkan!
+        </h2>
+        <p className="text-gray-600 max-w-lg mb-8 text-lg">
+          Sertifikat PDF komitmen digital Anda telah diunduh. Terima kasih atas
+          partisipasi aktif{" "}
+          <strong className="text-gray-900">{form.sekolah}</strong> dalam
+          menjaga ekosistem pendidikan digital.
         </p>
-        <Button onClick={() => window.location.href = "/peta"} className="flex items-center gap-2">
-          <Download className="w-4 h-4" /> Buka Peta Partisipasi
+        <Button
+          onClick={() => (window.location.href = "/peta")}
+          className="flex items-center gap-2 px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-full transition-all hover:scale-105 active:scale-95 shadow-lg shadow-orange-500/20"
+        >
+          <Download className="w-5 h-5" /> Beralih ke Peta Partisipasi
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
+    <div className="max-w-3xl mx-auto px-4 py-12">
       <JourneyBar />
-      <div className="text-center mb-10">
-        <div className="inline-flex p-3 rounded-2xl bg-blue-50 text-kominfo-blue mb-4">
+
+      <div
+        className="text-center mb-10 animate-success"
+        style={{ animationDelay: "0.1s" }}
+      >
+        <div className="inline-flex p-4 rounded-3xl bg-rose-50 text-rose-500 mb-6 shadow-sm border border-rose-100">
           <PenTool className="w-8 h-8" />
         </div>
-        <h1 className="text-3xl font-bold text-kominfo-navy mb-4">Kontrak Komitmen Bersama</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Tunjukkan dedikasi nyata sekolah Anda melalui penandatanganan digital untuk pedoman pemakaian gadget yang sehat.
+        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
+          Kontrak Komitmen Bersama
+        </h1>
+        <p className="text-gray-600 max-w-2xl mx-auto text-lg font-medium">
+          Tunjukkan dedikasi nyata sekolah Anda melalui penandatanganan digital
+          untuk menetapkan regulasi gadget yang lebih sehat.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8 items-start">
-        {/* Policy Notice Form */}
-        <Card className="p-8 bg-gradient-to-b from-blue-50 to-white">
-          <h3 className="font-bold text-xl text-kominfo-navy mb-4">5 Pilar Komitmen</h3>
-          <ul className="text-sm text-gray-700 space-y-4 mb-6">
-            <li className="flex gap-2">
-              <span className="font-bold text-kominfo-blue">1.</span>
-              Memastikan perangkat digital digunakan khusus untuk menunjang pendidikan.
-            </li>
-            <li className="flex gap-2">
-              <span className="font-bold text-kominfo-blue">2.</span>
-              Menetapkan aturan tegas batasan waktu akses gawai di area sekolah.
-            </li>
-            <li className="flex gap-2">
-              <span className="font-bold text-kominfo-blue">3.</span>
-              Mensosialisasikan bahaya cyberbullying & dampaknya pada kesehatan mental.
-            </li>
-            <li className="flex gap-2">
-              <span className="font-bold text-kominfo-blue">4.</span>
-              Memberikan ruang diskusi literasi dan etika digital bagi siswa.
-            </li>
-            <li className="flex gap-2">
-              <span className="font-bold text-kominfo-blue">5.</span>
-              Melibatkan orang tua dalam memantau gadget anak di rumah.
-            </li>
-          </ul>
-        </Card>
+      <div
+        className="flex flex-col gap-6 animate-success"
+        style={{ animationDelay: "0.2s" }}
+      >
+        {/* Accordion Pilar Komitmen */}
+        <div
+          id="tour-komitmen-pilar"
+          className="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm transition-all"
+        >
+          <button
+            type="button"
+            onClick={() => setShowPillars(!showPillars)}
+            className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-orange-50 to-white hover:bg-orange-50/50 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
+                <ShieldCheck className="w-4 h-4" />
+              </div>
+              <span className="font-bold text-gray-900">
+                Baca 5 Pilar Komitmen Nasional
+              </span>
+            </div>
+            <ChevronDown
+              className={`w-5 h-5 text-gray-500 transition-transform ${showPillars ? "rotate-180" : ""}`}
+            />
+          </button>
 
-        <Card className="p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nama Sekolah <span className="text-red-500">*</span>
+          <div
+            className={`transition-all duration-300 ease-in-out ${showPillars ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+          >
+            <div className="p-6 pt-2 border-t border-gray-100 bg-white">
+              <ul className="text-sm text-gray-700 space-y-4">
+                <li className="flex gap-3">
+                  <span className="font-black text-orange-500 shrink-0 select-none">
+                    01
+                  </span>
+                  Memastikan perangkat digital digunakan{" "}
+                  <strong className="font-semibold text-gray-900">
+                    khusus untuk menunjang pendidikan
+                  </strong>
+                  .
+                </li>
+                <li className="flex gap-3">
+                  <span className="font-black text-orange-500 shrink-0 select-none">
+                    02
+                  </span>
+                  Menetapkan{" "}
+                  <strong className="font-semibold text-gray-900">
+                    aturan tegas batasan waktu akses gawai
+                  </strong>{" "}
+                  di area sekolah.
+                </li>
+                <li className="flex gap-3">
+                  <span className="font-black text-orange-500 shrink-0 select-none">
+                    03
+                  </span>
+                  Mensosialisasikan bahaya cyberbullying & dampaknya pada{" "}
+                  <strong className="font-semibold text-gray-900">
+                    kesehatan mental
+                  </strong>
+                  .
+                </li>
+                <li className="flex gap-3">
+                  <span className="font-black text-orange-500 shrink-0 select-none">
+                    04
+                  </span>
+                  Memberikan ruang diskusi literasi dan{" "}
+                  <strong className="font-semibold text-gray-900">
+                    etika digital
+                  </strong>{" "}
+                  bagi siswa.
+                </li>
+                <li className="flex gap-3">
+                  <span className="font-black text-orange-500 shrink-0 select-none">
+                    05
+                  </span>
+                  Melibatkan{" "}
+                  <strong className="font-semibold text-gray-900">
+                    orang tua
+                  </strong>{" "}
+                  dalam memantau penggunaan gadget anak di rumah.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {errors.submit && (
+          <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700">
+            <div className="flex items-center gap-2 font-bold mb-1">
+              <AlertTriangle className="w-5 h-5" /> Gagal Mengesahkan
+            </div>
+            <p className="text-sm">{errors.submit}</p>
+          </div>
+        )}
+
+        <Card
+          id="tour-komitmen-form"
+          className="p-6 md:p-10 bg-white shadow-xl shadow-orange-900/5 border-gray-100"
+        >
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Sekolah Field */}
+            <div className="space-y-2 relative">
+              <label className="block text-sm font-bold text-gray-900">
+                Instansi / Sekolah <span className="text-red-500">*</span>
               </label>
-              <SchoolAutocomplete 
-                value={form.sekolah} 
+              <SchoolAutocomplete
+                value={form.sekolah}
                 onChange={(val, school) => {
-                  setForm(prev => ({ ...prev, sekolah: val }));
+                  setForm((prev) => ({ ...prev, sekolah: val }));
                   setSelectedSchoolStatus(school ? school.status : null);
-                }} 
-                placeholder="Cari sekolah (SMAN 1 Jakarta)"
+                  setSelectedSchoolId(school ? school.id : null);
+                  if (errors.sekolah)
+                    setErrors((prev) => ({ ...prev, sekolah: "" }));
+                  if (errors.locked)
+                    setErrors((prev) => ({ ...prev, locked: "" }));
+                }}
+                placeholder="Ketik nama sekolah Anda"
+                hasError={!!errors.sekolah || isLocked}
               />
-              
+              {errors.sekolah && (
+                <p className="inline-error">
+                  <AlertTriangle className="w-3.5 h-3.5" /> {errors.sekolah}
+                </p>
+              )}
+
               {isLocked && (
-                <div className="mt-4 p-4 rounded-xl bg-orange-50 border border-orange-200 text-orange-800 text-sm flex flex-col items-start gap-2 animate-in fade-in slide-in-from-top-2">
-                  <p><strong>Akses Terkunci:</strong> Sekolah &quot;{form.sekolah}&quot; belum menyelesaikan tahap Survei Diagnostik. Anda tidak dapat melompati langkah.</p>
-                  <Button type="button" onClick={() => window.location.href='/survei'} variant="outline" className="bg-white hover:bg-orange-100 border-orange-300 text-orange-700 mt-2">
-                    Kembali ke Langkah 1 (Survei)
+                <div className="mt-4 p-5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 flex flex-col items-start gap-3 animate-slide-in-down shadow-sm">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <Lock className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-sm mb-1">Akses Terkunci</p>
+                      <p className="text-sm text-amber-800 leading-relaxed font-medium">
+                        Sekolah{" "}
+                        <strong className="text-amber-900 tracking-tight">
+                          &quot;{form.sekolah}&quot;
+                        </strong>{" "}
+                        belum menyelesaikan tahap Survei Diagnostik. Pengisian
+                        komitmen memerlukan data survei sebagai basis awal.
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={() => (window.location.href = "/survei")}
+                    variant="outline"
+                    className="bg-white hover:bg-amber-100 border-amber-300 text-amber-800 mt-1 ml-11 md:w-auto w-full"
+                  >
+                    Selesaikan Survei (Tahap 1)
                   </Button>
                 </div>
               )}
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+
+            {/* Nama Field */}
+            <div className="space-y-2">
+              <label className="block text-sm font-bold text-gray-900">
                 Nama Penanggung Jawab <span className="text-red-500">*</span>
               </label>
               <input
                 required
                 type="text"
                 value={form.penanggungJawab}
-                onChange={e => setForm({ ...form, penanggungJawab: e.target.value })}
-                className="w-full rounded-xl border-gray-300 px-4 py-3 border outline-none focus:border-kominfo-blue"
-                placeholder="Cth: Bpk. Budi Santoso, S.Pd"
+                onChange={(e) => {
+                  setForm({ ...form, penanggungJawab: e.target.value });
+                  if (errors.penanggungJawab)
+                    setErrors((prev) => ({ ...prev, penanggungJawab: "" }));
+                }}
+                className={`form-input bg-gray-50 ${errors.penanggungJawab ? "input-error" : ""}`}
+                placeholder="Cth: Bpk. Budi Santoso, S.Pd (Kepala Sekolah)"
               />
+              {errors.penanggungJawab && (
+                <p className="inline-error">
+                  <AlertTriangle className="w-3.5 h-3.5" />{" "}
+                  {errors.penanggungJawab}
+                </p>
+              )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Tanda Tangan Digital <span className="text-red-500">*</span></label>
-              <div className={`border border-gray-300 rounded-xl overflow-hidden relative ${isLocked ? 'bg-gray-100 opacity-50 cursor-not-allowed' : 'bg-gray-50'}`}>
-                {isLocked && <div className="absolute inset-0 z-10" title="Selesaikan langkah 1 terlebih dahulu" />}
-                <SignatureCanvas  
+            {/* Signature Field */}
+            <div id="tour-komitmen-signature" className="space-y-3">
+              <label className="block text-sm font-bold text-gray-900">
+                Tanda Tangan Digital <span className="text-red-500">*</span>
+              </label>
+              <div
+                className={`border-2 rounded-2xl overflow-hidden relative transition-colors ${
+                  isLocked
+                    ? "bg-gray-100/50 border-gray-200 cursor-not-allowed opacity-60"
+                    : errors.signature
+                      ? "bg-red-50/50 border-red-300"
+                      : "bg-white border-gray-200 hover:border-orange-300 focus-within:border-orange-400 focus-within:ring-4 focus-within:ring-orange-50"
+                }`}
+                onClick={() => {
+                  if (errors.signature)
+                    setErrors((prev) => ({ ...prev, signature: "" }));
+                }}
+              >
+                {isLocked && (
+                  <div
+                    className="absolute inset-0 z-10 backdrop-blur-[1px]"
+                    title="Selesaikan langkah survei terlebih dahulu"
+                  />
+                )}
+
+                {/* Visual Hint */}
+                {!isLocked && (
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-gray-200 font-bold text-2xl tracking-widest uppercase select-none opacity-50 text-center flex flex-col items-center">
+                    <PenTool className="w-8 h-8 mb-2 opacity-50" />
+                    Tanda Tangan Di Sini
+                  </div>
+                )}
+
+                <SignatureCanvas
                   ref={sigCanvas}
-                  canvasProps={{ className: "w-full h-40 cursor-crosshair" }}
+                  canvasProps={{
+                    className: "w-full h-48 cursor-crosshair relative z-10",
+                  }}
+                  onBegin={() => {
+                    if (errors.signature)
+                      setErrors((prev) => ({ ...prev, signature: "" }));
+                  }}
                 />
-                <button 
-                  type="button" 
+
+                <button
+                  type="button"
                   onClick={clearSignature}
-                  className="absolute bottom-2 right-2 text-xs flex items-center gap-1 bg-white p-1.5 rounded-md shadow-sm border border-gray-200 text-gray-500 hover:text-red-500"
+                  className="absolute bottom-3 right-3 z-20 text-xs font-semibold flex items-center gap-1.5 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-sm border border-gray-200 text-gray-600 hover:text-red-600 hover:border-red-200 transition-colors"
                 >
-                  <RefreshCw className="w-3 h-3" /> Ulangi
+                  <RefreshCw className="w-3.5 h-3.5" /> Bersihkan
                 </button>
               </div>
+              {errors.signature && (
+                <p className="inline-error">
+                  <AlertTriangle className="w-3.5 h-3.5" /> {errors.signature}
+                </p>
+              )}
             </div>
 
-            <Button type="submit" size="lg" className="w-full" disabled={loading || isLocked || form.sekolah.length === 0}>
-              {loading ? "Menyimpan & Mengunduh PDF..." : "Sahkan & Unduh Sertifikat PDF"}
+            {/* Verification Block */}
+            <div className="pt-8 mt-8 border-t border-gray-100">
+              <div
+                className={`p-5 border-2 rounded-2xl flex items-center gap-4 transition-colors ${errors.captcha ? "bg-red-50 border-red-200" : "bg-gray-50 border-gray-200 hover:border-orange-200"}`}
+              >
+                <input
+                  type="checkbox"
+                  id="captcha"
+                  required
+                  onChange={(e) => {
+                    setCaptchaToken(
+                      e.target.checked ? "mock_token_" + Date.now() : "",
+                    );
+                    if (errors.captcha)
+                      setErrors((prev) => ({ ...prev, captcha: "" }));
+                  }}
+                  className="w-6 h-6 text-orange-500 rounded-md border-gray-300 focus:ring-orange-500 focus:ring-2 cursor-pointer transition-shadow"
+                />
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="captcha"
+                    className="text-sm font-bold text-gray-900 cursor-pointer select-none"
+                  >
+                    Saya menyatakan komitmen ini valid
+                  </label>
+                  <span className="text-xs text-gray-500 font-medium">
+                    Validasi robot & spam (Mock)
+                  </span>
+                </div>
+              </div>
+              {errors.captcha && (
+                <p className="inline-error mt-2">
+                  <AlertTriangle className="w-3.5 h-3.5" /> {errors.captcha}
+                </p>
+              )}
+            </div>
+
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full bg-gray-900 hover:bg-black text-white rounded-xl shadow-xl shadow-gray-900/10 py-7 text-lg border-0 transition-transform active:scale-[0.98]"
+              disabled={
+                loading ||
+                isLocked ||
+                form.sekolah.length === 0 ||
+                !captchaToken
+              }
+            >
+              {loading
+                ? "Mempreses Dokumen PDF & Menyimpan..."
+                : "Sahkan & Unduh Sertifikat PDF Resmi"}
             </Button>
           </form>
         </Card>
       </div>
+
+      <TourGuide
+        pageName="Komitmen"
+        steps={[
+          {
+            element: "#tour-journey-bar",
+            popover: {
+              title: "Tahap Akhir",
+              description:
+                "Anda berada di tahap ke-3 (terakhir) untuk meresmikan partisipasi sekolah.",
+            },
+          },
+          {
+            element: "#tour-komitmen-pilar",
+            popover: {
+              title: "Pilar Ekosistem",
+              description:
+                "Klik untuk membaca dan menyepakati 5 prinsip dasar penggunaan gadget yang sehat dan aman.",
+            },
+          },
+          {
+            element: "#tour-komitmen-form",
+            popover: {
+              title: "Legalitas",
+              description:
+                "Isi dengan cermat identitas instansi dan Penanggung Jawab sekolah Anda.",
+            },
+          },
+          {
+            element: "#tour-komitmen-signature",
+            popover: {
+              title: "Tanda Tangan",
+              description:
+                "Torehkan tanda tangan Anda secara digital di sini sebagai bukti pengesahan sertifikat.",
+            },
+          },
+        ]}
+      />
     </div>
   );
 }

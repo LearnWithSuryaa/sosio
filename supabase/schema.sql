@@ -3,13 +3,19 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- 1. Table: schools
 CREATE TYPE school_status AS ENUM ('belum', 'survei', 'komitmen');
+CREATE TYPE validation_status AS ENUM ('pending', 'valid', 'flagged');
 
 CREATE TABLE IF NOT EXISTS public.schools (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   nama_sekolah TEXT NOT NULL,
+  wilayah TEXT,
   latitude FLOAT NOT NULL,
   longitude FLOAT NOT NULL,
   status school_status DEFAULT 'belum',
+  status_validasi validation_status DEFAULT 'pending',
+  pengirim_nama TEXT,
+  ip_address TEXT,
+  submit_timestamp TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
