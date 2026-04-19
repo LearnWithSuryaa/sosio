@@ -1,6 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
+export const dynamic = "force-dynamic";
+
+import nextDynamic from "next/dynamic";
 import { Map, Info, ArrowRight } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
@@ -11,7 +13,7 @@ import { Button } from "@/components/ui/Button";
 import { supabase } from "@/lib/supabase";
 
 // Dynamically import Leaflet map, disable SSR
-const PetaMap = dynamic(() => import("@/components/PetaMap"), {
+const PetaMap = nextDynamic(() => import("@/components/PetaMap"), {
   ssr: false,
   loading: () => (
     <div className="w-full h-[600px] bg-gray-50 rounded-2xl flex items-center justify-center animate-pulse border border-gray-200 shadow-inner">

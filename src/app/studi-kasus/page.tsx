@@ -49,7 +49,7 @@ export default function StudiKasusPage() {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
+    <div className="max-w-6xl mx-auto px-4 pt-28 pb-12">
       <div className="mb-12 text-center text-kominfo-navy">
         <div className="inline-flex p-3 rounded-2xl bg-blue-50 text-kominfo-blue mb-4">
           <BookOpen className="w-8 h-8" />
