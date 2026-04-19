@@ -1,7 +1,5 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
 import nextDynamic from "next/dynamic";
 import { Map, Info, ArrowRight } from "lucide-react";
 import { useSearchParams } from "next/navigation";
@@ -30,7 +28,7 @@ function PetaContent() {
   return <PetaMap schoolId={schoolId || undefined} />;
 }
 
-export default function PetaPage() {
+function PetaPageContent() {
   const searchParams = useSearchParams();
   const from = searchParams.get("from"); // survei | komitmen | null
   const [counts, setCounts] = useState({ total: 0, komitmen: 0 });
@@ -79,7 +77,11 @@ export default function PetaPage() {
         </div>
       )}
 
-      <div id="tour-peta-header" className="mb-10 text-center flex flex-col items-center animate-success" style={{ animationDelay: "0.1s" }}>
+      <div
+        id="tour-peta-header"
+        className="mb-10 text-center flex flex-col items-center animate-success"
+        style={{ animationDelay: "0.1s" }}
+      >
         <div className="inline-flex p-4 rounded-3xl bg-amber-50 text-amber-500 mb-6 shadow-sm border border-amber-100">
           <Map className="w-8 h-8" />
         </div>
@@ -92,7 +94,11 @@ export default function PetaPage() {
         </p>
       </div>
 
-      <div id="tour-peta-map-section" className="relative animate-success" style={{ animationDelay: "0.2s" }}>
+      <div
+        id="tour-peta-map-section"
+        className="relative animate-success"
+        style={{ animationDelay: "0.2s" }}
+      >
         <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-100 relative z-10 bg-white p-1 pb-0">
           <Suspense
             fallback={
@@ -104,7 +110,10 @@ export default function PetaPage() {
         </div>
 
         {/* Floating Legend */}
-        <div id="tour-peta-legend" className="md:absolute md:top-6 md:right-6 z-[999] bg-white/95 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-gray-100 w-full md:w-64 mt-4 md:mt-0">
+        <div
+          id="tour-peta-legend"
+          className="md:absolute md:top-6 md:right-6 z-[999] bg-white/95 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-gray-100 w-full md:w-64 mt-4 md:mt-0"
+        >
           <h4 className="flex items-center gap-2 font-black text-gray-900 border-b border-gray-100 pb-3 mb-4 text-sm uppercase tracking-wider">
             <Info className="w-4 h-4 text-orange-500" /> Indikator Status
           </h4>
@@ -140,7 +149,10 @@ export default function PetaPage() {
 
         {/* CTA Strip under Map */}
         {from !== "komitmen" && (
-          <div id="tour-peta-cta" className="mt-8 p-6 bg-gradient-to-r from-orange-50 to-rose-50 rounded-2xl border border-orange-100 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+          <div
+            id="tour-peta-cta"
+            className="mt-8 p-6 bg-gradient-to-r from-orange-50 to-rose-50 rounded-2xl border border-orange-100 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"
+          >
             <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-40 rounded-full blur-3xl pointer-events-none"></div>
             <div className="relative z-10 text-center md:text-left">
               <h3 className="text-xl font-bold text-gray-900 mb-1">
@@ -162,16 +174,66 @@ export default function PetaPage() {
         )}
       </div>
 
-      <TourGuide 
-        pageName="Peta" 
+      <TourGuide
+        pageName="Peta"
         steps={[
-          { element: '#tour-journey-bar', popover: { title: 'Jejak Langkah', description: 'Lihat dimana Anda berada dari keseluruhan 3 langkah partisipasi ekosistem.' } },
-          { element: '#tour-peta-header', popover: { title: 'Papan Partisipasi Nasional', description: 'Ini adalah halaman titik temu bagi sekolah-sekolah di seluruh Nusantara.' } },
-          { element: '#tour-peta-map-section', popover: { title: 'Peta Persebaran', description: 'Lokasi merah menunjukkan instansi yang telah mencapai ranah ekosistem digital penuh.' } },
-          { element: '#tour-peta-legend', popover: { title: 'Label Status', description: 'Perhatikan indikator warna ini untuk memahami pemosisian setiap titik wilayah.' } },
-          { element: '#tour-peta-cta', popover: { title: 'Langkah Terakhir', description: 'Setelah melihat Peta, klik tombol di sini untuk melegalkan pengesahan komitmen.' } },
+          {
+            element: "#tour-journey-bar",
+            popover: {
+              title: "Jejak Langkah",
+              description:
+                "Lihat dimana Anda berada dari keseluruhan 3 langkah partisipasi ekosistem.",
+            },
+          },
+          {
+            element: "#tour-peta-header",
+            popover: {
+              title: "Papan Partisipasi Nasional",
+              description:
+                "Ini adalah halaman titik temu bagi sekolah-sekolah di seluruh Nusantara.",
+            },
+          },
+          {
+            element: "#tour-peta-map-section",
+            popover: {
+              title: "Peta Persebaran",
+              description:
+                "Lokasi merah menunjukkan instansi yang telah mencapai ranah ekosistem digital penuh.",
+            },
+          },
+          {
+            element: "#tour-peta-legend",
+            popover: {
+              title: "Label Status",
+              description:
+                "Perhatikan indikator warna ini untuk memahami pemosisian setiap titik wilayah.",
+            },
+          },
+          {
+            element: "#tour-peta-cta",
+            popover: {
+              title: "Langkah Terakhir",
+              description:
+                "Setelah melihat Peta, klik tombol di sini untuk melegalkan pengesahan komitmen.",
+            },
+          },
         ]}
       />
     </div>
   );
 }
+
+export default function PetaPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen pt-32 text-center text-gray-500 font-medium">
+          Memuat halaman Peta...
+        </div>
+      }
+    >
+      <PetaPageContent />
+    </Suspense>
+  );
+}
+
