@@ -49,22 +49,37 @@ const pillars = [
 ];
 
 const milestones = [
-  { year: "2024", label: "Inisiasi Program", desc: "Dimulai sebagai riset kebijakan ekosistem digital sekolah." },
-  { year: "2025", label: "Pilot Project", desc: "Uji coba di 50 sekolah percontohan di 5 provinsi." },
-  { year: "2026", label: "Peluncuran Nasional", desc: "Platform dibuka untuk seluruh sekolah di Indonesia." },
+  {
+    year: "2026",
+    label: "Titik Awal Kegelisahan",
+    desc: "Berawal dari obrolan kedai kopi tentang kekhawatiran layar gadget yang perlahan menggeser konsentrasi belajar dan interaksi sosial anak.",
+  },
+  {
+    year: "2026",
+    label: "Langkah Kolaborasi",
+    desc: "Mengubah keresahan menjadi tindakan nyata dengan merancang gerakan inovatif yang melibatkan partisipasi aktif siswa, guru, orang tua, dan sekolah.",
+  },
+  {
+    year: "2026",
+    label: "Lahirnya GESAMEGA",
+    desc: "Peluncuran gerakan untuk mengelola teknologi secara bijak, mengubahnya dari ancaman menjadi jembatan menuju generasi yang cerdas dan seimbang.",
+  },
 ];
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true },
-  transition: { duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+  transition: {
+    duration: 0.6,
+    delay,
+    ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+  },
 });
 
 export default function TentangKamiPage() {
   return (
     <div className="bg-[#FAFAFA] min-h-screen">
-
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section className="relative pt-36 pb-24 px-4 overflow-hidden bg-white">
         {/* soft bg blobs */}
@@ -83,8 +98,7 @@ export default function TentangKamiPage() {
             className="text-4xl md:text-6xl font-extrabold text-gray-900 mt-6 mb-6 leading-tight tracking-tight"
           >
             Gerakan Digital{" "}
-            <span className="text-orange-500">untuk Sekolah</span>{" "}
-            Indonesia
+            <span className="text-orange-500">untuk Sekolah</span> Indonesia
           </motion.h1>
 
           <motion.p
@@ -120,10 +134,18 @@ export default function TentangKamiPage() {
           {[
             { value: "3.600+", label: "Sekolah Terdaftar", icon: School },
             { value: "34", label: "Provinsi", icon: Globe2 },
-            { value: "1.200+", label: "Komitmen Ditanda-tangani", icon: Handshake },
+            {
+              value: "1.200+",
+              label: "Komitmen Ditanda-tangani",
+              icon: Handshake,
+            },
             { value: "98%", label: "Kepuasan Peserta", icon: Users },
           ].map((s, i) => (
-            <motion.div key={s.label} {...fadeUp(i * 0.08)} className="flex flex-col items-center gap-1">
+            <motion.div
+              key={s.label}
+              {...fadeUp(i * 0.08)}
+              className="flex flex-col items-center gap-1"
+            >
               <s.icon className="w-6 h-6 opacity-80 mb-1" />
               <p className="text-3xl font-black tracking-tight">{s.value}</p>
               <p className="text-sm font-medium opacity-80">{s.label}</p>
@@ -140,8 +162,7 @@ export default function TentangKamiPage() {
               Nilai Kami
             </span>
             <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mt-5 mb-4 leading-tight tracking-tight">
-              Fondasi yang{" "}
-              <span className="text-orange-500">Kami Pegang</span>
+              Fondasi yang <span className="text-orange-500">Kami Pegang</span>
             </h2>
           </motion.div>
 
@@ -153,11 +174,17 @@ export default function TentangKamiPage() {
                 whileHover={{ y: -6, transition: { duration: 0.2 } }}
                 className="clean-card p-6 flex flex-col items-start bg-white"
               >
-                <div className={`w-14 h-14 rounded-2xl ${p.bg} flex items-center justify-center mb-6 shadow-sm`}>
+                <div
+                  className={`w-14 h-14 rounded-2xl ${p.bg} flex items-center justify-center mb-6 shadow-sm`}
+                >
                   <p.icon className={`w-7 h-7 ${p.iconColor}`} />
                 </div>
-                <h3 className="font-bold text-gray-900 mb-3 text-lg leading-snug">{p.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{p.description}</p>
+                <h3 className="font-bold text-gray-900 mb-3 text-lg leading-snug">
+                  {p.title}
+                </h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  {p.description}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -184,17 +211,23 @@ export default function TentangKamiPage() {
             <div className="space-y-10">
               {milestones.map((m, i) => (
                 <motion.div
-                  key={m.year}
+                  key={m.label}
                   {...fadeUp(i * 0.15)}
                   className={`relative flex items-start gap-6 md:gap-0 ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}
                 >
                   {/* content */}
-                  <div className={`clean-card p-6 bg-white ml-14 md:ml-0 md:w-[calc(50%-2.5rem)] ${i % 2 === 0 ? "md:mr-auto md:pr-10" : "md:ml-auto md:pl-10"}`}>
+                  <div
+                    className={`clean-card p-6 bg-white ml-14 md:ml-0 md:w-[calc(50%-2.5rem)] ${i % 2 === 0 ? "md:mr-auto md:pr-10" : "md:ml-auto md:pl-10"}`}
+                  >
                     <span className="section-label-light bg-orange-50 text-orange-600 mb-3 text-xs">
                       {m.year}
                     </span>
-                    <h3 className="font-bold text-gray-900 text-lg mt-2 mb-2">{m.label}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">{m.desc}</p>
+                    <h3 className="font-bold text-gray-900 text-lg mt-2 mb-2">
+                      {m.label}
+                    </h3>
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      {m.desc}
+                    </p>
                   </div>
 
                   {/* dot */}
@@ -216,11 +249,13 @@ export default function TentangKamiPage() {
             Bergabung
           </span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mt-5 mb-4 leading-tight tracking-tight">
-            Jadikan Sekolahmu<br />
+            Jadikan Sekolahmu
+            <br />
             <span className="text-orange-500">Bagian dari Gerakan</span>
           </h2>
           <p className="text-gray-600 mb-8 text-lg font-medium">
-            Daftarkan sekolahmu sekarang dan mulai perjalanan menuju ekosistem digital yang lebih sehat.
+            Daftarkan sekolahmu sekarang dan mulai perjalanan menuju ekosistem
+            digital yang lebih sehat.
           </p>
           <Link href="/survei">
             <button className="btn-pill-primary text-sm">
@@ -229,7 +264,6 @@ export default function TentangKamiPage() {
           </Link>
         </motion.div>
       </section>
-
     </div>
   );
 }
