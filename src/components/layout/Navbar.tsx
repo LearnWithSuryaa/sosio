@@ -15,6 +15,7 @@ import {
   ChevronDown,
   FileText,
   Newspaper,
+  BarChart3,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,6 +35,7 @@ export function Navbar() {
     { href: "/survei", label: "Survei", icon: Activity },
     { href: "/peta", label: "Peta", icon: Map },
     { href: "/kuis", label: "Kuis", icon: Lightbulb },
+    { href: "/hasil", label: "Hasil", icon: BarChart3 },
   ];
   // === SECONDARY (DROPDOWN)
   const insightLinks = [

@@ -43,8 +43,6 @@ export async function submitSurvey(data: {
     }
 
     // 1. Cek apakah sekolah sudah terdaftar (Berdasarkan Nama Sekolah)
-    // Catatan: Jika wilayah di DB null (misal dari seed data), maka tidak akan match jika kita filter wilayah sekalian.
-    // Oleh karena itu, kita cari berdasarkan nama sekolah.
     const { data: existingSchools, error: lookupError } = await supabase
       .from("schools")
       .select("id, status, wilayah")
@@ -82,8 +80,8 @@ export async function submitSurvey(data: {
     const { error: surveyError } = await supabase
       .from("survey_results")
       .insert({
+        school_id: finalSchoolId,
         nama: data.nama || "Anonim",
-        nama_sekolah: data.namaSekolah,
         jawaban: { q1: data.q1, q2: data.q2, q3: data.q3 },
       });
 

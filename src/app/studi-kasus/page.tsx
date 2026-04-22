@@ -111,7 +111,7 @@ export default function StudiKasusPage() {
     async function fetchCases() {
       const { data, error } = await supabase
         .from("case_studies")
-        .select("*")
+        .select("*, schools(nama_sekolah)")
         .order("created_at", { ascending: false });
 
       if (!error && data && data.length > 0) {
@@ -119,6 +119,7 @@ export default function StudiKasusPage() {
         setCases(
           data.map((d: any) => ({
             ...d,
+            sekolah: d.schools?.nama_sekolah || d.sekolah, // Fallback to old if exists
             category: d.category || "inovasi",
             impact: d.impact || "Terverifikasi",
             badge: "Update",

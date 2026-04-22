@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/Button";
+import { SchoolAutocomplete } from "@/components/SchoolAutocomplete";
 import {
   Lightbulb,
   RotateCcw,
@@ -12,8 +13,68 @@ import {
   ShieldCheck,
   Zap,
   CheckCircle2,
+  User,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { TourGuide } from "@/components/TourGuide";
+import { DriveStep } from "driver.js";
+
+const KUIS_TOUR_STEPS: DriveStep[] = [
+  {
+    element: "#registration-card",
+    popover: {
+      title: "Selamat Datang!",
+      description: "Silakan isi data diri Anda sebelum memulai kuis refleksi digital ini.",
+      side: "bottom",
+      align: "start",
+    },
+  },
+  {
+    element: "#input-name",
+    popover: {
+      title: "Nama Pengisi",
+      description: "Masukkan nama lengkap Anda agar hasil refleksi lebih personal.",
+      side: "bottom",
+      align: "start",
+    },
+  },
+  {
+    element: "#input-school",
+    popover: {
+      title: "Asal Sekolah",
+      description: "Jangan lupa isi nama sekolah Anda untuk pendataan ekosistem digital.",
+      side: "bottom",
+      align: "start",
+    },
+  },
+  {
+    element: "#btn-start-quiz",
+    popover: {
+      title: "Mulai Kuis",
+      description: "Tombol ini akan aktif setelah Anda mengisi nama dan sekolah.",
+      side: "top",
+      align: "center",
+    },
+  },
+  {
+    element: "#quiz-progress",
+    popover: {
+      title: "Progres Kuis",
+      description: "Lihat sudah sejauh mana Anda menjawab 5 pertanyaan refleksi.",
+      side: "bottom",
+      align: "start",
+    },
+  },
+  {
+    element: "#quiz-question-card",
+    popover: {
+      title: "Pertanyaan Refleksi",
+      description: "Pilih jawaban yang paling jujur untuk mendapatkan hasil yang akurat.",
+      side: "top",
+      align: "center",
+    },
+  },
+];
 
 const QUESTIONS = [
   {
@@ -137,6 +198,20 @@ export default function KuisPage() {
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  const [userName, setUserName] = useState("");
+  const [schoolName, setSchoolName] = useState("");
+  const [schoolId, setSchoolId] = useState<string | null>(null);
+  const [isStarted, setIsStarted] = useState(false);
+  const [schoolError, setSchoolError] = useState("");
+
+  const handleStartQuiz = () => {
+    if (!schoolId) {
+      setSchoolError("Pilih sekolah dari daftar yang tersedia.");
+      return;
+    }
+    setSchoolError("");
+    setIsStarted(true);
+  };
 
   const handleAnswer = (score: number, idx: number) => {
     setSelectedIdx(idx);
@@ -178,6 +253,8 @@ export default function KuisPage() {
 
     try {
       await supabase.from("quiz_results").insert({
+        user_name: userName,
+        school_id: schoolId || null,
         answers: finalAnswers,
         result_category: config.category,
       });
@@ -193,6 +270,10 @@ export default function KuisPage() {
     setAnswers([]);
     setResult(null);
     setSelectedIdx(null);
+    setIsStarted(false);
+    setSchoolName("");
+    setSchoolId(null);
+    setSchoolError("");
   };
 
   const progress = (currentQuestion / QUESTIONS.length) * 100;
@@ -355,8 +436,77 @@ export default function KuisPage() {
               );
             })()}
 
+          {/* === REGISTRATION STATE === */}
+          {!loading && !result && !isStarted && (
+            <motion.div
+              key="registration"
+              id="registration-card"
+              variants={slideVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8"
+            >
+              <div className="mb-8 text-center">
+                <h2 className="text-2xl font-extrabold text-gray-900 mb-2">
+                  Siapa Anda hari ini?
+                </h2>
+                <p className="text-gray-500">
+                  Isi data singkat berikut untuk memulai kuis refleksi.
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">
+                    Nama Pengisi
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      id="input-name"
+                      type="text"
+                      placeholder="Masukkan nama lengkap..."
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                      className="w-full pl-12 pr-4 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-50 outline-none transition-all font-medium text-gray-900"
+                    />
+                  </div>
+                </div>
+
+                <div id="input-school">
+                  <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">
+                    Asal Sekolah
+                  </label>
+                  <SchoolAutocomplete
+                    value={schoolName}
+                    onChange={(val, school) => {
+                      setSchoolName(val);
+                      setSchoolId(school?.id ?? null);
+                      if (school) setSchoolError("");
+                    }}
+                    hasError={!!schoolError}
+                  />
+                  {schoolError && (
+                    <p className="text-red-500 text-sm mt-2 ml-1 font-medium">{schoolError}</p>
+                  )}
+                </div>
+
+                <Button
+                  id="btn-start-quiz"
+                  onClick={handleStartQuiz}
+                  disabled={!userName || !schoolId}
+                  variant="primary"
+                  className="w-full py-4 rounded-2xl shadow-lg shadow-orange-500/20 text-lg flex items-center justify-center gap-2"
+                >
+                  Mulai Kuis <ArrowRight className="w-5 h-5" />
+                </Button>
+              </div>
+            </motion.div>
+          )}
+
           {/* === QUIZ STATE === */}
-          {!loading && !result && (
+          {!loading && !result && isStarted && (
             <motion.div
               key={`question-${currentQuestion}`}
               variants={slideVariants}
@@ -366,7 +516,7 @@ export default function KuisPage() {
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
               {/* Progress Bar */}
-              <div className="mb-8">
+              <div className="mb-8" id="quiz-progress">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full uppercase tracking-wider">
                     Pertanyaan {currentQuestion + 1} dari {QUESTIONS.length}
@@ -388,7 +538,7 @@ export default function KuisPage() {
               </div>
 
               {/* Question Card */}
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8" id="quiz-question-card">
                 {/* Question */}
                 <div className="mb-8">
                   <h2 className="text-2xl font-extrabold text-gray-900 leading-snug">
@@ -455,6 +605,7 @@ export default function KuisPage() {
           )}
         </AnimatePresence>
       </div>
+      <TourGuide steps={KUIS_TOUR_STEPS} pageName="Kuis Refleksi" />
     </div>
   );
 }

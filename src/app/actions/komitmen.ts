@@ -21,7 +21,7 @@ export async function submitKomitmen(data: {
 
     // 1. Insert to commitments table
     const { error: dbError } = await supabase.from("commitments").insert({
-      nama_sekolah: data.sekolah,
+      school_id: data.sekolahId,
       penanggung_jawab: data.penanggungJawab,
       signature_url: data.signatureUrl
     });

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/Button";
 import { SchoolAutocomplete } from "@/components/SchoolAutocomplete";
 import { submitSurvey } from "@/app/actions/survey";
