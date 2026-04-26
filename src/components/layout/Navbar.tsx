@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/Button";
 import {
   Activity,
   Map,
-  PenTool,
   BookOpen,
   Lightbulb,
   Menu,
@@ -41,9 +40,8 @@ export function Navbar() {
   const insightLinks = [
     { href: "/studi-kasus", label: "Studi Kasus", icon: BookOpen },
     { href: "/artikel", label: "Artikel & Edukasi", icon: Newspaper },
-    { href: "/panduan", label: "Panduan Kebijakan", icon: FileText },
+    //{ href: "/panduan", label: "Panduan Kebijakan", icon: FileText },
   ];
-
 
   const aboutLinks = [
     { href: "/tentang", label: "Tentang Kami" },
@@ -60,7 +58,9 @@ export function Navbar() {
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [mobileOpen]);
 
   const closeMobile = () => {
@@ -80,7 +80,11 @@ export function Navbar() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
-            <Link href="/" className="font-extrabold text-2xl" onClick={closeMobile}>
+            <Link
+              href="/"
+              className="font-extrabold text-2xl"
+              onClick={closeMobile}
+            >
               GESA<span className="text-orange-500">MEGA</span>
             </Link>
 
@@ -225,7 +229,11 @@ export function Navbar() {
             >
               {/* Drawer Header */}
               <div className="flex items-center justify-between px-5 h-16 border-b border-gray-100">
-                <Link href="/" className="font-extrabold text-xl" onClick={closeMobile}>
+                <Link
+                  href="/"
+                  className="font-extrabold text-xl"
+                  onClick={closeMobile}
+                >
                   GESA<span className="text-orange-500">MEGA</span>
                 </Link>
                 <button
@@ -354,10 +362,8 @@ export function Navbar() {
 
               {/* Drawer Footer CTA */}
               <div className="px-5 py-5 border-t border-gray-100">
-                <Link
-                  href="/survei"
-                >
-                  <Button 
+                <Link href="/survei">
+                  <Button
                     variant="primary"
                     className="w-full text-center text-sm"
                     onClick={closeMobile}

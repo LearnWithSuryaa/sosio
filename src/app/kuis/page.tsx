@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { SchoolAutocomplete } from "@/components/SchoolAutocomplete";
 import {
@@ -14,6 +13,7 @@ import {
   Zap,
   CheckCircle2,
   User,
+  Loader2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TourGuide } from "@/components/TourGuide";
@@ -60,7 +60,7 @@ const KUIS_TOUR_STEPS: DriveStep[] = [
     element: "#quiz-progress",
     popover: {
       title: "Progres Kuis",
-      description: "Lihat sudah sejauh mana Anda menjawab 5 pertanyaan refleksi.",
+      description: "Lihat sudah sejauh mana Anda menjawab pertanyaan refleksi.",
       side: "bottom",
       align: "start",
     },
@@ -76,133 +76,46 @@ const KUIS_TOUR_STEPS: DriveStep[] = [
   },
 ];
 
-const QUESTIONS = [
-  {
-    id: 1,
-    text: "Saat ada notifikasi masuk saat belajar/bekerja, apa yang Anda lakukan?",
-    options: [
-      { text: "Langsung buka seketika, apapun itu.", score: 0 },
-      {
-        text: "Cek sekilas, kalau penting dibalas, kalau tidak nanti.",
-        score: 1,
-      },
-      { text: "Abaikan sampai jam istirahat.", score: 2 },
-    ],
-  },
-  {
-    id: 2,
-    text: "Hal terakhir yang Anda lakukan sebelum tidur?",
-    options: [
-      { text: "Scroll medsos/nonton video sampai tertidur.", score: 0 },
-      { text: "Main HP sebentar lalu dicas jauh dari kasur.", score: 1 },
-      {
-        text: "Membaca buku atau ngobrol, tidak pakai HP sama sekali.",
-        score: 2,
-      },
-    ],
-  },
-  {
-    id: 3,
-    text: "Pernahkah Anda merasa cemas saat HP Anda tertinggal di rumah?",
-    options: [
-      { text: "Sangat cemas, seperti kehilangan organ tubuh.", score: 0 },
-      {
-        text: "Sedikit cemas jika ada yang penting, tapi masih bisa ditolerir.",
-        score: 1,
-      },
-      { text: "Biasa saja, sekalian detox layar.", score: 2 },
-    ],
-  },
-  {
-    id: 4,
-    text: "Berapa jam Anda menghabiskan waktu di aplikasi non-produktif sehari?",
-    options: [
-      { text: "Lebih dari 5 jam.", score: 0 },
-      { text: "Sekitar 2 - 4 jam.", score: 1 },
-      { text: "Kurang dari 2 jam.", score: 2 },
-    ],
-  },
-  {
-    id: 5,
-    text: "Pernahkah Anda menunda tugas penting hanya untuk bermain game/medsos?",
-    options: [
-      { text: "Sering sekali, ini masalah besar saya.", score: 0 },
-      { text: "Kadang-kadang, tapi akhirnya tugas selesai juga.", score: 1 },
-      { text: "Hampir tidak pernah, prioritas tetap dijaga.", score: 2 },
-    ],
-  },
-];
-
-const RESULT_CONFIG = {
-  addicted: {
-    category: "Fase Waspada",
-    badge: "Addicted",
-    icon: AlertTriangle,
-    iconBg: "bg-red-100",
-    iconColor: "text-red-500",
-    badgeBg: "bg-red-50 text-red-600 border-red-200",
-    accentColor: "from-red-400 to-rose-500",
-    barColor: "bg-red-400",
-    advice:
-      "Anda sering kehilangan kontrol atas waktu screen-time. Mulailah berlatih dengan mode 'Do Not Disturb' atau batasi aplikasi hiburan dengan timer di HP Anda.",
-    tips: [
-      "Aktifkan mode 'Do Not Disturb' saat belajar",
-      "Gunakan fitur Screen Time / Digital Wellbeing",
-      "Letakkan HP di ruangan lain saat fokus",
-    ],
-  },
-  moderate: {
-    category: "Sadar Namun Tergoda",
-    badge: "Developing",
-    icon: Zap,
-    iconBg: "bg-amber-100",
-    iconColor: "text-amber-500",
-    badgeBg: "bg-amber-50 text-amber-700 border-amber-200",
-    accentColor: "from-amber-400 to-orange-500",
-    barColor: "bg-amber-400",
-    advice:
-      "Secara umum Anda tahu porsinya, namun masih sering goyah. Cobalah untuk menjauhkan HP saat jam belajar agar fokus tidak mudah buyar.",
-    tips: [
-      "Coba teknik Pomodoro (25 mnt fokus, 5 mnt istirahat)",
-      "Masukkan HP ke laci saat mengerjakan tugas",
-      "Buat jadwal 'waktu bebas gadget' setiap hari",
-    ],
-  },
-  disciplined: {
-    category: "Disiplin & Terkendali",
-    badge: "Champion",
-    icon: ShieldCheck,
-    iconBg: "bg-emerald-100",
-    iconColor: "text-emerald-500",
-    badgeBg: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    accentColor: "from-emerald-400 to-teal-500",
-    barColor: "bg-emerald-400",
-    advice:
-      "Luar biasa! Anda memiliki kontrol kuat terhadap dorongan digital. Pertahankan kebiasaan ini dan jadilah contoh bagi teman-teman di sekitar.",
-    tips: [
-      "Bagikan tips digital mindfulness ke teman Anda",
-      "Tetap pertahankan kebiasaan positif ini",
-      "Daftarkan sekolah Anda dalam program ekosistem digital",
-    ],
-  },
+const COLOR_CONFIG: Record<string, any> = {
+  emerald: { icon: ShieldCheck, iconBg: "bg-emerald-100", iconColor: "text-emerald-500", badgeBg: "bg-emerald-50 text-emerald-700 border-emerald-200", accentColor: "from-emerald-400 to-teal-500", barColor: "bg-emerald-400" },
+  teal: { icon: ShieldCheck, iconBg: "bg-teal-100", iconColor: "text-teal-500", badgeBg: "bg-teal-50 text-teal-700 border-teal-200", accentColor: "from-teal-400 to-emerald-500", barColor: "bg-teal-400" },
+  amber: { icon: Zap, iconBg: "bg-amber-100", iconColor: "text-amber-500", badgeBg: "bg-amber-50 text-amber-700 border-amber-200", accentColor: "from-amber-400 to-orange-500", barColor: "bg-amber-400" },
+  orange: { icon: Zap, iconBg: "bg-orange-100", iconColor: "text-orange-500", badgeBg: "bg-orange-50 text-orange-700 border-orange-200", accentColor: "from-orange-400 to-red-500", barColor: "bg-orange-400" },
+  red: { icon: AlertTriangle, iconBg: "bg-red-100", iconColor: "text-red-500", badgeBg: "bg-red-50 text-red-600 border-red-200", accentColor: "from-red-400 to-rose-500", barColor: "bg-red-400" },
 };
 
 export default function KuisPage() {
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [loadingQuestions, setLoadingQuestions] = useState(true);
+  
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>([]);
-  const [result, setResult] = useState<{
-    category: string;
-    advice: string;
-    totalScore: number;
-    configKey: keyof typeof RESULT_CONFIG;
-  } | null>(null);
+  const [answers, setAnswers] = useState<any[]>([]);
+  const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  
   const [userName, setUserName] = useState("");
   const [schoolName, setSchoolName] = useState("");
   const [schoolId, setSchoolId] = useState<string | null>(null);
   const [isStarted, setIsStarted] = useState(false);
   const [schoolError, setSchoolError] = useState("");
+
+  useEffect(() => {
+    async function loadQuestions() {
+      try {
+        const res = await fetch("/api/questions?category=Kuis Siswa");
+        const json = await res.json();
+        if (json.success) {
+          setQuestions(json.data);
+        }
+      } catch (err) {
+        console.error("Failed to load questions", err);
+      } finally {
+        setLoadingQuestions(false);
+      }
+    }
+    loadQuestions();
+  }, []);
 
   const handleStartQuiz = () => {
     if (!schoolId) {
@@ -213,12 +126,12 @@ export default function KuisPage() {
     setIsStarted(true);
   };
 
-  const handleAnswer = (score: number, idx: number) => {
+  const handleAnswer = (questionId: number, optionId: number, score: number, idx: number) => {
     setSelectedIdx(idx);
     setTimeout(() => {
-      const newAnswers = [...answers, score];
+      const newAnswers = [...answers, { question_id: questionId, option_id: optionId, score }];
       setSelectedIdx(null);
-      if (newAnswers.length < QUESTIONS.length) {
+      if (newAnswers.length < questions.length) {
         setAnswers(newAnswers);
         setCurrentQuestion(currentQuestion + 1);
       } else {
@@ -227,39 +140,29 @@ export default function KuisPage() {
     }, 380);
   };
 
-  const finishQuiz = async (finalAnswers: number[]) => {
+  const finishQuiz = async (finalAnswers: any[]) => {
     setAnswers(finalAnswers);
     setLoading(true);
 
-    const totalScore = finalAnswers.reduce((a, b) => a + b, 0);
-
-    let configKey: keyof typeof RESULT_CONFIG;
-    if (totalScore <= 3) {
-      configKey = "addicted";
-    } else if (totalScore <= 7) {
-      configKey = "moderate";
-    } else {
-      configKey = "disciplined";
-    }
-
-    const config = RESULT_CONFIG[configKey];
-
-    setResult({
-      category: config.category,
-      advice: config.advice,
-      totalScore,
-      configKey,
-    });
-
     try {
-      await supabase.from("quiz_results").insert({
-        user_name: userName,
-        school_id: schoolId || null,
-        answers: finalAnswers,
-        result_category: config.category,
+      const res = await fetch("/api/submit-quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_name: userName,
+          school_id: schoolId,
+          answers: finalAnswers,
+        }),
       });
+
+      const json = await res.json();
+      if (json.success) {
+        setResult(json.data);
+      } else {
+        console.error("Submission failed", json.error);
+      }
     } catch (e) {
-      console.warn("Could not save to DB, but showing local result", e);
+      console.error("Could not save to API", e);
     } finally {
       setLoading(false);
     }
@@ -276,7 +179,7 @@ export default function KuisPage() {
     setSchoolError("");
   };
 
-  const progress = (currentQuestion / QUESTIONS.length) * 100;
+  const progress = questions.length > 0 ? (currentQuestion / questions.length) * 100 : 0;
   const slideVariants = {
     initial: { x: 40, opacity: 0 },
     animate: { x: 0, opacity: 1 },
@@ -299,14 +202,27 @@ export default function KuisPage() {
             Refleksi Digital Diri
           </h1>
           <p className="text-gray-500 max-w-md mx-auto">
-            Kenali seberapa besar pengaruh smartphone terhadap diri Anda dalam 5
-            pertanyaan cepat.
+            Kenali seberapa besar pengaruh smartphone terhadap diri Anda secara personal.
           </p>
         </div>
 
         <AnimatePresence mode="wait">
+          {/* === LOADING INITIAL STATE === */}
+          {loadingQuestions && (
+            <motion.div
+              key="loading-init"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="bg-white rounded-3xl border border-gray-100 shadow-sm p-16 text-center flex flex-col items-center justify-center"
+            >
+              <Loader2 className="w-10 h-10 text-orange-400 animate-spin mb-4" />
+              <p className="text-gray-500 font-medium">Memuat pertanyaan kuis...</p>
+            </motion.div>
+          )}
+
           {/* === LOADING STATE === */}
-          {loading && (
+          {!loadingQuestions && loading && (
             <motion.div
               key="loading"
               initial={{ opacity: 0, scale: 0.95 }}
@@ -324,12 +240,11 @@ export default function KuisPage() {
           )}
 
           {/* === RESULT STATE === */}
-          {!loading &&
+          {!loadingQuestions && !loading &&
             result &&
             (() => {
-              const cfg = RESULT_CONFIG[result.configKey];
+              const cfg = COLOR_CONFIG[result.indicator_color] || COLOR_CONFIG.emerald;
               const ResultIcon = cfg.icon;
-              const scorePercent = Math.round((result.totalScore / 10) * 100);
 
               return (
                 <motion.div
@@ -360,29 +275,34 @@ export default function KuisPage() {
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border mb-4 ${cfg.badgeBg}`}
                       >
-                        {cfg.badge}
+                        Skor: {result.totalScore} / {questions.length * 3}
                       </span>
 
                       <h2 className="text-3xl font-extrabold text-gray-900 mb-3 tracking-tight">
                         {result.category}
                       </h2>
 
-                      <p className="text-gray-600 max-w-md mx-auto leading-relaxed mb-8">
-                        &quot;{result.advice}&quot;
+                      <p className="text-gray-600 max-w-md mx-auto leading-relaxed mb-4">
+                        &quot;{result.description}&quot;
                       </p>
+                      
+                      {result.motivation_message && (
+                        <p className="text-orange-600 font-bold max-w-md mx-auto leading-relaxed mb-8 bg-orange-50 py-2 px-4 rounded-xl inline-block">
+                          {result.motivation_message}
+                        </p>
+                      )}
 
                       {/* Score Meter */}
                       <div className="max-w-xs mx-auto mb-6">
                         <div className="flex justify-between text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">
-                          <span>Addicted</span>
-                          <span>Skor: {result.totalScore}/10</span>
-                          <span>Champion</span>
+                          <span>Darurat</span>
+                          <span>Bijak</span>
                         </div>
                         <div className="w-full bg-gray-100 h-3 rounded-full overflow-hidden">
                           <motion.div
                             className={`h-full rounded-full bg-gradient-to-r ${cfg.accentColor}`}
                             initial={{ width: 0 }}
-                            animate={{ width: `${scorePercent}%` }}
+                            animate={{ width: `${(result.totalScore / (questions.length * 3)) * 100}%` }}
                             transition={{
                               duration: 0.8,
                               ease: "easeOut",
@@ -401,17 +321,18 @@ export default function KuisPage() {
                       Langkah Aksi
                     </h3>
                     <ul className="space-y-3">
-                      {cfg.tips.map((tip, i) => (
-                        <li
-                          key={i}
-                          className="flex items-start gap-3 text-sm text-gray-600"
-                        >
-                          <span className="w-5 h-5 rounded-full bg-orange-50 text-orange-500 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
-                            {i + 1}
-                          </span>
-                          {tip}
-                        </li>
-                      ))}
+                      <li className="flex items-start gap-3 text-sm text-gray-600">
+                        <span className="w-5 h-5 rounded-full bg-orange-50 text-orange-500 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">1</span>
+                        Terapkan prinsip mindfulness setiap kali memegang perangkat digital.
+                      </li>
+                      <li className="flex items-start gap-3 text-sm text-gray-600">
+                        <span className="w-5 h-5 rounded-full bg-orange-50 text-orange-500 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">2</span>
+                        Beri batasan waktu (screen-time limit) pada aplikasi non-produktif.
+                      </li>
+                      <li className="flex items-start gap-3 text-sm text-gray-600">
+                        <span className="w-5 h-5 rounded-full bg-orange-50 text-orange-500 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">3</span>
+                        Diskusikan hasil ini dengan teman atau guru di sekolah Anda.
+                      </li>
                     </ul>
                   </div>
 
@@ -437,7 +358,7 @@ export default function KuisPage() {
             })()}
 
           {/* === REGISTRATION STATE === */}
-          {!loading && !result && !isStarted && (
+          {!loadingQuestions && !loading && !result && !isStarted && (
             <motion.div
               key="registration"
               id="registration-card"
@@ -506,7 +427,7 @@ export default function KuisPage() {
           )}
 
           {/* === QUIZ STATE === */}
-          {!loading && !result && isStarted && (
+          {!loadingQuestions && !loading && !result && isStarted && questions.length > 0 && (
             <motion.div
               key={`question-${currentQuestion}`}
               variants={slideVariants}
@@ -519,7 +440,7 @@ export default function KuisPage() {
               <div className="mb-8" id="quiz-progress">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full uppercase tracking-wider">
-                    Pertanyaan {currentQuestion + 1} dari {QUESTIONS.length}
+                    Pertanyaan {currentQuestion + 1} dari {questions.length}
                   </span>
                   <span className="text-xs font-bold text-gray-400">
                     {Math.round(progress)}%
@@ -529,7 +450,7 @@ export default function KuisPage() {
                   <motion.div
                     className="h-full bg-orange-500 rounded-full"
                     initial={{
-                      width: `${((currentQuestion - 1) / QUESTIONS.length) * 100}%`,
+                      width: `${((currentQuestion - 1) / questions.length) * 100}%`,
                     }}
                     animate={{ width: `${progress}%` }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
@@ -542,16 +463,16 @@ export default function KuisPage() {
                 {/* Question */}
                 <div className="mb-8">
                   <h2 className="text-2xl font-extrabold text-gray-900 leading-snug">
-                    {QUESTIONS[currentQuestion].text}
+                    {questions[currentQuestion].question_text}
                   </h2>
                 </div>
 
                 {/* Options */}
                 <div className="space-y-3">
-                  {QUESTIONS[currentQuestion].options.map((opt, idx) => (
+                  {questions[currentQuestion].question_options.map((opt: any, idx: number) => (
                     <motion.button
-                      key={idx}
-                      onClick={() => handleAnswer(opt.score, idx)}
+                      key={opt.id}
+                      onClick={() => handleAnswer(questions[currentQuestion].id, opt.id, opt.score, idx)}
                       disabled={selectedIdx !== null}
                       whileTap={{ scale: 0.98 }}
                       className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-200 flex justify-between items-center group cursor-pointer
@@ -570,7 +491,7 @@ export default function KuisPage() {
                             : "text-gray-700 group-hover:text-orange-900"
                         }`}
                       >
-                        {opt.text}
+                        {opt.option_text}
                       </span>
                       <div
                         className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ml-4 transition-all ${
@@ -588,7 +509,7 @@ export default function KuisPage() {
 
               {/* Dot indicators */}
               <div className="flex items-center justify-center gap-2 mt-6">
-                {QUESTIONS.map((_, i) => (
+                {questions.map((_, i) => (
                   <div
                     key={i}
                     className={`rounded-full transition-all duration-300 ${

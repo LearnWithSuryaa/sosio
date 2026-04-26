@@ -240,6 +240,44 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
   const [quizzes, setQuizzes] = useState<QuizResult[]>([]);
   const [loadingData, setLoadingData] = useState(true);
 
+  // Case study form state
+  const [csJudul, setCsJudul] = useState("");
+  const [csPenulis, setCsPenulis] = useState("");
+  const [csIsi, setCsIsi] = useState("");
+  const [csCategory, setCsCategory] = useState("inovasi");
+  const [csImpact, setCsImpact] = useState("");
+  const [csBadge, setCsBadge] = useState("");
+  const [csLoading, setCsLoading] = useState(false);
+  const [csSuccess, setCsSuccess] = useState(false);
+  const [csError, setCsError] = useState("");
+
+  const submitCaseStudy = async () => {
+    setCsError("");
+    if (!csJudul.trim() || !csPenulis.trim() || !csIsi.trim()) {
+      setCsError("Judul, Nama Penulis, dan Isi Cerita wajib diisi.");
+      return;
+    }
+    setCsLoading(true);
+    const { error } = await supabase.from("case_studies").insert({
+      school_id: school.id,
+      judul: csJudul.trim(),
+      penulis: csPenulis.trim(),
+      isi: csIsi.trim(),
+      category: csCategory,
+      impact: csImpact.trim() || null,
+      badge: csBadge.trim() || null
+    });
+    setCsLoading(false);
+    
+    if (error) {
+      setCsError("Gagal mengirim studi kasus. Pastikan koneksi stabil.");
+      console.error(error);
+    } else {
+      setCsSuccess(true);
+      setCsJudul(""); setCsPenulis(""); setCsIsi(""); setCsImpact(""); setCsBadge("");
+    }
+  };
+
   useEffect(() => {
     async function fetchData() {
       const [{ data: sv }, { data: qz }] = await Promise.all([
@@ -494,6 +532,96 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
                   </a>
                 )}
               </div>
+            </motion.div>
+
+            {/* Panel 5 — Input Studi Kasus */}
+            <motion.div {...slideIn} transition={{ duration: 0.4, delay: 0.25 }}
+              className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
+              <h2 className="font-bold text-gray-800 flex items-center gap-2 mb-2">
+                <FileText className="w-5 h-5 text-orange-500" /> Bagikan Studi Kasus Anda
+              </h2>
+              <p className="text-sm text-gray-500 mb-6">Ceritakan praktik baik, regulasi, atau inovasi yang telah sekolah Anda terapkan berdasarkan hasil refleksi ini untuk menginspirasi sekolah lain.</p>
+              
+              {csSuccess ? (
+                <div className="p-6 bg-emerald-50 border border-emerald-100 rounded-2xl text-center">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-3" />
+                  <h3 className="text-emerald-800 font-bold mb-1">Studi Kasus Berhasil Dikirim!</h3>
+                  <p className="text-emerald-600 text-sm mb-4">Terima kasih telah berbagi inspirasi dengan komunitas.</p>
+                  <Button variant="outline" onClick={() => setCsSuccess(false)}>Kirim Studi Kasus Lainnya</Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">Judul Studi Kasus <span className="text-red-500">*</span></label>
+                      <input 
+                        type="text" value={csJudul} onChange={e => setCsJudul(e.target.value)} 
+                        placeholder="Contoh: Sistem Loker HP Terpadu"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">Nama Penulis <span className="text-red-500">*</span></label>
+                      <input 
+                        type="text" value={csPenulis} onChange={e => setCsPenulis(e.target.value)} 
+                        placeholder="Contoh: Drs. Hendra Permana"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">Kategori <span className="text-red-500">*</span></label>
+                      <select 
+                        value={csCategory} onChange={e => setCsCategory(e.target.value)}
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all text-sm"
+                      >
+                        <option value="inovasi">Inovasi Sekolah</option>
+                        <option value="regulasi">Regulasi & Kebijakan</option>
+                        <option value="literasi">Literasi Digital</option>
+                        <option value="pembelajaran">Metode Pembelajaran</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">Dampak (Opsional)</label>
+                      <input 
+                        type="text" value={csImpact} onChange={e => setCsImpact(e.target.value)} 
+                        placeholder="Contoh: +42% Fokus Belajar"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-1.5">Isi Cerita <span className="text-red-500">*</span></label>
+                    <textarea 
+                      value={csIsi} onChange={e => setCsIsi(e.target.value)} 
+                      placeholder="Ceritakan latar belakang, proses implementasi, dan hasil dari studi kasus ini..."
+                      rows={5}
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all text-sm resize-none"
+                    />
+                  </div>
+
+                  {csError && (
+                    <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+                      <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+                      <span>{csError}</span>
+                    </div>
+                  )}
+
+                  <div className="pt-2">
+                    <Button 
+                      variant="primary" 
+                      onClick={submitCaseStudy} 
+                      disabled={csLoading}
+                      className="w-full py-3"
+                    >
+                      {csLoading ? "Mengirim..." : "Kirim Studi Kasus"}
+                    </Button>
+                  </div>
+                </div>
+              )}
             </motion.div>
           </>
         )}

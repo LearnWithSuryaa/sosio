@@ -7,9 +7,7 @@ export async function submitSurvey(data: {
   nama: string;
   namaSekolah: string;
   wilayah: string;
-  q1: string;
-  q2: string;
-  q3: string;
+  jawaban: Record<string, any>;
   captchaToken: string;
 }) {
   try {
@@ -82,7 +80,7 @@ export async function submitSurvey(data: {
       .insert({
         school_id: finalSchoolId,
         nama: data.nama || "Anonim",
-        jawaban: { q1: data.q1, q2: data.q2, q3: data.q3 },
+        jawaban: data.jawaban,
       });
 
     if (surveyError) throw surveyError;

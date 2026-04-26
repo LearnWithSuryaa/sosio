@@ -27,25 +27,34 @@ VALUES
   ('SMA Muhammadiyah 1 Yogyakarta', 'Ahmad Dahlan, M.A.', 'https://placeholder.co/200x100?text=Signature');
 
 -- 4. Insert Case Studies
-INSERT INTO public.case_studies (judul, isi, sekolah, penulis)
+INSERT INTO public.case_studies (judul, isi, school_id, penulis, category, impact, badge)
 VALUES
   (
     'Penerapan Loker HP Saat Jam KBM', 
     'Menerapkan sistem loker hp setiap awal kelas. Awalnya siswa keberatan, namun dalam 3 bulan fokus belajar meningkat 40%. Tingkat nilai rata-rata ujian harian juga mengalami peningkatan yang signifikan karena minimnya distraksi di jam produktif.', 
-    'SMAN 3 Bandung', 
-    'Kepala Sekolah SMAN 3'
+    (SELECT id FROM public.schools WHERE nama_sekolah = 'SMPN 3 Bandung' LIMIT 1), 
+    'Kepala Sekolah',
+    'regulasi',
+    '+42% Fokus Belajar',
+    'Terpopuler'
   ),
   (
     'Duta Digital Sebaya', 
     'Siswa yang memahami literasi digital dipilih sebagai duta sebaya untuk mengedukasi teman-temannya menghindari cyberbullying. Mereka dilatih menyebarkan vibe positif di media sosial sehingga menciptakan ruang lingkup pergaulan online yang aman secara mental.', 
-    'SMPN 1 Surabaya', 
-    'Guru BK'
+    (SELECT id FROM public.schools WHERE nama_sekolah = 'SMAN 5 Surabaya' LIMIT 1), 
+    'Guru BK',
+    'literasi',
+    '90% Kasus Teratasi',
+    'Inovatif'
   ),
   (
     'Hari Tanpa Gawai', 
     'Setiap hari Jumat, sekolah mendeklarasikan area bebas dari perangkat elektronik non-belajar. Guru dan siswa didorong untuk bersosialisasi secara langsung. Hasilnya, keakraban sosial antar murid menjadi lebih kuat dan nyata.', 
-    'SMAN 1 Jakarta', 
-    'Dewan Guru'
+    (SELECT id FROM public.schools WHERE nama_sekolah = 'SMAN 1 Jakarta' LIMIT 1), 
+    'Dewan Guru',
+    'pembelajaran',
+    '100% Keterlibatan',
+    'Praktik Baik'
   );
 
 -- 5. Insert Quiz Results (Anonim)
@@ -55,3 +64,39 @@ VALUES
   ('[2, 2, 2, 2, 2]'::jsonb, 'Disiplin & Terkendali'),
   ('[0, 0, 0, 0, 1]'::jsonb, 'Fase Waspada (Addicted)'),
   ('[1, 1, 1, 1, 1]'::jsonb, 'Sadar Namun Tergoda');
+
+-- 6. Insert Questions
+INSERT INTO public.questions (id, question_text, category)
+VALUES
+  (1, 'Saat ada notifikasi masuk saat belajar/bekerja, apa yang Anda lakukan?', 'Refleksi Digital'),
+  (2, 'Hal terakhir yang Anda lakukan sebelum tidur?', 'Refleksi Digital'),
+  (3, 'Pernahkah Anda merasa cemas saat HP Anda tertinggal di rumah?', 'Refleksi Digital'),
+  (4, 'Berapa jam Anda menghabiskan waktu di aplikasi non-produktif sehari?', 'Refleksi Digital'),
+  (5, 'Pernahkah Anda menunda tugas penting hanya untuk bermain game/medsos?', 'Refleksi Digital')
+ON CONFLICT (id) DO UPDATE SET question_text = EXCLUDED.question_text;
+
+-- Reset sequence for questions
+SELECT setval('public.questions_id_seq', (SELECT MAX(id) FROM public.questions));
+
+-- 7. Insert Question Options
+INSERT INTO public.question_options (question_id, option_text, score)
+VALUES
+  (1, 'Langsung buka seketika, apapun itu.', 0),
+  (1, 'Cek sekilas, kalau penting dibalas, kalau tidak nanti.', 1),
+  (1, 'Abaikan sampai jam istirahat.', 2),
+  
+  (2, 'Scroll medsos/nonton video sampai tertidur.', 0),
+  (2, 'Main HP sebentar lalu dicas jauh dari kasur.', 1),
+  (2, 'Membaca buku atau ngobrol, tidak pakai HP sama sekali.', 2),
+  
+  (3, 'Sangat cemas, seperti kehilangan organ tubuh.', 0),
+  (3, 'Sedikit cemas jika ada yang penting, tapi masih bisa ditolerir.', 1),
+  (3, 'Biasa saja, sekalian detox layar.', 2),
+  
+  (4, 'Lebih dari 5 jam.', 0),
+  (4, 'Sekitar 2 - 4 jam.', 1),
+  (4, 'Kurang dari 2 jam.', 2),
+  
+  (5, 'Sering sekali, ini masalah besar saya.', 0),
+  (5, 'Kadang-kadang, tapi akhirnya tugas selesai juga.', 1),
+  (5, 'Hampir tidak pernah, prioritas tetap dijaga.', 2);

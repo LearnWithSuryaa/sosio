@@ -3,6 +3,9 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
 -- Cleanup existing tables and types (CAUTION: This will delete all data)
+DROP TABLE IF EXISTS public.quiz_answers CASCADE;
+DROP TABLE IF EXISTS public.question_options CASCADE;
+DROP TABLE IF EXISTS public.questions CASCADE;
 DROP TABLE IF EXISTS public.quiz_results CASCADE;
 DROP TABLE IF EXISTS public.case_studies CASCADE;
 DROP TABLE IF EXISTS public.commitments CASCADE;
@@ -10,6 +13,7 @@ DROP TABLE IF EXISTS public.survey_results CASCADE;
 DROP TABLE IF EXISTS public.schools CASCADE;
 DROP TYPE IF EXISTS school_status CASCADE;
 DROP TYPE IF EXISTS validation_status CASCADE;
+DROP TABLE IF EXISTS public.articles CASCADE;
 
 -- 1. Table: schools
 CREATE TYPE school_status AS ENUM ('belum', 'survei', 'komitmen');
@@ -54,6 +58,9 @@ CREATE TABLE IF NOT EXISTS public.case_studies (
   judul TEXT NOT NULL,
   isi TEXT NOT NULL,
   penulis TEXT NOT NULL,
+  category VARCHAR(50) NOT NULL DEFAULT 'inovasi',
+  impact VARCHAR(100),
+  badge VARCHAR(50),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -64,6 +71,46 @@ CREATE TABLE IF NOT EXISTS public.quiz_results (
   user_name TEXT,
   answers JSONB NOT NULL,
   result_category TEXT NOT NULL,
+  qualification VARCHAR(50),
+  indicator_color VARCHAR(20),
+  description TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 6. Table: questions
+CREATE TABLE IF NOT EXISTS public.questions (
+  id SERIAL PRIMARY KEY,
+  question_text TEXT NOT NULL,
+  category VARCHAR(100),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 7. Table: question_options
+CREATE TABLE IF NOT EXISTS public.question_options (
+  id SERIAL PRIMARY KEY,
+  question_id INT REFERENCES public.questions(id) ON DELETE CASCADE,
+  option_text TEXT NOT NULL,
+  score INT NOT NULL CHECK (score BETWEEN 0 AND 3),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 8. Table: quiz_answers
+CREATE TABLE IF NOT EXISTS public.quiz_answers (
+  id SERIAL PRIMARY KEY,
+  quiz_result_id UUID REFERENCES public.quiz_results(id) ON DELETE CASCADE,
+  question_id INT REFERENCES public.questions(id),
+  option_id INT REFERENCES public.question_options(id),
+  score INT NOT NULL
+);
+
+-- 9. Table: articles
+CREATE TABLE IF NOT EXISTS public.articles (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  judul TEXT NOT NULL,
+  isi TEXT NOT NULL,
+  penulis TEXT NOT NULL,
+  kategori VARCHAR(50),
+  thumbnail_url TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -91,6 +138,10 @@ ALTER TABLE public.survey_results ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.commitments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.case_studies ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quiz_results ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.questions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.question_options ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.quiz_answers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.articles ENABLE ROW LEVEL SECURITY;
 
 -- Creating open policies
 CREATE POLICY "Public read/write access for schools" ON public.schools FOR ALL USING (true) WITH CHECK (true);
@@ -98,6 +149,10 @@ CREATE POLICY "Public read/write access for survey_results" ON public.survey_res
 CREATE POLICY "Public read/write access for commitments" ON public.commitments FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Public read/write access for case_studies" ON public.case_studies FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Public read/write access for quiz_results" ON public.quiz_results FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public read access for questions" ON public.questions FOR SELECT USING (true);
+CREATE POLICY "Public read access for question_options" ON public.question_options FOR SELECT USING (true);
+CREATE POLICY "Public read/write access for quiz_answers" ON public.quiz_answers FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public read/write access for articles" ON public.articles FOR ALL USING (true) WITH CHECK (true);
 
 -- Setting up storage
 INSERT INTO storage.buckets (id, name, public) VALUES ('signatures', 'signatures', true) ON CONFLICT DO NOTHING;

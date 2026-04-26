@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   BookOpen,
   Clock,
@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { supabase } from "@/lib/supabase";
 
 const CATEGORIES = [
   { label: "Semua", value: "all", icon: Sparkles },
@@ -24,7 +25,7 @@ const CATEGORIES = [
   { label: "Panduan Guru", value: "guru", icon: GraduationCap },
 ];
 
-const ARTICLES = [
+const MOCK_ARTICLES = [
   {
     id: 1,
     slug: "dampak-gadget-terhadap-konsentrasi-belajar",
@@ -126,8 +127,74 @@ const ARTICLES = [
 export default function ArtikelPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [articles, setArticles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = ARTICLES.filter((a) => {
+  useEffect(() => {
+    async function fetchArticles() {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("articles")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        setArticles(
+          data.map((d: any, index: number) => {
+            let badgeColor = "bg-gray-50 text-gray-600 border-gray-200";
+            let badge = "Artikel";
+            switch (d.kategori) {
+              case "literasi":
+                badgeColor = "bg-purple-50 text-purple-600 border-purple-200";
+                badge = "Edukasi";
+                break;
+              case "kebijakan":
+                badgeColor = "bg-emerald-50 text-emerald-600 border-emerald-200";
+                badge = "Panduan Praktis";
+                break;
+              case "kesehatan":
+                badgeColor = "bg-blue-50 text-blue-600 border-blue-200";
+                badge = "Riset Terbaru";
+                break;
+              case "guru":
+                badgeColor = "bg-orange-50 text-orange-600 border-orange-200";
+                badge = "Tips & Trik";
+                break;
+            }
+
+            const dateStr = new Date(d.created_at).toLocaleDateString("id-ID", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            });
+
+            return {
+              id: d.id,
+              slug: d.id,
+              category: d.kategori || "all",
+              badge,
+              badgeColor,
+              title: d.judul,
+              excerpt: d.isi ? (d.isi.length > 120 ? d.isi.substring(0, 120) + "..." : d.isi) : "",
+              author: d.penulis,
+              authorRole: "Kontributor",
+              readTime: Math.max(1, Math.ceil((d.isi?.length || 0) / 1000)) + " menit",
+              date: dateStr,
+              tags: [d.kategori || "umum"],
+              featured: index === 0,
+              thumbnail: d.thumbnail_url || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80",
+            };
+          })
+        );
+      } else {
+        setArticles(MOCK_ARTICLES);
+      }
+      setLoading(false);
+    }
+    fetchArticles();
+  }, []);
+
+  const filtered = articles.filter((a) => {
     const matchCat = activeCategory === "all" || a.category === activeCategory;
     const matchSearch =
       a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -135,7 +202,7 @@ export default function ArtikelPage() {
     return matchCat && matchSearch;
   });
 
-  const featured = ARTICLES.filter((a) => a.featured);
+  const featured = articles.filter((a) => a.featured);
   const showFeatured = activeCategory === "all" && searchQuery === "";
 
   return (
@@ -312,7 +379,7 @@ export default function ArtikelPage() {
 
                       {/* Tags */}
                       <div className="flex flex-wrap gap-1 mt-3">
-                        {article.tags.slice(0, 2).map((tag) => (
+                        {article.tags.slice(0, 2).map((tag: string) => (
                           <span
                             key={tag}
                             className="flex items-center gap-1 text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full"

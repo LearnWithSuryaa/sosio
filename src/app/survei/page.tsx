@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Check,
+  Loader2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TourGuide } from "@/components/TourGuide";
@@ -37,12 +38,20 @@ function TileRadio({
         >
           <div className="flex items-center justify-between">
             <span
-              className={`font-semibold text-lg transition-colors ${value === opt.value ? "text-orange-600" : "text-gray-700 group-hover:text-orange-900"}`}
+              className={`font-semibold text-lg transition-colors text-left ${
+                value === opt.value
+                  ? "text-orange-600"
+                  : "text-gray-700 group-hover:text-orange-900"
+              }`}
             >
               {opt.label}
             </span>
             <div
-              className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${value === opt.value ? "bg-orange-500 text-white scale-100 opacity-100" : "scale-75 opacity-0"}`}
+              className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all ${
+                value === opt.value
+                  ? "bg-orange-500 text-white scale-100 opacity-100"
+                  : "scale-75 opacity-0"
+              }`}
             >
               <Check className="w-4 h-4" />
             </div>
@@ -59,6 +68,9 @@ export default function SurveiPage() {
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [loadingQuestions, setLoadingQuestions] = useState(true);
+
   // Wizard State
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
@@ -67,12 +79,30 @@ export default function SurveiPage() {
     nama: "",
     namaSekolah: "",
     wilayah: "",
-    q1: "",
-    q2: "",
-    q3: "",
   });
 
+  const [jawaban, setJawaban] = useState<Record<number, string>>({});
   const [captchaToken, setCaptchaToken] = useState<string>("");
+
+  useEffect(() => {
+    async function fetchQuestions() {
+      try {
+        const res = await fetch("/api/questions");
+        const json = await res.json();
+        if (json.success) {
+          // Filter to only get GESAMEGA survey questions if needed, or just use all
+          const surveyQs = json.data.filter((q: any) => q.category === 'Survei GESAMEGA');
+          // If no specific category matches, fallback to all (e.g. if category is slightly different)
+          setQuestions(surveyQs.length > 0 ? surveyQs : json.data);
+        }
+      } catch (e) {
+        console.error("Failed to load survey questions", e);
+      } finally {
+        setLoadingQuestions(false);
+      }
+    }
+    fetchQuestions();
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -87,25 +117,23 @@ export default function SurveiPage() {
     }
   };
 
-  const handleTileChange = (name: keyof typeof form) => (value: string) => {
-    setForm((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
+  const handleTileChange = (questionId: number, index: number) => (value: string) => {
+    setJawaban((prev) => ({ ...prev, [questionId]: value }));
+    
+    if (errors[`q${questionId}`]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
-        delete newErrors[name];
+        delete newErrors[`q${questionId}`];
+        delete newErrors["survey_incomplete"];
         return newErrors;
       });
     }
 
-    // Auto-scroll conversational feeling: Auto advance step if Q3 is answered, else small delay to jump to next Q.
-    // However, since it is one screen per step, we will only handle logic if it's the last question in the step.
-    // We only have 3 questions in step 2. We can auto-scroll down to the next question.
-    const fields = ["q1", "q2", "q3"];
-    const idx = fields.indexOf(name);
-    if (idx !== -1 && idx < fields.length - 1) {
+    // Auto-scroll to next question
+    if (index < questions.length - 1) {
       setTimeout(() => {
         document
-          .getElementById(`field-${fields[idx + 1]}`)
+          .getElementById(`field-q${questions[index + 1].id}`)
           ?.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 300);
     }
@@ -125,17 +153,18 @@ export default function SurveiPage() {
         valid = false;
       }
     } else if (step === 2) {
-      if (!form.q1) {
-        stepErrors.q1 = "Wajib dipilih";
+      // Check if all questions are answered
+      const answeredCount = Object.keys(jawaban).length;
+      if (answeredCount < questions.length) {
+        stepErrors.survey_incomplete = `Anda baru menjawab ${answeredCount} dari ${questions.length} pertanyaan. Silakan lengkapi semua pertanyaan.`;
         valid = false;
-      }
-      if (!form.q2) {
-        stepErrors.q2 = "Wajib dipilih";
-        valid = false;
-      }
-      if (!form.q3) {
-        stepErrors.q3 = "Wajib dipilih";
-        valid = false;
+        
+        // Find the first unanswered to highlight
+        for (const q of questions) {
+          if (!jawaban[q.id]) {
+            stepErrors[`q${q.id}`] = "Wajib dipilih";
+          }
+        }
       }
     }
 
@@ -147,6 +176,12 @@ export default function SurveiPage() {
     if (validateStep(currentStep)) {
       window.scrollTo({ top: 0, behavior: "smooth" });
       setCurrentStep((p) => Math.min(p + 1, totalSteps));
+    } else if (currentStep === 2) {
+      // Scroll to the first error
+      const firstErrorKey = Object.keys(errors).find(k => k.startsWith('q'));
+      if (firstErrorKey) {
+         document.getElementById(`field-${firstErrorKey}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     }
   };
 
@@ -165,8 +200,10 @@ export default function SurveiPage() {
     setLoading(true);
 
     try {
+      // Map jawaban to text values to save to DB
       const result = await submitSurvey({
         ...form,
+        jawaban: jawaban,
         captchaToken,
       });
 
@@ -220,7 +257,7 @@ export default function SurveiPage() {
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-emerald-50 rounded-full blur-3xl opacity-60 pointer-events-none -z-10" />
 
       {/* Main Container */}
-      <div className="w-full max-w-2xl relative z-10 w-full flex-1 flex flex-col">
+      <div className="w-full max-w-3xl relative z-10 w-full flex-1 flex flex-col">
         {/* Header / Intro */}
         <div className="text-center mb-10">
           <div className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-gray-100 text-orange-500 mb-5">
@@ -313,7 +350,7 @@ export default function SurveiPage() {
                       hasError={!!errors.namaSekolah}
                     />
                     {errors.namaSekolah && (
-                      <p className="inline-error">
+                      <p className="inline-error mt-2">
                         <AlertTriangle className="w-4 h-4" />{" "}
                         {errors.namaSekolah}
                       </p>
@@ -333,7 +370,7 @@ export default function SurveiPage() {
                       className={`input-field text-lg ${errors.wilayah ? "input-error" : ""}`}
                     />
                     {errors.wilayah && (
-                      <p className="inline-error">
+                      <p className="inline-error mt-2">
                         <AlertTriangle className="w-4 h-4" /> {errors.wilayah}
                       </p>
                     )}
@@ -354,102 +391,56 @@ export default function SurveiPage() {
                 transition={{ duration: 0.3, ease: "easeOut" }}
                 className="space-y-12 pb-4"
               >
-                <div className="mb-4">
+                <div className="mb-4 sticky top-0 bg-[#FAFAFA] z-20 py-4 border-b border-gray-100">
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">
                     Pertanyaan Inti
                   </h2>
                   <p className="text-gray-500 text-sm">
-                    Pilih jawaban yang paling mewakili keadaan sesungguhnya di
-                    lapangan.
+                    Pilih jawaban yang paling mewakili keadaan sesungguhnya di lapangan.
                   </p>
-                </div>
-
-                <div id="field-q1" className="space-y-5">
-                  <label className="block text-xl font-bold text-gray-800 leading-snug">
-                    1. Berapa lama rata-rata penggunaan gadget murni untuk
-                    hiburan di sekolah?
-                  </label>
-                  <TileRadio
-                    value={form.q1}
-                    onChange={handleTileChange("q1")}
-                    options={[
-                      { label: "Kurang dari 1 jam", value: "< 1 jam" },
-                      { label: "1 hingga 3 jam", value: "1 - 3 jam" },
-                      { label: "Lebih dari 3 jam", value: "> 3 jam" },
-                    ]}
-                  />
-                  {errors.q1 && (
-                    <p className="inline-error text-base">
-                      <AlertTriangle className="w-4 h-4" /> {errors.q1}
-                    </p>
+                  
+                  {errors.survey_incomplete && (
+                    <div className="mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 flex items-start gap-2">
+                      <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
+                      <p className="text-sm font-medium">{errors.survey_incomplete}</p>
+                    </div>
                   )}
                 </div>
 
-                <div className="h-px w-full bg-gray-200"></div>
-
-                <div id="field-q2" className="space-y-5">
-                  <label className="block text-xl font-bold text-gray-800 leading-snug">
-                    2. Apakah di sekolah terdapat aturan tertulis terkait
-                    batasan penggunaan HP?
-                  </label>
-                  <TileRadio
-                    value={form.q2}
-                    onChange={handleTileChange("q2")}
-                    options={[
-                      {
-                        label: "Ya, dan sangat ketat diterapkan",
-                        value: "Ya, sangat ketat",
-                      },
-                      {
-                        label: "Ada aturannya, tapi kurang tegas diterapkan",
-                        value: "Ada, tapi tidak tegas",
-                      },
-                      {
-                        label: "Belum ada aturan tertulis sama sekali",
-                        value: "Tidak ada",
-                      },
-                    ]}
-                  />
-                  {errors.q2 && (
-                    <p className="inline-error text-base">
-                      <AlertTriangle className="w-4 h-4" /> {errors.q2}
-                    </p>
-                  )}
-                </div>
-
-                <div className="h-px w-full bg-gray-200"></div>
-
-                <div id="field-q3" className="space-y-5">
-                  <label className="block text-xl font-bold text-gray-800 leading-snug">
-                    3. Secara jujur, bagaimana dampak regulasi (atau absennya
-                    regulasi) gadget saat ini terhadap fokus belajar siswa?
-                  </label>
-                  <TileRadio
-                    value={form.q3}
-                    onChange={handleTileChange("q3")}
-                    options={[
-                      {
-                        label:
-                          "Sangat membantu konsentrasi, kelas lebih interaktif",
-                        value: "Sangat Membantu",
-                      },
-                      {
-                        label: "Biasa saja atau kami netral",
-                        value: "Biasa Saja",
-                      },
-                      {
-                        label:
-                          "Cukup mengganggu; distraksi dari sosmed dsb tinggi",
-                        value: "Mengganggu",
-                      },
-                    ]}
-                  />
-                  {errors.q3 && (
-                    <p className="inline-error text-base">
-                      <AlertTriangle className="w-4 h-4" /> {errors.q3}
-                    </p>
-                  )}
-                </div>
+                {loadingQuestions ? (
+                  <div className="flex flex-col items-center justify-center py-20">
+                    <Loader2 className="w-10 h-10 text-orange-400 animate-spin mb-4" />
+                    <p className="text-gray-500 font-medium">Memuat pertanyaan survei...</p>
+                  </div>
+                ) : (
+                  <div className="space-y-12">
+                    {questions.map((q, index) => (
+                      <div key={q.id}>
+                        <div id={`field-q${q.id}`} className="space-y-5">
+                          <label className="block text-xl font-bold text-gray-800 leading-snug">
+                            {index + 1}. {q.question_text}
+                          </label>
+                          <TileRadio
+                            value={jawaban[q.id] || ""}
+                            onChange={handleTileChange(q.id, index)}
+                            options={q.question_options.map((opt: any) => ({
+                              label: opt.option_text,
+                              value: opt.option_text,
+                            }))}
+                          />
+                          {errors[`q${q.id}`] && (
+                            <p className="inline-error text-base">
+                              <AlertTriangle className="w-4 h-4" /> {errors[`q${q.id}`]}
+                            </p>
+                          )}
+                        </div>
+                        {index < questions.length - 1 && (
+                          <div className="h-px w-full bg-gray-200 mt-12"></div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             )}
 
@@ -472,23 +463,25 @@ export default function SurveiPage() {
                     Satu Langkah Lagi!
                   </h2>
                   <p className="text-gray-500 text-sm">
-                    Pastikan Anda adalah manusia dan silakan selesaikan
-                    pengiriman.
+                    Pastikan Anda adalah manusia dan silakan selesaikan pengiriman.
                   </p>
                 </div>
 
                 <div className="bg-white p-6 rounded-2xl border-2 border-gray-100 shadow-sm">
                   <div className="space-y-4">
                     <label className="block text-base font-bold text-gray-900">
-                      Validasi Keamanan Sistem{" "}
-                      <span className="text-red-500">*</span>
+                      Validasi Keamanan Sistem <span className="text-red-500">*</span>
                     </label>
                     <p className="text-sm text-gray-500">
                       Mencegah penyalahgunaan bot pada Peta Partisipasi publik.
                     </p>
 
                     <div
-                      className={`mt-4 px-5 py-4 border-2 rounded-xl flex items-center gap-4 transition-all ${errors.captcha ? "bg-red-50 border-red-200" : "bg-gray-50 border-gray-200 hover:border-orange-200"}`}
+                      className={`mt-4 px-5 py-4 border-2 rounded-xl flex items-center gap-4 transition-all ${
+                        errors.captcha
+                          ? "bg-red-50 border-red-200"
+                          : "bg-gray-50 border-gray-200 hover:border-orange-200"
+                      }`}
                     >
                       <input
                         type="checkbox"
@@ -498,7 +491,11 @@ export default function SurveiPage() {
                             e.target.checked ? "mock_token_" + Date.now() : "",
                           );
                           if (errors.captcha)
-                            setErrors((prev) => ({ ...prev, captcha: "" }));
+                            setErrors((prev) => {
+                              const newErrs = { ...prev };
+                              delete newErrs.captcha;
+                              return newErrs;
+                            });
                         }}
                         className="w-6 h-6 text-orange-500 bg-white border-gray-300 rounded focus:ring-orange-500 focus:ring-2 cursor-pointer"
                       />
@@ -533,7 +530,12 @@ export default function SurveiPage() {
           </Button>
 
           {currentStep < totalSteps ? (
-            <Button type="button" variant="primary" onClick={goToNextStep}>
+            <Button 
+              type="button" 
+              variant="primary" 
+              onClick={goToNextStep}
+              disabled={loadingQuestions && currentStep === 1} // Prevent going to step 2 if still loading
+            >
               Selanjutnya <ChevronRight className="w-5 h-5" />
             </Button>
           ) : (
@@ -581,7 +583,7 @@ export default function SurveiPage() {
             popover: {
               title: "Jawab Pertanyaan Utama",
               description:
-                "Di langkah kedua, kami butuh evaluasi jujur Anda. Terdapat 3 butir pertanyaan inti.",
+                "Di langkah kedua, kami butuh evaluasi jujur Anda.",
             },
           },
         ]}

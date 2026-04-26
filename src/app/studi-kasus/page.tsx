@@ -39,97 +39,61 @@ const CATEGORIES = [
   { id: "inovasi", label: "Inovasi Sekolah", icon: TrendingUp },
 ];
 
-const MOCK_CASES: CaseStudy[] = [
-  {
-    id: 1,
-    judul: "Sistem Loker HP Terpadu: Mengembalikan Fokus di Ruang Kelas",
-    sekolah: "SMAN 3 Bandung",
-    penulis: "Drs. Hendra Permana",
-    isi: "Kami mengimplementasikan sistem loker HP fisik yang wajib diisi sebelum bel masuk. Meski awalnya ada resistensi, dalam satu semester kami melihat peningkatan konsentrasi siswa yang sangat signifikan selama jam KBM.",
-    category: "regulasi",
-    impact: "+42% Fokus Belajar",
-    badge: "Terpopuler",
-    icon: Lock,
-    color: "bg-orange-50 text-orange-600 border-orange-200",
-  },
-  {
-    id: 2,
-    judul: "Duta Digital Sebaya: Siswa Mengedukasi Siswa",
-    sekolah: "SMPN 1 Surabaya",
-    penulis: "Ibu Ratna Sari, M.Pd",
-    isi: "Alih-alih melarang secara total, kami melatih 20 siswa menjadi Duta Digital. Mereka bertugas memberikan edukasi etika media sosial dan bantuan pertama jika ada indikasi cyberbullying di kalangan teman sebaya.",
-    category: "literasi",
-    impact: "90% Kasus Teratasi",
-    badge: "Inovatif",
-    icon: ShieldCheck,
-    color: "bg-emerald-50 text-emerald-600 border-emerald-200",
-  },
-  {
-    id: 3,
-    judul: "Integrasi Podcast sebagai Media Evaluasi Projek P5",
-    sekolah: "Sekolah Alam Insan Mulia",
-    penulis: "Tim Guru Kreatif",
-    isi: "Gadget dialihkan fungsinya untuk memproduksi konten edukatif. Siswa menggunakan smartphone untuk merekam podcast hasil riset lingkungan mereka, mengubah konsumerisme menjadi produktivitas digital.",
-    category: "pembelajaran",
-    impact: "100% Keterlibatan",
-    badge: "Praktik Baik",
-    icon: Zap,
-    color: "bg-blue-50 text-blue-600 border-blue-200",
-  },
-  {
-    id: 4,
-    judul: "Kurikulum 'Offline-First' untuk Kesehatan Mental",
-    sekolah: "SMA LabSchool Jakarta",
-    penulis: "Konselor Sekolah",
-    isi: "Menerapkan jam istirahat bebas gadget (No Screen Zone). Siswa didorong kembali ke permainan fisik dan diskusi tatap muka untuk memperbaiki keterampilan sosial yang sempat menurun pasca-pandemi.",
-    category: "inovasi",
-    impact: "-30% Tingkat Stres",
-    badge: "Teruji",
-    icon: TrendingUp,
-    color: "bg-rose-50 text-rose-600 border-rose-200",
-  },
-  {
-    id: 5,
-    judul: "SOP Penanganan Konten Negatif di Lingkungan Sekolah",
-    sekolah: "SMK Medikacom Bandung",
-    penulis: "Waka Kesiswaan",
-    isi: "Menyusun panduan hukum dan etika yang jelas bagi warga sekolah dalam merespon tren negatif di TikTok/Instagram yang berpotensi mencoreng nama baik sekolah.",
-    category: "regulasi",
-    impact: "Zero Incident",
-    badge: "Keamanan",
-    icon: ShieldCheck,
-    color: "bg-amber-50 text-amber-700 border-amber-200",
-  },
-];
-
 export default function StudiKasusPage() {
   const [cases, setCases] = useState<CaseStudy[]>([]);
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchCases() {
+      setLoading(true);
       const { data, error } = await supabase
         .from("case_studies")
-        .select("*, schools(nama_sekolah)")
+        .select("id, judul, isi, penulis, category, impact, badge, created_at, school_id, schools(nama_sekolah)")
         .order("created_at", { ascending: false });
 
       if (!error && data && data.length > 0) {
-        // Map DB data to our rich interface if needed, or mix them
         setCases(
-          data.map((d: any) => ({
-            ...d,
-            sekolah: d.schools?.nama_sekolah || d.sekolah, // Fallback to old if exists
-            category: d.category || "inovasi",
-            impact: d.impact || "Terverifikasi",
-            badge: "Update",
-            icon: BookOpen,
-            color: "bg-orange-50 text-orange-600 border-orange-100",
-          }))
+          data.map((d: any) => {
+            let icon = Sparkles;
+            let color = "bg-gray-50 text-gray-600 border-gray-200";
+
+            switch (d.category) {
+              case "regulasi":
+                icon = Lock;
+                color = "bg-orange-50 text-orange-600 border-orange-200";
+                break;
+              case "pembelajaran":
+                icon = Zap;
+                color = "bg-blue-50 text-blue-600 border-blue-200";
+                break;
+              case "literasi":
+                icon = ShieldCheck;
+                color = "bg-emerald-50 text-emerald-600 border-emerald-200";
+                break;
+              case "inovasi":
+                icon = TrendingUp;
+                color = "bg-rose-50 text-rose-600 border-rose-200";
+                break;
+            }
+
+            return {
+              id: d.id,
+              judul: d.judul,
+              isi: d.isi,
+              penulis: d.penulis,
+              sekolah: (d.schools as any)?.nama_sekolah || "Sekolah Tidak Diketahui",
+              category: d.category || "inovasi",
+              impact: d.impact || "Terverifikasi",
+              badge: d.badge || "Praktik Baik",
+              icon,
+              color,
+            };
+          })
         );
-      } else {
-        setCases(MOCK_CASES);
       }
+      setLoading(false);
     }
     fetchCases();
   }, []);

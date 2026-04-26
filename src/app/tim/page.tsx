@@ -8,29 +8,34 @@ import { Mail, MessageCircle, ArrowRight } from "lucide-react";
 // Team array
 const team = [
   {
-    name: "Surya",
-    role: "Lead Developer",
-    image: "/assets/team-1.png",
+    name: "Muhammad Surya",
+    role: "Full Stack Developer",
+    image: "/assets/team-0.jpeg",
   },
   {
-    name: "Siti Aisyah",
-    role: "Research Leader",
-    image: "/assets/team-2.png",
+    name: "Muhammad Alif Dynastiar",
+    role: "Ketua",
+    image: "/assets/team-2.jpg",
   },
   {
-    name: "Budi Santoso",
-    role: "UI/UX Designer",
-    image: "/assets/team-3.png",
+    name: "Jazillah Friskha Reynatasya",
+    role: "Media & Informasi",
+    image: "/assets/team-1.jpg",
   },
   {
-    name: "Dina Fitria",
+    name: "Zaky Ramadhan Gunawan",
+    role: "Teknis Lapangan",
+    image: "/assets/team-3.jpg",
+  },
+  {
+    name: "Afriza Dwi Maharani",
     role: "Data Analyst",
-    image: "/assets/team-4.png",
+    image: "/assets/team-5.jpg",
   },
   {
-    name: "Rizky Ramadhan",
-    role: "Community Manager",
-    image: "/assets/team-5.png",
+    name: "⁠Muhammad Fadhlullohi Azka",
+    role: "Penyusun Web/ IT",
+    image: "/assets/team-4.jpg",
   },
 ];
 
@@ -110,7 +115,8 @@ export default function TimPengembangPage() {
                 <Image
                   src={member.image}
                   alt={member.name}
-                  fill
+                  fill={true}
+                  sizes="(max-width: 640px) 100vw, 260px"
                   className="object-cover transition-all duration-500 ease-in-out filter grayscale group-hover:grayscale-0"
                 />
 
