@@ -22,6 +22,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [insightOpen, setInsightOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -40,7 +41,6 @@ export function Navbar() {
   const insightLinks = [
     { href: "/studi-kasus", label: "Studi Kasus", icon: BookOpen },
     { href: "/artikel", label: "Artikel & Edukasi", icon: Newspaper },
-    //{ href: "/panduan", label: "Panduan Kebijakan", icon: FileText },
   ];
 
   const aboutLinks = [
@@ -50,7 +50,22 @@ export function Navbar() {
   ];
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    let lastScrollY = window.scrollY;
+
+    const onScroll = () => {
+      const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 20);
+
+      // Hide on scroll down, show on scroll up
+      if (currentScrollY > lastScrollY && currentScrollY > 80) {
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY) {
+        setIsVisible(true);
+      }
+      
+      lastScrollY = currentScrollY;
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -73,16 +88,17 @@ export function Navbar() {
     <>
       <nav
         className={cn(
-          "fixed w-full top-0 z-50 transition-all duration-500",
+          "fixed w-full top-0 z-50 transition-all duration-300",
           scrolled ? "glass-nav-light" : "bg-transparent",
+          !isVisible && "-translate-y-full"
         )}
       >
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16 md:h-20">
+          <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
             {/* Logo */}
             <Link
               href="/"
-              className="font-extrabold text-2xl"
+              className="font-extrabold text-xl sm:text-2xl"
               onClick={closeMobile}
             >
               GESA<span className="text-orange-500">MEGA</span>

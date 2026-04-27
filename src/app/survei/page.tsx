@@ -91,7 +91,9 @@ export default function SurveiPage() {
         const json = await res.json();
         if (json.success) {
           // Filter to only get GESAMEGA survey questions if needed, or just use all
-          const surveyQs = json.data.filter((q: any) => q.category === 'Survei GESAMEGA');
+          const surveyQs = json.data.filter(
+            (q: any) => q.category === "Survei GESAMEGA",
+          );
           // If no specific category matches, fallback to all (e.g. if category is slightly different)
           setQuestions(surveyQs.length > 0 ? surveyQs : json.data);
         }
@@ -117,33 +119,38 @@ export default function SurveiPage() {
     }
   };
 
-  const handleTileChange = (questionId: number, index: number) => (value: string) => {
-    setJawaban((prev) => ({ ...prev, [questionId]: value }));
-    
-    if (errors[`q${questionId}`]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[`q${questionId}`];
-        delete newErrors["survey_incomplete"];
-        return newErrors;
-      });
-    }
+  const handleTileChange =
+    (questionId: number, index: number) => (value: string) => {
+      setJawaban((prev) => ({ ...prev, [questionId]: value }));
 
-    // Auto-scroll to next question
-    if (index < questions.length - 1) {
-      setTimeout(() => {
-        document
-          .getElementById(`field-q${questions[index + 1].id}`)
-          ?.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 300);
-    }
-  };
+      if (errors[`q${questionId}`]) {
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[`q${questionId}`];
+          delete newErrors["survey_incomplete"];
+          return newErrors;
+        });
+      }
+
+      // Auto-scroll to next question
+      if (index < questions.length - 1) {
+        setTimeout(() => {
+          document
+            .getElementById(`field-q${questions[index + 1].id}`)
+            ?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 300);
+      }
+    };
 
   const validateStep = (step: number) => {
     let valid = true;
     let stepErrors: Record<string, string> = {};
 
     if (step === 1) {
+      if (!form.nama.trim()) {
+        stepErrors.nama = "Nama Lengkap wajib diisi untuk akses laporan hasil";
+        valid = false;
+      }
       if (!form.namaSekolah) {
         stepErrors.namaSekolah = "Nama Sekolah wajib diisi";
         valid = false;
@@ -158,7 +165,7 @@ export default function SurveiPage() {
       if (answeredCount < questions.length) {
         stepErrors.survey_incomplete = `Anda baru menjawab ${answeredCount} dari ${questions.length} pertanyaan. Silakan lengkapi semua pertanyaan.`;
         valid = false;
-        
+
         // Find the first unanswered to highlight
         for (const q of questions) {
           if (!jawaban[q.id]) {
@@ -178,9 +185,11 @@ export default function SurveiPage() {
       setCurrentStep((p) => Math.min(p + 1, totalSteps));
     } else if (currentStep === 2) {
       // Scroll to the first error
-      const firstErrorKey = Object.keys(errors).find(k => k.startsWith('q'));
+      const firstErrorKey = Object.keys(errors).find((k) => k.startsWith("q"));
       if (firstErrorKey) {
-         document.getElementById(`field-${firstErrorKey}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+        document
+          .getElementById(`field-${firstErrorKey}`)
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }
   };
@@ -320,10 +329,7 @@ export default function SurveiPage() {
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Nama Lengkap Anda{" "}
-                      <span className="text-gray-400 font-normal">
-                        (Opsional)
-                      </span>
+                      Nama Lengkap Anda <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -331,8 +337,13 @@ export default function SurveiPage() {
                       value={form.nama}
                       onChange={handleChange}
                       placeholder="Masukkan nama pengisi survei"
-                      className="input-field text-lg"
+                      className={`input-field text-lg ${errors.nama ? 'border-red-300 focus:ring-red-100' : ''}`}
                     />
+                    {errors.nama && (
+                      <p className="inline-error mt-2">
+                        <AlertTriangle className="w-4 h-4" /> {errors.nama}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -396,13 +407,16 @@ export default function SurveiPage() {
                     Pertanyaan Inti
                   </h2>
                   <p className="text-gray-500 text-sm">
-                    Pilih jawaban yang paling mewakili keadaan sesungguhnya di lapangan.
+                    Pilih jawaban yang paling mewakili keadaan sesungguhnya di
+                    lapangan.
                   </p>
-                  
+
                   {errors.survey_incomplete && (
                     <div className="mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 flex items-start gap-2">
                       <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
-                      <p className="text-sm font-medium">{errors.survey_incomplete}</p>
+                      <p className="text-sm font-medium">
+                        {errors.survey_incomplete}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -410,7 +424,9 @@ export default function SurveiPage() {
                 {loadingQuestions ? (
                   <div className="flex flex-col items-center justify-center py-20">
                     <Loader2 className="w-10 h-10 text-orange-400 animate-spin mb-4" />
-                    <p className="text-gray-500 font-medium">Memuat pertanyaan survei...</p>
+                    <p className="text-gray-500 font-medium">
+                      Memuat pertanyaan survei...
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-12">
@@ -430,7 +446,8 @@ export default function SurveiPage() {
                           />
                           {errors[`q${q.id}`] && (
                             <p className="inline-error text-base">
-                              <AlertTriangle className="w-4 h-4" /> {errors[`q${q.id}`]}
+                              <AlertTriangle className="w-4 h-4" />{" "}
+                              {errors[`q${q.id}`]}
                             </p>
                           )}
                         </div>
@@ -463,14 +480,16 @@ export default function SurveiPage() {
                     Satu Langkah Lagi!
                   </h2>
                   <p className="text-gray-500 text-sm">
-                    Pastikan Anda adalah manusia dan silakan selesaikan pengiriman.
+                    Pastikan Anda adalah manusia dan silakan selesaikan
+                    pengiriman.
                   </p>
                 </div>
 
                 <div className="bg-white p-6 rounded-2xl border-2 border-gray-100 shadow-sm">
                   <div className="space-y-4">
                     <label className="block text-base font-bold text-gray-900">
-                      Validasi Keamanan Sistem <span className="text-red-500">*</span>
+                      Validasi Keamanan Sistem{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <p className="text-sm text-gray-500">
                       Mencegah penyalahgunaan bot pada Peta Partisipasi publik.
@@ -530,9 +549,9 @@ export default function SurveiPage() {
           </Button>
 
           {currentStep < totalSteps ? (
-            <Button 
-              type="button" 
-              variant="primary" 
+            <Button
+              type="button"
+              variant="primary"
               onClick={goToNextStep}
               disabled={loadingQuestions && currentStep === 1} // Prevent going to step 2 if still loading
             >
@@ -582,8 +601,7 @@ export default function SurveiPage() {
             element: "#tour-survei-step2",
             popover: {
               title: "Jawab Pertanyaan Utama",
-              description:
-                "Di langkah kedua, kami butuh evaluasi jujur Anda.",
+              description: "Di langkah kedua, kami butuh evaluasi jujur Anda.",
             },
           },
         ]}

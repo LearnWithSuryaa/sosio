@@ -12,12 +12,12 @@ const navLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-200 relative overflow-hidden mt-auto pt-20 pb-10">
+    <footer className="bg-white border-t border-gray-200 relative overflow-hidden mt-auto pt-16 pb-8 sm:pt-20 sm:pb-10">
       {/* Decorative gradient top bar */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 via-rose-400 to-amber-400" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 mb-10 sm:mb-12">
           {/* Brand */}
           <div className="col-span-1 md:col-span-1">
             <div className="flex items-center mb-5">
@@ -25,10 +25,28 @@ export function Footer() {
                 GESA<span className="text-orange-500">MEGA</span>
               </span>
             </div>
-            <p className="text-gray-600 text-sm leading-relaxed max-w-xs">
+            <p className="text-gray-600 text-sm leading-relaxed max-w-xs mb-6">
               Platform kolaboratif nasional untuk mendorong penggunaan gadget
               yang lebih sehat, terukur, dan berdampak pada kualitas pendidikan.
             </p>
+            <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+              <img
+                src="/assets/Logo-Gesa-media.svg"
+                alt="Gesa Media Logo"
+                className="h-8 sm:h-10 w-auto object-contain"
+                style={{ filter: "brightness(0)" }}
+              />
+              <img
+                src="/assets/cross.webp"
+                alt="Cross"
+                className="h-4 sm:h-6 w-auto object-contain"
+              />
+              <img
+                src="/assets/logo-kmpus.png"
+                alt="Logo Kampus"
+                className="h-12 sm:h-16 w-auto object-contain"
+              />
+            </div>
             <div className="flex items-center gap-3 mt-6">
               <a
                 href="https://www.instagram.com/gesamega.official?igsh=YjZ5cGJzcDk3MHV2"
@@ -78,23 +96,23 @@ export function Footer() {
           </div>
 
           {/* CTA Card */}
-          <div className="clean-card p-6 bg-gradient-warm border-orange-100">
+          <div className="clean-card p-6 bg-gradient-warm border-orange-100 flex flex-col justify-center h-full">
             <h4 className="text-gray-900 font-bold mb-2">Siap Bergabung?</h4>
             <p className="text-gray-700 text-sm mb-6 leading-relaxed">
               Sekolah Anda bisa menjadi bagian dari gerakan nasional sadar
               digital. Mari ciptakan ekosistem pendidikan yang lebih baik.
             </p>
-            <Link href="/survei" className="block w-full">
-               <Button variant="primary" className="text-sm w-full py-2">
-                 Mulai Survei
-               </Button>
+            <Link href="/survei" className="block w-full mt-2">
+              <Button variant="primary" className="text-sm w-full py-2">
+                Mulai Survei
+              </Button>
             </Link>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-gray-200 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-gray-500 text-sm font-medium">
+        <div className="border-t border-gray-200 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <p className="text-gray-500 text-xs sm:text-sm font-medium">
             © {new Date().getFullYear()} GESAMEGA. Hak Cipta Dilindungi.
           </p>
         </div>

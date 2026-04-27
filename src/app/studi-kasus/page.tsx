@@ -14,6 +14,7 @@ import {
   Zap,
   ShieldCheck,
   MessageSquare,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
@@ -195,8 +196,8 @@ export default function StudiKasusPage() {
                     <h2 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight">
                       {filtered[0].judul}
                     </h2>
-                    <p className="text-gray-400 text-lg mb-8 leading-relaxed max-w-xl">
-                      &quot;{filtered[0].isi}&quot;
+                    <p className="text-gray-400 text-lg mb-8 leading-relaxed max-w-xl whitespace-pre-line line-clamp-3">
+                      {filtered[0].isi}
                     </p>
                     <div className="flex items-center gap-6">
                       <div className="flex items-center gap-2 text-white/80 font-bold">
@@ -210,9 +211,11 @@ export default function StudiKasusPage() {
                     </div>
                   </div>
                   <div className="w-full md:w-auto">
-                    <button className="w-full md:w-auto bg-white hover:bg-orange-50 text-gray-900 font-black px-8 py-5 rounded-2xl flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95">
-                      Baca Selengkapnya <ArrowRight className="w-5 h-5" />
-                    </button>
+                    <Link href={`/studi-kasus/${filtered[0].id}`}>
+                      <button className="w-full md:w-auto bg-white hover:bg-orange-50 text-gray-900 font-black px-8 py-5 rounded-2xl flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95">
+                        Baca Selengkapnya <ArrowRight className="w-5 h-5" />
+                      </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -236,47 +239,49 @@ export default function StudiKasusPage() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.3, delay: i * 0.05 }}
                   >
-                    <div className="clean-card bg-white p-6 h-full flex flex-col group hover:shadow-xl transition-all duration-300">
-                      <div className="flex items-start justify-between mb-6">
-                        <div
-                          className={`w-12 h-12 rounded-xl flex items-center justify-center ${cs.color}`}
-                        >
-                          <Icon className="w-6 h-6" />
-                        </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 bg-gray-50 px-2.5 py-1 rounded-lg border border-gray-100">
-                          {cs.badge}
-                        </span>
-                      </div>
-
-                      <h3 className="text-xl font-extrabold text-gray-900 mb-3 leading-snug group-hover:text-orange-600 transition-colors">
-                        {cs.judul}
-                      </h3>
-                      
-                      <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-1 line-clamp-4 italic border-l-2 border-orange-100 pl-4 py-1">
-                        &quot;{cs.isi}&quot;
-                      </p>
-
-                      <div className="space-y-4 pt-4 border-t border-gray-100">
-                        <div className="flex items-center gap-2">
-                          <School className="w-4 h-4 text-gray-400" />
-                          <span className="text-xs font-bold text-gray-700">
-                            {cs.sekolah}
+                    <Link href={`/studi-kasus/${cs.id}`} className="block h-full">
+                      <div className="clean-card bg-white p-6 h-full flex flex-col group hover:shadow-xl border border-transparent hover:border-orange-200 transition-all duration-300">
+                        <div className="flex items-start justify-between mb-6">
+                          <div
+                            className={`w-12 h-12 rounded-xl flex items-center justify-center ${cs.color}`}
+                          >
+                            <Icon className="w-6 h-6" />
+                          </div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 bg-gray-50 px-2.5 py-1 rounded-lg border border-gray-100 group-hover:bg-white transition-colors">
+                            {cs.badge}
                           </span>
                         </div>
-                        <div className="flex items-center justify-between">
+
+                        <h3 className="text-xl font-extrabold text-gray-900 mb-3 leading-snug group-hover:text-orange-600 transition-colors">
+                          {cs.judul}
+                        </h3>
+                        
+                        <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-1 line-clamp-4 border-l-2 border-orange-100 pl-4 py-1 whitespace-pre-line group-hover:border-orange-400 transition-colors">
+                          {cs.isi}
+                        </p>
+
+                        <div className="space-y-4 pt-4 border-t border-gray-100 group-hover:border-orange-100 transition-colors">
                           <div className="flex items-center gap-2">
-                            <User className="w-4 h-4 text-gray-400" />
-                            <span className="text-[11px] font-medium text-gray-400">
-                              {cs.penulis}
+                            <School className="w-4 h-4 text-gray-400 group-hover:text-orange-400 transition-colors" />
+                            <span className="text-xs font-bold text-gray-700">
+                              {cs.sekolah}
                             </span>
                           </div>
-                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-black">
-                            <TrendingUp className="w-3.5 h-3.5" />
-                            {cs.impact}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <User className="w-4 h-4 text-gray-400 group-hover:text-orange-400 transition-colors" />
+                              <span className="text-[11px] font-medium text-gray-400">
+                                {cs.penulis}
+                              </span>
+                            </div>
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-black group-hover:bg-emerald-100 transition-colors">
+                              <TrendingUp className="w-3.5 h-3.5" />
+                              {cs.impact}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   </motion.div>
                 );
               })}
@@ -285,16 +290,35 @@ export default function StudiKasusPage() {
 
         {/* Empty State */}
         {filtered.length === 0 && (
-          <div className="text-center py-20">
+          <div className="text-center py-20 px-4">
             <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-300">
               <BookOpen className="w-10 h-10" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
-              Studi kasus tidak ditemukan
-            </h3>
-            <p className="text-gray-500">
-              Coba gunakan kategori lain atau kata kunci pencarian yang berbeda.
-            </p>
+            
+            {cases.length === 0 ? (
+              <>
+                <h3 className="text-2xl font-extrabold text-gray-900 mb-3">
+                  Belum Ada Studi Kasus
+                </h3>
+                <p className="text-gray-500 max-w-md mx-auto mb-8">
+                  Jadilah sekolah pertama yang membagikan praktik baik, inovasi, atau regulasi yang telah Anda terapkan!
+                </p>
+                <Link href="/hasil">
+                  <button className="bg-orange-600 text-white font-bold px-8 py-4 rounded-2xl hover:bg-orange-700 transition-all flex items-center justify-center gap-2 mx-auto shadow-lg shadow-orange-500/20">
+                    <FileText className="w-5 h-5" /> Bagikan Studi Kasus Anda
+                  </button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Studi kasus tidak ditemukan
+                </h3>
+                <p className="text-gray-500">
+                  Coba gunakan kategori lain atau kata kunci pencarian yang berbeda.
+                </p>
+              </>
+            )}
           </div>
         )}
 
