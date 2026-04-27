@@ -11,9 +11,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://gesamega.web.id"), // Ganti dengan URL domain asli Anda nantinya
+  metadataBase: new URL("https://gesamega.web.id"),
   title: {
-    default: "GESAMEGA | Gerakan Sadar Menggunakan Gadget",
+    default: "GESAMEGA | Gerakan Sekolah Bijak Mengelola Gadget",
     template: "%s | GESAMEGA",
   },
   description:
@@ -46,22 +46,22 @@ export const metadata: Metadata = {
     type: "website",
     locale: "id_ID",
     url: "https://gesamega.web.id",
-    title: "GESAMEGA | Gerakan Sadar Menggunakan Gadget",
+    title: "GESAMEGA | Gerakan Sekolah Bijak Mengelola Gadget",
     description:
       "Platform kolaboratif nasional untuk mendorong penggunaan gadget yang sehat, terukur, dan berdampak positif pada kualitas pendidikan sekolah di seluruh Indonesia.",
     siteName: "GESAMEGA",
     images: [
       {
-        url: "/assets/Logo-Gesa-media.svg", // Anda bisa mengganti ini dengan URL poster asli (OG Image)
+        url: "/assets/Logo-Gesa-media.svg",
         width: 1200,
         height: 630,
-        alt: "GESAMEGA - Gerakan Sadar Menggunakan Gadget",
+        alt: "GESAMEGA - Gerakan Sekolah Bijak Mengelola Gadget",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "GESAMEGA | Gerakan Sadar Menggunakan Gadget",
+    title: "GESAMEGA | Gerakan Sekolah Bijak Mengelola Gadget",
     description:
       "Membangun ekosistem digital sekolah yang sehat dan berkualitas.",
     images: ["/assets/Logo-Gesa-media.svg"],
