@@ -13,16 +13,15 @@ import { FinalCTA } from "@/components/landing/FinalCTA";
 const BASE_SCHOOLS = 500;
 const BASE_COMMITMENTS = 320;
 
+// ISR: revalidate every 1 hour — keeps stats fresh without serverless call per visitor
+export const revalidate = 3600;
+
 async function getStats() {
   try {
-    const { count: totalSchools } = await supabase
-      .from("schools")
-      .select("*", { count: "exact", head: true });
-
-    const { count: totalCommitments } = await supabase
-      .from("schools")
-      .select("*", { count: "exact", head: true })
-      .eq("status", "komitmen");
+    const [{ count: totalSchools }, { count: totalCommitments }] = await Promise.all([
+      supabase.from("schools").select("*", { count: "exact", head: true }),
+      supabase.from("schools").select("*", { count: "exact", head: true }).eq("status", "komitmen"),
+    ]);
 
     return {
       schools: BASE_SCHOOLS + (totalSchools || 0),

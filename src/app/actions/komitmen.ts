@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { supabase } from "@/lib/supabase";
+import { verifyRecaptcha } from "@/lib/recaptcha";
 
 export async function submitKomitmen(data: {
   sekolahId?: string;
@@ -14,9 +15,10 @@ export async function submitKomitmen(data: {
     const headersList = await headers();
     const ip = headersList.get("x-forwarded-for") || "unknown_ip";
 
-    // Mock CAPTCHA validation
-    if (!data.captchaToken) {
-      return { success: false, error: "Validasi CAPTCHA gagal. Silakan coba lagi." };
+    // --- Google reCAPTCHA v3 Verification ---
+    const captchaResult = await verifyRecaptcha(data.captchaToken, ip);
+    if (!captchaResult.success) {
+      return { success: false, error: captchaResult.error };
     }
 
     // 1. Insert to commitments table

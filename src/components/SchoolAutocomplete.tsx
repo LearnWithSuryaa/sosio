@@ -29,21 +29,31 @@ export function SchoolAutocomplete({
   placeholder = "Cari nama sekolah terdaftar...",
   hasError = false,
 }: Props) {
-  const [schools, setSchools]   = useState<School[]>([]);
-  const [isOpen, setIsOpen]     = useState(false);
-  const wrapperRef              = useRef<HTMLDivElement>(null);
+  const [schools, setSchools] = useState<School[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    async function fetchSchools() {
+  // Debounced server-side search — only fires when user has typed ≥ 2 chars
+  const searchSchools = (query: string) => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (query.length < 2) {
+      setSchools([]);
+      return;
+    }
+    debounceRef.current = setTimeout(async () => {
+      setSearching(true);
       const { data } = await supabase
         .from("schools")
         .select("id, nama_sekolah, status")
+        .ilike("nama_sekolah", `%${query}%`)
         .order("nama_sekolah")
-        .limit(500);
+        .limit(8);
       if (data) setSchools(data);
-    }
-    fetchSchools();
-  }, []);
+      setSearching(false);
+    }, 300);
+  };
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -55,9 +65,7 @@ export function SchoolAutocomplete({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const filtered = schools
-    .filter(s => s.nama_sekolah.toLowerCase().includes(value.toLowerCase()))
-    .slice(0, 6);
+  const filtered = schools.slice(0, 8);
 
   return (
     <div className="relative w-full" ref={wrapperRef}>
@@ -68,8 +76,12 @@ export function SchoolAutocomplete({
           required
           type="text"
           value={value}
-          onChange={e => { onChange(e.target.value, undefined); setIsOpen(true); }}
-          onFocus={() => setIsOpen(true)}
+          onChange={e => {
+            onChange(e.target.value, undefined);
+            setIsOpen(true);
+            searchSchools(e.target.value);
+          }}
+          onFocus={() => { setIsOpen(true); if (value.length >= 2) searchSchools(value); }}
           placeholder={placeholder}
           className={`form-input pl-10 ${hasError ? "has-error" : ""}`}
         />
@@ -82,7 +94,7 @@ export function SchoolAutocomplete({
             <ul>
               <li className="px-4 py-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50/80 border-b border-gray-100 flex items-center gap-2">
                 <Search className="w-3 h-3" />
-                Sekolah Terdaftar ({filtered.length})
+                {searching ? "Mencari..." : `Sekolah Terdaftar (${filtered.length})`}
               </li>
               {filtered.map((school) => {
                 const cfg = statusConfig[school.status] || statusConfig["belum"];

@@ -17,6 +17,10 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TourGuide } from "@/components/TourGuide";
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from "react-google-recaptcha-v3";
 
 function TileRadio({
   options,
@@ -62,7 +66,7 @@ function TileRadio({
   );
 }
 
-export default function SurveiPage() {
+function SurveiForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -81,8 +85,8 @@ export default function SurveiPage() {
     wilayah: "",
   });
 
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [jawaban, setJawaban] = useState<Record<number, string>>({});
-  const [captchaToken, setCaptchaToken] = useState<string>("");
 
   useEffect(() => {
     async function fetchQuestions() {
@@ -201,12 +205,22 @@ export default function SurveiPage() {
 
   const handleSubmit = async () => {
     setErrors({});
-    if (!captchaToken) {
-      setErrors({ captcha: "Mohon selesaikan validasi keamanan" });
+
+    if (!executeRecaptcha) {
+      setErrors({ submit: "reCAPTCHA belum siap, mohon tunggu sebentar." });
       return;
     }
 
     setLoading(true);
+
+    let captchaToken = "";
+    try {
+      captchaToken = await executeRecaptcha("survei_submit");
+    } catch {
+      setErrors({ submit: "Gagal menjalankan verifikasi reCAPTCHA. Coba lagi." });
+      setLoading(false);
+      return;
+    }
 
     try {
       // Map jawaban to text values to save to DB
@@ -495,41 +509,15 @@ export default function SurveiPage() {
                       Mencegah penyalahgunaan bot pada Peta Partisipasi publik.
                     </p>
 
-                    <div
-                      className={`mt-4 px-5 py-4 border-2 rounded-xl flex items-center gap-4 transition-all ${
-                        errors.captcha
-                          ? "bg-red-50 border-red-200"
-                          : "bg-gray-50 border-gray-200 hover:border-orange-200"
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        id="captcha"
-                        onChange={(e) => {
-                          setCaptchaToken(
-                            e.target.checked ? "mock_token_" + Date.now() : "",
-                          );
-                          if (errors.captcha)
-                            setErrors((prev) => {
-                              const newErrs = { ...prev };
-                              delete newErrs.captcha;
-                              return newErrs;
-                            });
-                        }}
-                        className="w-6 h-6 text-orange-500 bg-white border-gray-300 rounded focus:ring-orange-500 focus:ring-2 cursor-pointer"
-                      />
-                      <label
-                        htmlFor="captcha"
-                        className="text-sm font-bold text-gray-800 select-none cursor-pointer flex-1"
-                      >
-                        Ya, saya mengkonfirmasi tanggapan ini.
-                      </label>
-                    </div>
-                    {errors.captcha && (
-                      <p className="text-sm text-red-500 flex items-center gap-1 font-bold mt-2">
-                        <AlertTriangle className="w-4 h-4" /> {errors.captcha}
-                      </p>
-                    )}
+                  {/* reCAPTCHA v3 Badge Info */}
+                  <div className="flex items-center gap-3 text-xs text-gray-400 font-medium mt-4">
+                    <ShieldCheck className="w-4 h-4 text-green-400 shrink-0" />
+                    <span>
+                      Formulir ini dilindungi oleh{" "}
+                      <span className="font-bold text-gray-600">Google reCAPTCHA v3</span>.
+                      Verifikasi berjalan otomatis di latar belakang.
+                    </span>
+                  </div>
                   </div>
                 </div>
               </motion.div>
@@ -562,7 +550,7 @@ export default function SurveiPage() {
               type="button"
               variant="primary"
               onClick={handleSubmit}
-              disabled={loading || !captchaToken}
+              disabled={loading}
             >
               {loading ? "Menyimpan..." : "Selesaikan Survei"}
             </Button>
@@ -607,5 +595,16 @@ export default function SurveiPage() {
         ]}
       />
     </div>
+  );
+}
+
+export default function SurveiPage() {
+  return (
+    <GoogleReCaptchaProvider
+      reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+      language="id"
+    >
+      <SurveiForm />
+    </GoogleReCaptchaProvider>
   );
 }

@@ -21,10 +21,15 @@ import { TourGuide } from "@/components/TourGuide";
 import { SchoolAutocomplete } from "@/components/SchoolAutocomplete";
 import { useRouter } from "next/navigation";
 import { submitKomitmen } from "@/app/actions/komitmen";
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from "react-google-recaptcha-v3";
 
-export default function KomitmenPage() {
+function KomitmenForm() {
   const router = useRouter();
   const sigCanvas = useRef<SignatureCanvas>(null);
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showPillars, setShowPillars] = useState(false);
@@ -35,7 +40,6 @@ export default function KomitmenPage() {
     string | null
   >(null);
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
-  const [captchaToken, setCaptchaToken] = useState<string>("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const isLocked =
@@ -58,8 +62,6 @@ export default function KomitmenPage() {
       validationErrors.penanggungJawab = "Nama penanggung jawab wajib diisi";
     if (sigCanvas.current?.isEmpty())
       validationErrors.signature = "Harap isi tanda tangan digital";
-    if (!captchaToken)
-      validationErrors.captcha = "Mohon selesaikan validasi keamanan";
     if (isLocked)
       validationErrors.locked =
         "Sekolah harus menyelesaikan survei terlebih dahulu";
@@ -69,8 +71,21 @@ export default function KomitmenPage() {
       return;
     }
 
+    if (!executeRecaptcha) {
+      setErrors({ submit: "reCAPTCHA belum siap, mohon tunggu sebentar." });
+      return;
+    }
+
     setLoading(true);
 
+    let captchaToken = "";
+    try {
+      captchaToken = await executeRecaptcha("komitmen_submit");
+    } catch {
+      setErrors({ submit: "Gagal menjalankan verifikasi reCAPTCHA. Coba lagi." });
+      setLoading(false);
+      return;
+    }
     try {
       const signatureDataUrl = sigCanvas
         .current!.getTrimmedCanvas()
@@ -505,41 +520,16 @@ export default function KomitmenPage() {
               )}
             </div>
 
-            {/* Verification Block */}
-            <div className="pt-8 mt-8 border-t border-gray-100">
-              <div
-                className={`p-5 border-2 rounded-2xl flex items-center gap-4 transition-colors ${errors.captcha ? "bg-red-50 border-red-200" : "bg-gray-50 border-gray-200 hover:border-orange-200"}`}
-              >
-                <input
-                  type="checkbox"
-                  id="captcha"
-                  required
-                  onChange={(e) => {
-                    setCaptchaToken(
-                      e.target.checked ? "mock_token_" + Date.now() : "",
-                    );
-                    if (errors.captcha)
-                      setErrors((prev) => ({ ...prev, captcha: "" }));
-                  }}
-                  className="w-6 h-6 text-orange-500 rounded-md border-gray-300 focus:ring-orange-500 focus:ring-2 cursor-pointer transition-shadow"
-                />
-                <div className="flex flex-col">
-                  <label
-                    htmlFor="captcha"
-                    className="text-sm font-bold text-gray-900 cursor-pointer select-none"
-                  >
-                    Saya menyatakan komitmen ini valid
-                  </label>
-                  <span className="text-xs text-gray-500 font-medium">
-                    Validasi robot & spam (Mock)
-                  </span>
-                </div>
+            {/* Verification Block — Google reCAPTCHA v3 (invisible, auto-verified on submit) */}
+            <div className="pt-6 mt-6 border-t border-gray-100">
+              <div className="flex items-center gap-3 text-xs text-gray-400 font-medium">
+                <ShieldCheck className="w-4 h-4 text-green-400 shrink-0" />
+                <span>
+                  Formulir ini dilindungi oleh{" "}
+                  <span className="font-bold text-gray-600">Google reCAPTCHA v3</span>.
+                  Verifikasi berjalan otomatis di latar belakang.
+                </span>
               </div>
-              {errors.captcha && (
-                <p className="inline-error mt-2">
-                  <AlertTriangle className="w-3.5 h-3.5" /> {errors.captcha}
-                </p>
-              )}
             </div>
 
             <Button
@@ -549,8 +539,7 @@ export default function KomitmenPage() {
               disabled={
                 loading ||
                 isLocked ||
-                form.sekolah.length === 0 ||
-                !captchaToken
+                form.sekolah.length === 0
               }
             >
               {loading
@@ -599,5 +588,16 @@ export default function KomitmenPage() {
         ]}
       />
     </div>
+  );
+}
+
+export default function KomitmenPage() {
+  return (
+    <GoogleReCaptchaProvider
+      reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+      language="id"
+    >
+      <KomitmenForm />
+    </GoogleReCaptchaProvider>
   );
 }

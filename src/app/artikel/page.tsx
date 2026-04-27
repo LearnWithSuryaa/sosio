@@ -135,8 +135,9 @@ export default function ArtikelPage() {
       setLoading(true);
       const { data, error } = await supabase
         .from("articles")
-        .select("*")
-        .order("created_at", { ascending: false });
+        .select("id, judul, isi, penulis, kategori, thumbnail_url, featured, created_at")
+        .order("created_at", { ascending: false })
+        .limit(50);
 
       if (!error && data && data.length > 0) {
         setArticles(

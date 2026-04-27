@@ -152,7 +152,7 @@ function LoginGate({ onLogin }: { onLogin: (school: SchoolData) => void }) {
 
     const { data, error: qErr } = await supabase
       .from("schools")
-      .select("*")
+      .select("id, nama_sekolah, status, status_validasi, wilayah, pengirim_nama")
       .eq("id", schoolId)
       .ilike("pengirim_nama", pengirim.trim())
       .maybeSingle();
@@ -306,8 +306,18 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
   useEffect(() => {
     async function fetchData() {
       const [{ data: sv }, { data: qz }] = await Promise.all([
-        supabase.from("survey_results").select("*").eq("school_id", school.id).order("created_at", { ascending: false }),
-        supabase.from("quiz_results").select("*").eq("school_id", school.id).order("created_at", { ascending: false }),
+        supabase
+          .from("survey_results")
+          .select("id, school_id, nama, jawaban, created_at")
+          .eq("school_id", school.id)
+          .order("created_at", { ascending: false })
+          .limit(10),
+        supabase
+          .from("quiz_results")
+          .select("id, school_id, user_name, answers, result_category, qualification, indicator_color, description, created_at")
+          .eq("school_id", school.id)
+          .order("created_at", { ascending: false })
+          .limit(10),
       ]);
       setSurveys((sv as SurveyResult[]) || []);
       setQuizzes((qz as QuizResult[]) || []);

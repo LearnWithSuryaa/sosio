@@ -18,6 +18,10 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { TourGuide } from "@/components/TourGuide";
 import { DriveStep } from "driver.js";
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from "react-google-recaptcha-v3";
 
 const KUIS_TOUR_STEPS: DriveStep[] = [
   {
@@ -124,7 +128,8 @@ const COLOR_CONFIG: Record<string, any> = {
   },
 };
 
-export default function KuisPage() {
+function KuisForm() {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [questions, setQuestions] = useState<any[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(true);
 
@@ -200,6 +205,15 @@ export default function KuisPage() {
     setAnswers(finalAnswers);
     setLoading(true);
 
+    let captchaToken = "";
+    try {
+      if (executeRecaptcha) {
+        captchaToken = await executeRecaptcha("kuis_submit");
+      }
+    } catch {
+      console.warn("reCAPTCHA execution failed, proceeding without token");
+    }
+
     try {
       const res = await fetch("/api/submit-quiz", {
         method: "POST",
@@ -208,6 +222,7 @@ export default function KuisPage() {
           user_name: userName,
           school_id: schoolId,
           answers: finalAnswers,
+          captchaToken,
         }),
       });
 
@@ -649,5 +664,16 @@ export default function KuisPage() {
       </div>
       <TourGuide steps={KUIS_TOUR_STEPS} pageName="Kuis Refleksi" />
     </div>
+  );
+}
+
+export default function KuisPage() {
+  return (
+    <GoogleReCaptchaProvider
+      reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+      language="id"
+    >
+      <KuisForm />
+    </GoogleReCaptchaProvider>
   );
 }

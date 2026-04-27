@@ -1,15 +1,26 @@
 import { NextResponse } from "next/server";
 import { quizService } from "@/lib/services/quizService";
+import { verifyRecaptcha } from "@/lib/recaptcha";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    
+
     // Basic validation
     if (!body.answers || !Array.isArray(body.answers)) {
       return NextResponse.json(
         { success: false, error: "Invalid answers format" },
-        { status: 400 }
+        { status: 400 },
+      );
+    }
+
+    // --- Google reCAPTCHA v3 Verification ---
+    const ip = request.headers.get("x-forwarded-for") || undefined;
+    const captchaResult = await verifyRecaptcha(body.captchaToken || "", ip);
+    if (!captchaResult.success) {
+      return NextResponse.json(
+        { success: false, error: captchaResult.error },
+        { status: 403 },
       );
     }
 
@@ -24,7 +35,7 @@ export async function POST(request: Request) {
     console.error("POST /api/submit-quiz error:", error);
     return NextResponse.json(
       { success: false, error: error.message || "Failed to submit quiz" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

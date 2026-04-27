@@ -35,14 +35,10 @@ function PetaPageContent() {
 
   useEffect(() => {
     async function getCounts() {
-      // Get basic stats to show on top
-      const { count: t } = await supabase
-        .from("schools")
-        .select("*", { count: "exact", head: true });
-      const { count: k } = await supabase
-        .from("schools")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "komitmen");
+      const [{ count: t }, { count: k }] = await Promise.all([
+        supabase.from("schools").select("*", { count: "exact", head: true }),
+        supabase.from("schools").select("*", { count: "exact", head: true }).eq("status", "komitmen"),
+      ]);
       setCounts({ total: t || 0, komitmen: k || 0 });
     }
     getCounts();

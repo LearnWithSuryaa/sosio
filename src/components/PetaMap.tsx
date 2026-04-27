@@ -83,14 +83,17 @@ export default function PetaKomponen({ schoolId }: Props) {
 
   useEffect(() => {
     async function fetchSchools() {
-      const { data, error } = await supabase.from("schools").select("*").limit(500);
+      const { data, error } = await supabase
+        .from("schools")
+        .select("id, nama_sekolah, latitude, longitude, status, status_validasi")
+        .neq("status_validasi", "flagged")
+        .not("latitude", "is", null)
+        .not("longitude", "is", null)
+        .limit(500);
       if (error) {
         console.error("Gagal mengambil data peta dari Supabase:", error);
       }
-      if (data) {
-        setSchools(data);
-        console.log("Data sekolah berhasil diambil:", data);
-      }
+      if (data) setSchools(data);
     }
     fetchSchools();
   }, []);
@@ -116,7 +119,7 @@ export default function PetaKomponen({ schoolId }: Props) {
         />
         <MapController schools={schools} targetId={schoolId} />
         
-        {schools.filter(s => s.status_validasi !== 'flagged').map((school) => (
+        {schools.map((school) => (
           <Marker 
             key={school.id} 
             position={[school.latitude, school.longitude]} 
