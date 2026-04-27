@@ -24,7 +24,8 @@ const KUIS_TOUR_STEPS: DriveStep[] = [
     element: "#registration-card",
     popover: {
       title: "Selamat Datang!",
-      description: "Silakan isi data diri Anda sebelum memulai kuis refleksi digital ini.",
+      description:
+        "Silakan isi data diri Anda sebelum memulai kuis refleksi digital ini.",
       side: "bottom",
       align: "start",
     },
@@ -33,7 +34,8 @@ const KUIS_TOUR_STEPS: DriveStep[] = [
     element: "#input-name",
     popover: {
       title: "Nama Pengisi",
-      description: "Masukkan nama lengkap Anda agar hasil refleksi lebih personal.",
+      description:
+        "Masukkan nama lengkap Anda agar hasil refleksi lebih personal.",
       side: "bottom",
       align: "start",
     },
@@ -42,7 +44,8 @@ const KUIS_TOUR_STEPS: DriveStep[] = [
     element: "#input-school",
     popover: {
       title: "Asal Sekolah",
-      description: "Jangan lupa isi nama sekolah Anda untuk pendataan ekosistem digital.",
+      description:
+        "Jangan lupa isi nama sekolah Anda untuk pendataan ekosistem digital.",
       side: "bottom",
       align: "start",
     },
@@ -51,7 +54,8 @@ const KUIS_TOUR_STEPS: DriveStep[] = [
     element: "#btn-start-quiz",
     popover: {
       title: "Mulai Kuis",
-      description: "Tombol ini akan aktif setelah Anda mengisi nama dan sekolah.",
+      description:
+        "Tombol ini akan aktif setelah Anda mengisi nama dan sekolah.",
       side: "top",
       align: "center",
     },
@@ -69,7 +73,8 @@ const KUIS_TOUR_STEPS: DriveStep[] = [
     element: "#quiz-question-card",
     popover: {
       title: "Pertanyaan Refleksi",
-      description: "Pilih jawaban yang paling jujur untuk mendapatkan hasil yang akurat.",
+      description:
+        "Pilih jawaban yang paling jujur untuk mendapatkan hasil yang akurat.",
       side: "top",
       align: "center",
     },
@@ -77,30 +82,73 @@ const KUIS_TOUR_STEPS: DriveStep[] = [
 ];
 
 const COLOR_CONFIG: Record<string, any> = {
-  emerald: { icon: ShieldCheck, iconBg: "bg-emerald-100", iconColor: "text-emerald-500", badgeBg: "bg-emerald-50 text-emerald-700 border-emerald-200", accentColor: "from-emerald-400 to-teal-500", barColor: "bg-emerald-400" },
-  teal: { icon: ShieldCheck, iconBg: "bg-teal-100", iconColor: "text-teal-500", badgeBg: "bg-teal-50 text-teal-700 border-teal-200", accentColor: "from-teal-400 to-emerald-500", barColor: "bg-teal-400" },
-  amber: { icon: Zap, iconBg: "bg-amber-100", iconColor: "text-amber-500", badgeBg: "bg-amber-50 text-amber-700 border-amber-200", accentColor: "from-amber-400 to-orange-500", barColor: "bg-amber-400" },
-  orange: { icon: Zap, iconBg: "bg-orange-100", iconColor: "text-orange-500", badgeBg: "bg-orange-50 text-orange-700 border-orange-200", accentColor: "from-orange-400 to-red-500", barColor: "bg-orange-400" },
-  red: { icon: AlertTriangle, iconBg: "bg-red-100", iconColor: "text-red-500", badgeBg: "bg-red-50 text-red-600 border-red-200", accentColor: "from-red-400 to-rose-500", barColor: "bg-red-400" },
+  emerald: {
+    icon: ShieldCheck,
+    iconBg: "bg-emerald-100",
+    iconColor: "text-emerald-500",
+    badgeBg: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    accentColor: "from-emerald-400 to-teal-500",
+    barColor: "bg-emerald-400",
+  },
+  teal: {
+    icon: ShieldCheck,
+    iconBg: "bg-teal-100",
+    iconColor: "text-teal-500",
+    badgeBg: "bg-teal-50 text-teal-700 border-teal-200",
+    accentColor: "from-teal-400 to-emerald-500",
+    barColor: "bg-teal-400",
+  },
+  amber: {
+    icon: Zap,
+    iconBg: "bg-amber-100",
+    iconColor: "text-amber-500",
+    badgeBg: "bg-amber-50 text-amber-700 border-amber-200",
+    accentColor: "from-amber-400 to-orange-500",
+    barColor: "bg-amber-400",
+  },
+  orange: {
+    icon: Zap,
+    iconBg: "bg-orange-100",
+    iconColor: "text-orange-500",
+    badgeBg: "bg-orange-50 text-orange-700 border-orange-200",
+    accentColor: "from-orange-400 to-red-500",
+    barColor: "bg-orange-400",
+  },
+  red: {
+    icon: AlertTriangle,
+    iconBg: "bg-red-100",
+    iconColor: "text-red-500",
+    badgeBg: "bg-red-50 text-red-600 border-red-200",
+    accentColor: "from-red-400 to-rose-500",
+    barColor: "bg-red-400",
+  },
 };
 
 export default function KuisPage() {
   const [questions, setQuestions] = useState<any[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(true);
-  
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<any[]>([]);
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
-  
+
   const [userName, setUserName] = useState("");
   const [schoolName, setSchoolName] = useState("");
   const [schoolId, setSchoolId] = useState<string | null>(null);
   const [isStarted, setIsStarted] = useState(false);
   const [schoolError, setSchoolError] = useState("");
+  const [hasCompleted, setHasCompleted] = useState(false);
 
   useEffect(() => {
+    // Check if user has already completed the quiz
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem("kuis_completed") === "true"
+    ) {
+      setHasCompleted(true);
+    }
     async function loadQuestions() {
       try {
         const res = await fetch("/api/questions?category=Kuis Siswa");
@@ -126,10 +174,18 @@ export default function KuisPage() {
     setIsStarted(true);
   };
 
-  const handleAnswer = (questionId: number, optionId: number, score: number, idx: number) => {
+  const handleAnswer = (
+    questionId: number,
+    optionId: number,
+    score: number,
+    idx: number,
+  ) => {
     setSelectedIdx(idx);
     setTimeout(() => {
-      const newAnswers = [...answers, { question_id: questionId, option_id: optionId, score }];
+      const newAnswers = [
+        ...answers,
+        { question_id: questionId, option_id: optionId, score },
+      ];
       setSelectedIdx(null);
       if (newAnswers.length < questions.length) {
         setAnswers(newAnswers);
@@ -158,6 +214,9 @@ export default function KuisPage() {
       const json = await res.json();
       if (json.success) {
         setResult(json.data);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("kuis_completed", "true");
+        }
       } else {
         console.error("Submission failed", json.error);
       }
@@ -179,7 +238,8 @@ export default function KuisPage() {
     setSchoolError("");
   };
 
-  const progress = questions.length > 0 ? (currentQuestion / questions.length) * 100 : 0;
+  const progress =
+    questions.length > 0 ? (currentQuestion / questions.length) * 100 : 0;
   const slideVariants = {
     initial: { x: 40, opacity: 0 },
     animate: { x: 0, opacity: 1 },
@@ -202,7 +262,8 @@ export default function KuisPage() {
             Refleksi Digital Diri
           </h1>
           <p className="text-gray-500 max-w-md mx-auto">
-            Kenali seberapa besar pengaruh smartphone terhadap diri Anda secara personal.
+            Kenali seberapa besar pengaruh smartphone terhadap diri Anda secara
+            personal.
           </p>
         </div>
 
@@ -217,7 +278,9 @@ export default function KuisPage() {
               className="bg-white rounded-3xl border border-gray-100 shadow-sm p-16 text-center flex flex-col items-center justify-center"
             >
               <Loader2 className="w-10 h-10 text-orange-400 animate-spin mb-4" />
-              <p className="text-gray-500 font-medium">Memuat pertanyaan kuis...</p>
+              <p className="text-gray-500 font-medium">
+                Memuat pertanyaan kuis...
+              </p>
             </motion.div>
           )}
 
@@ -240,10 +303,12 @@ export default function KuisPage() {
           )}
 
           {/* === RESULT STATE === */}
-          {!loadingQuestions && !loading &&
+          {!loadingQuestions &&
+            !loading &&
             result &&
             (() => {
-              const cfg = COLOR_CONFIG[result.indicator_color] || COLOR_CONFIG.emerald;
+              const cfg =
+                COLOR_CONFIG[result.indicator_color] || COLOR_CONFIG.emerald;
               const ResultIcon = cfg.icon;
 
               return (
@@ -285,7 +350,7 @@ export default function KuisPage() {
                       <p className="text-gray-600 max-w-md mx-auto leading-relaxed mb-4">
                         &quot;{result.description}&quot;
                       </p>
-                      
+
                       {result.motivation_message && (
                         <p className="text-orange-600 font-bold max-w-md mx-auto leading-relaxed mb-8 bg-orange-50 py-2 px-4 rounded-xl inline-block">
                           {result.motivation_message}
@@ -302,7 +367,9 @@ export default function KuisPage() {
                           <motion.div
                             className={`h-full rounded-full bg-gradient-to-r ${cfg.accentColor}`}
                             initial={{ width: 0 }}
-                            animate={{ width: `${(result.totalScore / (questions.length * 3)) * 100}%` }}
+                            animate={{
+                              width: `${(result.totalScore / (questions.length * 3)) * 100}%`,
+                            }}
                             transition={{
                               duration: 0.8,
                               ease: "easeOut",
@@ -322,16 +389,25 @@ export default function KuisPage() {
                     </h3>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-3 text-sm text-gray-600">
-                        <span className="w-5 h-5 rounded-full bg-orange-50 text-orange-500 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">1</span>
-                        Terapkan prinsip mindfulness setiap kali memegang perangkat digital.
+                        <span className="w-5 h-5 rounded-full bg-orange-50 text-orange-500 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                          1
+                        </span>
+                        Terapkan prinsip mindfulness setiap kali memegang
+                        perangkat digital.
                       </li>
                       <li className="flex items-start gap-3 text-sm text-gray-600">
-                        <span className="w-5 h-5 rounded-full bg-orange-50 text-orange-500 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">2</span>
-                        Beri batasan waktu (screen-time limit) pada aplikasi non-produktif.
+                        <span className="w-5 h-5 rounded-full bg-orange-50 text-orange-500 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                          2
+                        </span>
+                        Beri batasan waktu (screen-time limit) pada aplikasi
+                        non-produktif.
                       </li>
                       <li className="flex items-start gap-3 text-sm text-gray-600">
-                        <span className="w-5 h-5 rounded-full bg-orange-50 text-orange-500 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">3</span>
-                        Diskusikan hasil ini dengan teman atau guru di sekolah Anda.
+                        <span className="w-5 h-5 rounded-full bg-orange-50 text-orange-500 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                          3
+                        </span>
+                        Diskusikan hasil ini dengan teman atau guru di sekolah
+                        Anda.
                       </li>
                     </ul>
                   </div>
@@ -339,143 +415,187 @@ export default function KuisPage() {
                   {/* CTA Buttons */}
                   <div className="flex flex-col sm:flex-row items-center gap-3">
                     <Button
-                      onClick={resetQuiz}
+                      onClick={() => (window.location.href = "/")}
                       variant="outline"
                       className="w-full sm:w-auto flex items-center justify-center gap-2"
                     >
-                      <RotateCcw className="w-4 h-4" /> Ulangi Refleksi
-                    </Button>
-                    <Button
-                      onClick={() => (window.location.href = "/survei")}
-                      variant="primary"
-                      className="w-full sm:w-auto flex items-center justify-center gap-2"
-                    >
-                      Evaluasi Sekolah Anda <ArrowRight className="w-4 h-4" />
+                      Kembali ke Beranda
                     </Button>
                   </div>
                 </motion.div>
               );
             })()}
 
-          {/* === REGISTRATION STATE === */}
-          {!loadingQuestions && !loading && !result && !isStarted && (
+          {/* === ALREADY COMPLETED STATE === */}
+          {!loadingQuestions && !loading && !result && hasCompleted && (
             <motion.div
-              key="registration"
-              id="registration-card"
+              key="completed"
               variants={slideVariants}
               initial="initial"
               animate="animate"
               exit="exit"
-              className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8"
+              className="bg-white rounded-3xl border border-gray-100 shadow-sm p-12 text-center"
             >
-              <div className="mb-8 text-center">
-                <h2 className="text-2xl font-extrabold text-gray-900 mb-2">
-                  Siapa Anda hari ini?
-                </h2>
-                <p className="text-gray-500">
-                  Isi data singkat berikut untuk memulai kuis refleksi.
-                </p>
+              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <CheckCircle2 className="w-8 h-8 text-emerald-500" />
               </div>
+              <h2 className="text-2xl font-extrabold text-gray-900 mb-4">
+                Anda Sudah Mengisi Kuis
+              </h2>
+              <p className="text-gray-500 mb-8 max-w-sm mx-auto">
+                Setiap perangkat hanya diperkenankan mengisi kuis satu kali
+                untuk menjaga integritas data riset nasional.
+              </p>
+              <Button
+                onClick={() => (window.location.href = "/")}
+                variant="primary"
+                className="w-full sm:w-auto px-8 py-3"
+              >
+                Kembali ke Beranda
+              </Button>
+            </motion.div>
+          )}
 
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">
-                    Nama Pengisi
-                  </label>
-                  <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
-                      id="input-name"
-                      type="text"
-                      placeholder="Masukkan nama lengkap..."
-                      value={userName}
-                      onChange={(e) => setUserName(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-50 outline-none transition-all font-medium text-gray-900"
+          {/* === REGISTRATION STATE === */}
+          {!loadingQuestions &&
+            !loading &&
+            !result &&
+            !isStarted &&
+            !hasCompleted && (
+              <motion.div
+                key="registration"
+                id="registration-card"
+                variants={slideVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8"
+              >
+                <div className="mb-8 text-center">
+                  <h2 className="text-2xl font-extrabold text-gray-900 mb-2">
+                    Siapa Anda hari ini?
+                  </h2>
+                  <p className="text-gray-500">
+                    Isi data singkat berikut untuk memulai kuis refleksi.
+                  </p>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">
+                      Nama Pengisi
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <input
+                        id="input-name"
+                        type="text"
+                        placeholder="Masukkan nama lengkap..."
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                        className="w-full pl-12 pr-4 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-50 outline-none transition-all font-medium text-gray-900"
+                      />
+                    </div>
+                  </div>
+
+                  <div id="input-school">
+                    <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">
+                      Asal Sekolah
+                    </label>
+                    <SchoolAutocomplete
+                      value={schoolName}
+                      onChange={(val, school) => {
+                        setSchoolName(val);
+                        setSchoolId(school?.id ?? null);
+                        if (school) setSchoolError("");
+                      }}
+                      hasError={!!schoolError}
+                    />
+                    {schoolError && (
+                      <p className="text-red-500 text-sm mt-2 ml-1 font-medium">
+                        {schoolError}
+                      </p>
+                    )}
+                  </div>
+
+                  <Button
+                    id="btn-start-quiz"
+                    onClick={handleStartQuiz}
+                    disabled={!userName || !schoolId}
+                    variant="primary"
+                    className="w-full py-4 rounded-2xl shadow-lg shadow-orange-500/20 text-lg flex items-center justify-center gap-2"
+                  >
+                    Mulai Kuis <ArrowRight className="w-5 h-5" />
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+
+          {/* === QUIZ STATE === */}
+          {!loadingQuestions &&
+            !loading &&
+            !result &&
+            isStarted &&
+            questions.length > 0 && (
+              <motion.div
+                key={`question-${currentQuestion}`}
+                variants={slideVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                {/* Progress Bar */}
+                <div className="mb-8" id="quiz-progress">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full uppercase tracking-wider">
+                      Pertanyaan {currentQuestion + 1} dari {questions.length}
+                    </span>
+                    <span className="text-xs font-bold text-gray-400">
+                      {Math.round(progress)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-orange-500 rounded-full"
+                      initial={{
+                        width: `${((currentQuestion - 1) / questions.length) * 100}%`,
+                      }}
+                      animate={{ width: `${progress}%` }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
                     />
                   </div>
                 </div>
 
-                <div id="input-school">
-                  <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">
-                    Asal Sekolah
-                  </label>
-                  <SchoolAutocomplete
-                    value={schoolName}
-                    onChange={(val, school) => {
-                      setSchoolName(val);
-                      setSchoolId(school?.id ?? null);
-                      if (school) setSchoolError("");
-                    }}
-                    hasError={!!schoolError}
-                  />
-                  {schoolError && (
-                    <p className="text-red-500 text-sm mt-2 ml-1 font-medium">{schoolError}</p>
-                  )}
-                </div>
-
-                <Button
-                  id="btn-start-quiz"
-                  onClick={handleStartQuiz}
-                  disabled={!userName || !schoolId}
-                  variant="primary"
-                  className="w-full py-4 rounded-2xl shadow-lg shadow-orange-500/20 text-lg flex items-center justify-center gap-2"
+                {/* Question Card */}
+                <div
+                  className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8"
+                  id="quiz-question-card"
                 >
-                  Mulai Kuis <ArrowRight className="w-5 h-5" />
-                </Button>
-              </div>
-            </motion.div>
-          )}
+                  {/* Question */}
+                  <div className="mb-8">
+                    <h2 className="text-2xl font-extrabold text-gray-900 leading-snug">
+                      {questions[currentQuestion].question_text}
+                    </h2>
+                  </div>
 
-          {/* === QUIZ STATE === */}
-          {!loadingQuestions && !loading && !result && isStarted && questions.length > 0 && (
-            <motion.div
-              key={`question-${currentQuestion}`}
-              variants={slideVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.3, ease: "easeOut" }}
-            >
-              {/* Progress Bar */}
-              <div className="mb-8" id="quiz-progress">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full uppercase tracking-wider">
-                    Pertanyaan {currentQuestion + 1} dari {questions.length}
-                  </span>
-                  <span className="text-xs font-bold text-gray-400">
-                    {Math.round(progress)}%
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full bg-orange-500 rounded-full"
-                    initial={{
-                      width: `${((currentQuestion - 1) / questions.length) * 100}%`,
-                    }}
-                    animate={{ width: `${progress}%` }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                  />
-                </div>
-              </div>
-
-              {/* Question Card */}
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8" id="quiz-question-card">
-                {/* Question */}
-                <div className="mb-8">
-                  <h2 className="text-2xl font-extrabold text-gray-900 leading-snug">
-                    {questions[currentQuestion].question_text}
-                  </h2>
-                </div>
-
-                {/* Options */}
-                <div className="space-y-3">
-                  {questions[currentQuestion].question_options.map((opt: any, idx: number) => (
-                    <motion.button
-                      key={opt.id}
-                      onClick={() => handleAnswer(questions[currentQuestion].id, opt.id, opt.score, idx)}
-                      disabled={selectedIdx !== null}
-                      whileTap={{ scale: 0.98 }}
-                      className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-200 flex justify-between items-center group cursor-pointer
+                  {/* Options */}
+                  <div className="space-y-3">
+                    {questions[currentQuestion].question_options.map(
+                      (opt: any, idx: number) => (
+                        <motion.button
+                          key={opt.id}
+                          onClick={() =>
+                            handleAnswer(
+                              questions[currentQuestion].id,
+                              opt.id,
+                              opt.score,
+                              idx,
+                            )
+                          }
+                          disabled={selectedIdx !== null}
+                          whileTap={{ scale: 0.98 }}
+                          className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-200 flex justify-between items-center group cursor-pointer
                         ${
                           selectedIdx === idx
                             ? "border-orange-500 bg-orange-50 ring-4 ring-orange-500/10 scale-[1.02]"
@@ -483,47 +603,48 @@ export default function KuisPage() {
                         }
                         ${selectedIdx !== null && selectedIdx !== idx ? "opacity-50" : ""}
                       `}
-                    >
-                      <span
-                        className={`font-semibold text-base transition-colors ${
-                          selectedIdx === idx
-                            ? "text-orange-700"
-                            : "text-gray-700 group-hover:text-orange-900"
-                        }`}
-                      >
-                        {opt.option_text}
-                      </span>
-                      <div
-                        className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ml-4 transition-all ${
-                          selectedIdx === idx
-                            ? "bg-orange-500 text-white scale-100 opacity-100"
-                            : "bg-gray-200 text-transparent scale-75 opacity-0 group-hover:scale-90 group-hover:opacity-50"
-                        }`}
-                      >
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </div>
-                    </motion.button>
+                        >
+                          <span
+                            className={`font-semibold text-base transition-colors ${
+                              selectedIdx === idx
+                                ? "text-orange-700"
+                                : "text-gray-700 group-hover:text-orange-900"
+                            }`}
+                          >
+                            {opt.option_text}
+                          </span>
+                          <div
+                            className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ml-4 transition-all ${
+                              selectedIdx === idx
+                                ? "bg-orange-500 text-white scale-100 opacity-100"
+                                : "bg-gray-200 text-transparent scale-75 opacity-0 group-hover:scale-90 group-hover:opacity-50"
+                            }`}
+                          >
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </div>
+                        </motion.button>
+                      ),
+                    )}
+                  </div>
+                </div>
+
+                {/* Dot indicators */}
+                <div className="flex items-center justify-center gap-2 mt-6">
+                  {questions.map((_, i) => (
+                    <div
+                      key={i}
+                      className={`rounded-full transition-all duration-300 ${
+                        i < currentQuestion
+                          ? "w-2 h-2 bg-orange-500"
+                          : i === currentQuestion
+                            ? "w-5 h-2 bg-orange-400"
+                            : "w-2 h-2 bg-gray-200"
+                      }`}
+                    />
                   ))}
                 </div>
-              </div>
-
-              {/* Dot indicators */}
-              <div className="flex items-center justify-center gap-2 mt-6">
-                {questions.map((_, i) => (
-                  <div
-                    key={i}
-                    className={`rounded-full transition-all duration-300 ${
-                      i < currentQuestion
-                        ? "w-2 h-2 bg-orange-500"
-                        : i === currentQuestion
-                          ? "w-5 h-2 bg-orange-400"
-                          : "w-2 h-2 bg-gray-200"
-                    }`}
-                  />
-                ))}
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            )}
         </AnimatePresence>
       </div>
       <TourGuide steps={KUIS_TOUR_STEPS} pageName="Kuis Refleksi" />

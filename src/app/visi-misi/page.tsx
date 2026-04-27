@@ -50,7 +50,7 @@ export default function VisiMisiPage() {
             Filosofi Kami
           </span>
 
-          <h1 className="text-4xl md:text-6xl font-black text-gray-900 leading-[1.15] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-gray-900 leading-[1.15] tracking-tight">
             Membangun{" "}
             <span className="gradient-text-warm">Generasi Digital</span> yang
             Cerdas & Berkarakter
@@ -68,7 +68,7 @@ export default function VisiMisiPage() {
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             {...fadeUp(0)}
-            className="clean-card p-10 md:p-16 border border-orange-100 relative overflow-hidden"
+            className="clean-card p-6 sm:p-10 md:p-16 border border-orange-100 relative overflow-hidden"
           >
             {/* subtle glow */}
             <div className="absolute -top-20 -right-20 w-72 h-72 bg-orange-100 blur-[80px] rounded-full pointer-events-none" />
@@ -77,7 +77,7 @@ export default function VisiMisiPage() {
               VISI
             </p>
 
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 leading-[1.4]">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 leading-[1.4]">
               Terwujudnya{" "}
               <span className="gradient-text-warm">
                 Generasi Digital Cerdas, Bijak, dan Berkarakter
@@ -109,9 +109,9 @@ export default function VisiMisiPage() {
 
           <div className="relative">
             {/* LINE */}
-            <div className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-orange-200 -translate-x-1/2"></div>
+            <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-[2px] bg-orange-200 -translate-x-1/2"></div>
 
-            <div className="space-y-24">
+            <div className="space-y-16 md:space-y-24">
               {missions.map((m, i) => {
                 const isLeft = i % 2 === 0;
 
@@ -121,21 +121,21 @@ export default function VisiMisiPage() {
                     {...fadeUp(0.1 * i)}
                     className="relative flex items-center justify-center"
                   >
-                    {/* DOT PERFECT CENTER */}
-                    <div className="absolute left-1/2 -translate-x-1/2 w-3 h-3 bg-orange-500 rounded-full ring-4 ring-[#FAFAFA] z-10"></div>
+                    {/* DOT PERFECT CENTER OR LEFT ON MOBILE */}
+                    <div className="absolute left-6 md:left-1/2 -translate-x-1/2 w-3 h-3 bg-orange-500 rounded-full ring-4 ring-[#FAFAFA] z-10"></div>
 
                     {/* CARD */}
                     <div
-                      className={`w-full md:w-1/2 px-6 ${
+                      className={`w-full md:w-1/2 pl-14 pr-0 md:px-0 ${
                         isLeft
-                          ? "md:pr-16 md:mr-auto text-right"
-                          : "md:pl-16 md:ml-auto"
+                          ? "md:pr-16 md:mr-auto text-left md:text-right"
+                          : "md:pl-16 md:ml-auto text-left"
                       }`}
                     >
                       <div className="clean-card p-6 md:p-8 group hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
                         <div
-                          className={`flex items-center gap-4 mb-4 ${
-                            isLeft ? "justify-end" : ""
+                          className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4 ${
+                            isLeft ? "md:justify-end justify-start" : "justify-start"
                           }`}
                         >
                           <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">

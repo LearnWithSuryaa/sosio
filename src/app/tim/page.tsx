@@ -117,11 +117,11 @@ export default function TimPengembangPage() {
                   alt={member.name}
                   fill={true}
                   sizes="(max-width: 640px) 100vw, 260px"
-                  className="object-cover transition-all duration-500 ease-in-out filter grayscale group-hover:grayscale-0"
+                  className="object-cover transition-all duration-500 ease-in-out filter grayscale-0 md:grayscale md:group-hover:grayscale-0"
                 />
 
-                {/* Glass overlay that appears on hover */}
-                <div className="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20">
+                {/* Glass overlay that appears on hover (always visible on mobile) */}
+                <div className="absolute bottom-4 left-4 right-4 translate-y-0 opacity-100 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all duration-300 z-20">
                   <div className="bg-white/95 backdrop-blur-md border border-gray-100 rounded-xl p-3 shadow-lg text-center">
                     <p className="text-gray-900 font-bold text-sm leading-tight">
                       {member.name}
@@ -132,8 +132,8 @@ export default function TimPengembangPage() {
                   </div>
                 </div>
 
-                {/* Gradient shadow from bottom */}
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+                {/* Gradient shadow from bottom (always visible on mobile) */}
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 z-10" />
               </motion.div>
             ))}
           </div>
