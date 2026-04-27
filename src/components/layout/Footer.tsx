@@ -33,18 +33,18 @@ export function Footer() {
               <img
                 src="/assets/Logo-Gesa-media.svg"
                 alt="Gesa Media Logo"
-                className="h-8 sm:h-10 w-auto object-contain"
+                className="h-8 sm:h-9 w-auto object-contain"
                 style={{ filter: "brightness(0)" }}
               />
               <img
                 src="/assets/cross.webp"
                 alt="Cross"
-                className="h-4 sm:h-6 w-auto object-contain"
+                className="h-2 sm:h-5 w-auto object-contain"
               />
               <img
                 src="/assets/logo-kmpus.png"
                 alt="Logo Kampus"
-                className="h-12 sm:h-16 w-auto object-contain"
+                className="h-8 sm:h-12 w-auto object-contain"
               />
             </div>
             <div className="flex items-center gap-3 mt-6">

@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import { supabase } from "@/lib/supabase";
-import { generateKomitmenPDF } from "@/lib/pdfGenerator";
+import { generateKomitmenPDF, generatePiagamPDF } from "@/lib/pdfGenerator";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import {
@@ -28,6 +28,7 @@ export default function KomitmenPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showPillars, setShowPillars] = useState(false);
+  const [downloadingPiagam, setDownloadingPiagam] = useState(false);
 
   const [form, setForm] = useState({ sekolah: "", penanggungJawab: "" });
   const [selectedSchoolStatus, setSelectedSchoolStatus] = useState<
@@ -356,6 +357,93 @@ export default function KomitmenPage() {
                   {errors.penanggungJawab}
                 </p>
               )}
+            </div>
+
+            {/* Live Preview Piagam */}
+            <div className="space-y-3" id="tour-komitmen-preview">
+              <label className="block text-sm font-bold text-gray-900">
+                Pratinjau Piagam Apresiasi{" "}
+                <span className="text-gray-400 font-medium ml-2">
+                  (Sistem Otomatis)
+                </span>
+              </label>
+              <div className="relative w-full aspect-[1.414] rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm group">
+                {/* SVG Background */}
+                <img
+                  src="/assets/Piagam-GESAMEGA.jpg"
+                  alt="Template Piagam GESAMEGA"
+                  className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                  onError={(e) => {
+                    // Fallback if SVG fails to load
+                    (e.target as HTMLImageElement).src =
+                      "/assets/Piagam-GESAMEGA.pdf";
+                  }}
+                />
+
+                {/* Overlay Content - Precisely Positioned */}
+                <div className="absolute inset-0 z-10 pointer-events-none">
+                  {/* School / Instansi */}
+                  {(() => {
+                    const sekolah = form.sekolah || "INSTANSI / SEKOLAH";
+                    const words = sekolah.trim().split(/\s+/);
+                    const isMultiLine = words.length > 3;
+
+                    const firstLine = words.slice(0, 3).join(" ");
+                    const secondLine = words.slice(3).join(" ");
+
+                    return (
+                      <div
+                        className={`absolute ${
+                          isMultiLine ? "top-[61%]" : "top-[64%]"
+                        } left-0 right-0 text-center px-20`}
+                      >
+                        <h3 className="font-serif font-bold text-slate-800 uppercase tracking-[0.05em] leading-[0.9]">
+                          <span className="block text-[14px] sm:text-[16px] md:text-[20px] lg:text-[26px]">
+                            {isMultiLine ? firstLine : sekolah}
+                          </span>
+
+                          {isMultiLine && (
+                            <span className="block text-[14px] sm:text-[16px] md:text-[20px] lg:text-[26px] mt-[2px]">
+                              {secondLine}
+                            </span>
+                          )}
+                        </h3>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Date */}
+                  <div className="absolute top-[77%] left-3 right-0 text-center px-8">
+                    <p className="text-[8px] sm:text-[10px] md:text-[12px] font-serif font-bold text-slate-600 uppercase tracking-[0.08em]">
+                      {new Date().toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "long",
+                      })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Download Piagam Button */}
+              <button
+                type="button"
+                disabled={!form.sekolah || downloadingPiagam}
+                onClick={async () => {
+                  if (!form.sekolah) return;
+                  setDownloadingPiagam(true);
+                  try {
+                    await generatePiagamPDF(form.sekolah);
+                  } catch (err) {
+                    console.error("Gagal generate piagam:", err);
+                  } finally {
+                    setDownloadingPiagam(false);
+                  }
+                }}
+                className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-orange-200 bg-orange-50 text-orange-700 font-bold text-sm hover:bg-orange-100 hover:border-orange-300 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <Download className="w-4 h-4" />
+                {downloadingPiagam ? "Memproses Piagam..." : "Unduh Piagam Apresiasi (.pdf)"}
+              </button>
             </div>
 
             {/* Signature Field */}
