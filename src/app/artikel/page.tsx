@@ -25,105 +25,6 @@ const CATEGORIES = [
   { label: "Panduan Guru", value: "guru", icon: GraduationCap },
 ];
 
-const MOCK_ARTICLES = [
-  {
-    id: 1,
-    slug: "dampak-gadget-terhadap-konsentrasi-belajar",
-    category: "kesehatan",
-    badge: "Riset Terbaru",
-    badgeColor: "bg-blue-50 text-blue-600 border-blue-200",
-    title: "Dampak Paparan Gadget Berlebih terhadap Konsentrasi Belajar Siswa",
-    excerpt:
-      "Studi dari Universitas Indonesia menemukan bahwa siswa yang menghabiskan lebih dari 4 jam/hari di media sosial mengalami penurunan rentang perhatian hingga 37% dibanding dekade sebelumnya.",
-    author: "Dr. Sari Handayani, M.Psi",
-    authorRole: "Psikolog Pendidikan",
-    readTime: "5 menit",
-    date: "12 Apr 2025",
-    tags: ["kesehatan mental", "fokus belajar", "screen time"],
-    featured: true,
-  },
-  {
-    id: 2,
-    slug: "panduan-implementasi-kebijakan-hp-sekolah",
-    category: "kebijakan",
-    badge: "Panduan Praktis",
-    badgeColor: "bg-emerald-50 text-emerald-600 border-emerald-200",
-    title: "Panduan Langkah demi Langkah: Implementasi Kebijakan HP di Sekolah",
-    excerpt:
-      "Mengadopsi kebijakan pembatasan gadget bukan hal mudah. Artikel ini memandu kepala sekolah dan guru mulai dari sosialisasi, penyusunan aturan tertulis, hingga penegakan yang humanis.",
-    author: "Tim GESAMEGA",
-    authorRole: "Divisi Riset & Kebijakan",
-    readTime: "8 menit",
-    date: "9 Apr 2025",
-    tags: ["kebijakan sekolah", "implementasi", "manajemen"],
-    featured: true,
-  },
-  {
-    id: 3,
-    slug: "literasi-digital-bukan-sekadar-melarang",
-    category: "literasi",
-    badge: "Opini",
-    badgeColor: "bg-purple-50 text-purple-600 border-purple-200",
-    title: "Literasi Digital Bukan Sekadar Melarang: Membangun Ekosistem yang Sehat",
-    excerpt:
-      "Melarang gadget tanpa edukasi hanya memindahkan masalah. Pendekatan holistik yang membangun kesadaran kritis siswa terbukti lebih efektif dalam jangka panjang.",
-    author: "Budi Santoso, S.Pd",
-    authorRole: "Guru SMK, Aktivis Pendidikan",
-    readTime: "6 menit",
-    date: "5 Apr 2025",
-    tags: ["literasi digital", "edukasi", "pendekatan holistik"],
-    featured: false,
-  },
-  {
-    id: 4,
-    slug: "teknik-pomodoro-di-kelas",
-    category: "guru",
-    badge: "Tips & Trik",
-    badgeColor: "bg-orange-50 text-orange-600 border-orange-200",
-    title: "Teknik Pomodoro di Kelas: Cara Guru Menjaga Fokus Siswa Tanpa Larangan Keras",
-    excerpt:
-      "Teknik Pomodoro yang populer di dunia kerja kini diadaptasi ke dalam metode pembelajaran. Bagaimana guru bisa memanfaatkannya tanpa konflik dengan siswa?",
-    author: "Rina Kusuma, M.Pd",
-    authorRole: "Trainer Pendidikan",
-    readTime: "4 menit",
-    date: "1 Apr 2025",
-    tags: ["metode belajar", "fokus", "teknik mengajar"],
-    featured: false,
-  },
-  {
-    id: 5,
-    slug: "permendikbud-regulasi-gadget",
-    category: "kebijakan",
-    badge: "Regulasi",
-    badgeColor: "bg-red-50 text-red-600 border-red-200",
-    title: "Permendikbud & Surat Edaran: Apa yang Harus Diketahui Sekolah tentang Regulasi Gadget",
-    excerpt:
-      "Rangkuman lengkap regulasi nasional terkait penggunaan perangkat digital di sekolah, disertai interpretasi praktis bagi kepala sekolah dan komite sekolah.",
-    author: "Tim Legal GESAMEGA",
-    authorRole: "Analis Kebijakan Pendidikan",
-    readTime: "10 menit",
-    date: "28 Mar 2025",
-    tags: ["regulasi", "hukum pendidikan", "Kemendikbud"],
-    featured: false,
-  },
-  {
-    id: 6,
-    slug: "peran-orang-tua-ekosistem-digital",
-    category: "literasi",
-    badge: "Perspektif",
-    badgeColor: "bg-amber-50 text-amber-600 border-amber-200",
-    title: "Sinergi Sekolah dan Orang Tua: Kunci Ekosistem Digital yang Sehat",
-    excerpt:
-      "Kebijakan sekolah hanya efektif jika didukung di rumah. Bagaimana membangun komunikasi yang kuat antara guru, siswa, dan orang tua dalam isu gadget?",
-    author: "Prof. Hendra Wijaya",
-    authorRole: "Sosiolog Pendidikan, UI",
-    readTime: "7 menit",
-    date: "22 Mar 2025",
-    tags: ["peran orang tua", "sinergi", "ekosistem"],
-    featured: false,
-  },
-];
-
 export default function ArtikelPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -135,7 +36,9 @@ export default function ArtikelPage() {
       setLoading(true);
       const { data, error } = await supabase
         .from("articles")
-        .select("id, judul, isi, penulis, kategori, thumbnail_url, featured, created_at")
+        .select(
+          "id, judul, isi, penulis, kategori, thumbnail_url, created_at",
+        )
         .order("created_at", { ascending: false })
         .limit(50);
 
@@ -150,7 +53,8 @@ export default function ArtikelPage() {
                 badge = "Edukasi";
                 break;
               case "kebijakan":
-                badgeColor = "bg-emerald-50 text-emerald-600 border-emerald-200";
+                badgeColor =
+                  "bg-emerald-50 text-emerald-600 border-emerald-200";
                 badge = "Panduan Praktis";
                 break;
               case "kesehatan":
@@ -176,19 +80,24 @@ export default function ArtikelPage() {
               badge,
               badgeColor,
               title: d.judul,
-              excerpt: d.isi ? (d.isi.length > 120 ? d.isi.substring(0, 120) + "..." : d.isi) : "",
+              excerpt: d.isi
+                ? d.isi.length > 120
+                  ? d.isi.substring(0, 120) + "..."
+                  : d.isi
+                : "",
               author: d.penulis,
               authorRole: "Kontributor",
-              readTime: Math.max(1, Math.ceil((d.isi?.length || 0) / 1000)) + " menit",
+              readTime:
+                Math.max(1, Math.ceil((d.isi?.length || 0) / 1000)) + " menit",
               date: dateStr,
               tags: [d.kategori || "umum"],
               featured: index === 0,
-              thumbnail: d.thumbnail_url || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80",
+              thumbnail:
+                d.thumbnail_url ||
+                "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80",
             };
-          })
+          }),
         );
-      } else {
-        setArticles(MOCK_ARTICLES);
       }
       setLoading(false);
     }
@@ -373,7 +282,9 @@ export default function ArtikelPage() {
                           <p className="text-xs font-bold text-gray-700">
                             {article.author}
                           </p>
-                          <p className="text-xs text-gray-400">{article.date}</p>
+                          <p className="text-xs text-gray-400">
+                            {article.date}
+                          </p>
                         </div>
                         <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-orange-400 group-hover:translate-x-1 transition-all" />
                       </div>

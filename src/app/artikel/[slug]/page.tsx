@@ -130,7 +130,7 @@ export default function ArtikelDetail() {
           </Link>
           <span>•</span>
           <span className="text-gray-900 capitalize">
-            {article.kategori || "Business Growth"}
+            {article.kategori || "Umum"}
           </span>
         </div>
 
@@ -153,7 +153,7 @@ export default function ArtikelDetail() {
 
             <div className="px-4 py-2 rounded-full bg-gray-50 border border-gray-100">
               <span className="text-sm font-medium text-gray-700 capitalize">
-                {article.kategori || "Business Strategy"}
+                {article.kategori || "Umum"}
               </span>
             </div>
 
@@ -238,17 +238,10 @@ export default function ArtikelDetail() {
                 All Tags
               </h3>
               <div className="flex flex-wrap gap-2">
-                {[
-                  "Literasi Digital",
-                  "Pendidikan",
-                  "Kebijakan Sekolah",
-                  "Kesehatan Mental",
-                  "Teknologi",
-                  "Fokus Belajar",
-                ].map((tag) => (
+                {[article.kategori || "Umum"].map((tag) => (
                   <span
                     key={tag}
-                    className="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer transition-colors"
+                    className="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer transition-colors capitalize"
                   >
                     {tag}
                   </span>

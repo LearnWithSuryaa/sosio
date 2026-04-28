@@ -4,8 +4,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Quote, ArrowRight, Star } from "lucide-react";
 
-const caseStudies = [
+const fallbackStudies = [
   {
+    id: "fallback-1",
     title: "Penerapan Loker HP Saat Jam KBM",
     school: "SMAN 3 Bandung",
     story: "Menerapkan sistem loker HP di setiap awal kelas. Awalnya siswa keberatan, namun dalam 3 bulan fokus belajar meningkat 40% dan nilai ujian naik signifikan.",
@@ -16,6 +17,7 @@ const caseStudies = [
     stars: 5,
   },
   {
+    id: "fallback-2",
     title: "Duta Digital Sebaya",
     school: "SMPN 1 Surabaya",
     story: "Siswa yang memahami literasi digital dipilih sebagai duta sebaya untuk mengedukasi teman-temannya menghindari cyberbullying dan konten negatif.",
@@ -26,6 +28,7 @@ const caseStudies = [
     stars: 5,
   },
   {
+    id: "fallback-3",
     title: "Jam Gadget Terjadwal",
     school: "SMPN 5 Yogyakarta",
     story: "Mengalokasikan 30 menit sebelum dan sesudah jam pelajaran sebagai 'jam gadget bebas', sementara jam efektif belajar bebas dari distraksi digital.",
@@ -37,7 +40,47 @@ const caseStudies = [
   },
 ];
 
-export function CaseStudySection() {
+interface CaseStudySectionProps {
+  caseStudies?: any[];
+}
+
+export function CaseStudySection({ caseStudies = [] }: CaseStudySectionProps) {
+  const displayStudies = caseStudies.length > 0 ? caseStudies.map(cs => {
+    let tagColor = "bg-gray-50 text-gray-600 border-gray-200";
+    let accent = "text-gray-500";
+    
+    switch (cs.category) {
+      case "regulasi":
+        tagColor = "bg-orange-50 text-orange-600 border-orange-200";
+        accent = "text-orange-500";
+        break;
+      case "pembelajaran":
+        tagColor = "bg-blue-50 text-blue-600 border-blue-200";
+        accent = "text-blue-500";
+        break;
+      case "literasi":
+        tagColor = "bg-emerald-50 text-emerald-600 border-emerald-200";
+        accent = "text-emerald-500";
+        break;
+      case "inovasi":
+        tagColor = "bg-rose-50 text-rose-600 border-rose-200";
+        accent = "text-rose-500";
+        break;
+    }
+
+    return {
+      id: cs.id,
+      title: cs.judul,
+      school: cs.schools?.nama_sekolah || "Sekolah Tidak Diketahui",
+      story: cs.isi ? (cs.isi.length > 150 ? cs.isi.substring(0, 150) + "..." : cs.isi) : "",
+      quote: cs.impact || "Mengembangkan ekosistem digital yang sehat.",
+      tag: cs.badge || "Praktik Baik",
+      tagColor,
+      accent,
+      stars: 5,
+    };
+  }) : fallbackStudies;
+
   return (
     <section className="py-24 px-4 bg-white relative overflow-hidden">
       <div className="max-w-6xl mx-auto relative z-10">
@@ -61,9 +104,9 @@ export function CaseStudySection() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {caseStudies.map((cs, i) => (
+          {displayStudies.map((cs, i) => (
             <motion.div
-              key={cs.title}
+              key={cs.id || cs.title}
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-60px" }}

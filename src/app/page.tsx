@@ -6,6 +6,7 @@ import { ParticipationFlow } from "@/components/landing/ParticipationFlow";
 import { MapPreview } from "@/components/landing/MapPreview";
 import { LiveStatsSection } from "@/components/landing/LiveStatsSection";
 import { CaseStudySection } from "@/components/landing/CaseStudySection";
+import { ArticleSection } from "@/components/landing/ArticleSection"; // IDE Refresh
 import { QuizSection } from "@/components/landing/QuizSection";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 
@@ -16,24 +17,38 @@ const BASE_COMMITMENTS = 320;
 // ISR: revalidate every 1 hour — keeps stats fresh without serverless call per visitor
 export const revalidate = 3600;
 
-async function getStats() {
+async function getLandingData() {
   try {
-    const [{ count: totalSchools }, { count: totalCommitments }] = await Promise.all([
+    const [
+      { count: totalSchools }, 
+      { count: totalCommitments },
+      { data: caseStudies },
+      { data: articles }
+    ] = await Promise.all([
       supabase.from("schools").select("*", { count: "exact", head: true }),
       supabase.from("schools").select("*", { count: "exact", head: true }).eq("status", "komitmen"),
+      supabase.from("case_studies").select("id, judul, isi, penulis, category, impact, badge, created_at, school_id, schools(nama_sekolah)").order("created_at", { ascending: false }).limit(3),
+      supabase.from("articles").select("id, judul, isi, penulis, kategori, thumbnail_url, created_at").order("created_at", { ascending: false }).limit(3),
     ]);
 
     return {
       schools: BASE_SCHOOLS + (totalSchools || 0),
       commitments: BASE_COMMITMENTS + (totalCommitments || 0),
+      caseStudies: caseStudies || [],
+      articles: articles || [],
     };
   } catch {
-    return { schools: BASE_SCHOOLS, commitments: BASE_COMMITMENTS };
+    return { 
+      schools: BASE_SCHOOLS, 
+      commitments: BASE_COMMITMENTS,
+      caseStudies: [],
+      articles: []
+    };
   }
 }
 
 export default async function Home() {
-  const stats = await getStats();
+  const data = await getLandingData();
 
   return (
     <div className="flex flex-col">
@@ -53,15 +68,18 @@ export default async function Home() {
       <MapPreview />
 
       {/* 6. Live Statistics - Data Driven */}
-      <LiveStatsSection schools={stats.schools} commitments={stats.commitments} />
+      <LiveStatsSection schools={data.schools} commitments={data.commitments} />
 
       {/* 7. Case Studies - Inspiration */}
-      <CaseStudySection />
+      <CaseStudySection caseStudies={data.caseStudies} />
 
-      {/* 8. Quiz - Personal Hook */}
+      {/* 8. Articles - Insights */}
+      <ArticleSection articles={data.articles} />
+
+      {/* 9. Quiz - Personal Hook */}
       <QuizSection />
 
-      {/* 9. Final CTA - Conversion */}
+      {/* 10. Final CTA - Conversion */}
       <FinalCTA />
     </div>
   );
