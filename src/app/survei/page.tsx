@@ -216,8 +216,9 @@ function SurveiForm() {
     let captchaToken = "";
     try {
       captchaToken = await executeRecaptcha("survei_submit");
-    } catch {
-      setErrors({ submit: "Gagal menjalankan verifikasi reCAPTCHA. Coba lagi." });
+    } catch (err: any) {
+      console.error("reCAPTCHA Execution Error:", err);
+      setErrors({ submit: `Gagal verifikasi keamanan: ${err?.message || "Unknown Error"}. Pastikan koneksi stabil.` });
       setLoading(false);
       return;
     }

@@ -432,7 +432,7 @@ function KuisForm() {
                     <Button
                       onClick={() => (window.location.href = "/")}
                       variant="outline"
-                      className="w-full sm:w-auto flex items-center justify-center gap-2"
+                      className="w-full sm:w-auto px-8 py-3"
                     >
                       Kembali ke Beranda
                     </Button>
