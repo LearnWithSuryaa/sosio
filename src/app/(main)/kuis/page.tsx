@@ -136,6 +136,7 @@ function KuisForm() {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [questions, setQuestions] = useState<any[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<any[]>([]);
@@ -149,10 +150,13 @@ function KuisForm() {
   const [isStarted, setIsStarted] = useState(false);
   const [schoolError, setSchoolError] = useState("");
   const [hasCompleted, setHasCompleted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if user has already completed the quiz
+    // Jika ada ?source= (dari QR Code), selalu izinkan isi ulang
+    const hasSource = !!searchParams.get("source");
     if (
+      !hasSource &&
       typeof window !== "undefined" &&
       localStorage.getItem("kuis_completed") === "true"
     ) {
@@ -160,18 +164,25 @@ function KuisForm() {
     }
     async function loadQuestions() {
       try {
-        const res = await fetch("/api/questions?category=Kuis Siswa");
-        const json = await res.json();
-        if (json.success) {
-          setQuestions(json.data);
+        const res = await fetch("/api/questions?category=Kuis%20Siswa");
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
         }
-      } catch (err) {
+        const json = await res.json();
+        if (json.success && json.data?.length > 0) {
+          setQuestions(json.data);
+        } else {
+          setLoadError("Pertanyaan kuis tidak ditemukan. Hubungi admin.");
+        }
+      } catch (err: any) {
         console.error("Failed to load questions", err);
+        setLoadError("Gagal memuat pertanyaan. Periksa koneksi internet Anda.");
       } finally {
         setLoadingQuestions(false);
       }
     }
     loadQuestions();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleStartQuiz = () => {
@@ -208,14 +219,23 @@ function KuisForm() {
   const finishQuiz = async (finalAnswers: any[]) => {
     setAnswers(finalAnswers);
     setLoading(true);
+    setSubmitError(null);
 
+    // Tunggu reCAPTCHA siap — retry hingga 3x dengan jeda 500ms
     let captchaToken = "";
-    try {
-      if (executeRecaptcha) {
-        captchaToken = await executeRecaptcha("kuis_submit");
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        if (executeRecaptcha) {
+          captchaToken = await executeRecaptcha("kuis_submit");
+          if (captchaToken) break; // berhasil, keluar loop
+        } else {
+          // Tunggu reCAPTCHA provider inisialisasi
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        }
+      } catch {
+        console.warn(`reCAPTCHA attempt ${attempt + 1} failed`);
+        await new Promise((resolve) => setTimeout(resolve, 500));
       }
-    } catch {
-      console.warn("reCAPTCHA execution failed, proceeding without token");
     }
 
     try {
@@ -239,9 +259,17 @@ function KuisForm() {
         }
       } else {
         console.error("Submission failed", json.error);
+        setSubmitError(
+          json.error === "Token reCAPTCHA tidak ditemukan."
+            ? "Verifikasi keamanan gagal. Pastikan koneksi internet Anda stabil dan coba lagi."
+            : (json.error || "Gagal menyimpan hasil. Silakan coba lagi.")
+        );
+        setLoading(false);
       }
     } catch (e) {
       console.error("Could not save to API", e);
+      setSubmitError("Tidak dapat terhubung ke server. Periksa koneksi internet Anda.");
+      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -304,8 +332,31 @@ function KuisForm() {
             </motion.div>
           )}
 
-          {/* === LOADING STATE === */}
-          {!loadingQuestions && loading && (
+          {/* === ERROR STATE === */}
+          {!loadingQuestions && loadError && (
+            <motion.div
+              key="load-error"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="bg-white rounded-3xl border border-red-100 shadow-sm p-12 text-center"
+            >
+              <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertTriangle className="w-8 h-8 text-red-400" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">Gagal Memuat Kuis</h2>
+              <p className="text-gray-500 mb-6 max-w-sm mx-auto">{loadError}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-2xl transition-colors"
+              >
+                Coba Lagi
+              </button>
+            </motion.div>
+          )}
+
+          {/* === SUBMITTING / ERROR STATE === */}
+          {!loadingQuestions && (loading || submitError) && !result && (
             <motion.div
               key="loading"
               initial={{ opacity: 0, scale: 0.95 }}
@@ -313,14 +364,39 @@ function KuisForm() {
               exit={{ opacity: 0 }}
               className="bg-white rounded-3xl border border-gray-100 shadow-sm p-16 text-center"
             >
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-orange-50 flex items-center justify-center">
-                <Flame className="w-8 h-8 text-orange-400 animate-pulse" />
-              </div>
-              <p className="text-lg font-semibold text-gray-600 animate-pulse">
-                Menganalisis profil digital Anda...
-              </p>
+              {submitError ? (
+                // Error state — tampilkan pesan dan tombol retry
+                <>
+                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-50 flex items-center justify-center">
+                    <AlertTriangle className="w-8 h-8 text-red-400" />
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">Gagal Menyimpan Hasil</h2>
+                  <p className="text-gray-500 mb-6 max-w-sm mx-auto text-sm">{submitError}</p>
+                  <button
+                    onClick={() => {
+                      setSubmitError(null);
+                      finishQuiz(answers);
+                    }}
+                    className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-2xl transition-colors"
+                  >
+                    Coba Lagi
+                  </button>
+                </>
+              ) : (
+                // Loading / submitting state
+                <>
+                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-orange-50 flex items-center justify-center">
+                    <Flame className="w-8 h-8 text-orange-400 animate-pulse" />
+                  </div>
+                  <p className="text-lg font-semibold text-gray-600 animate-pulse">
+                    Menganalisis profil digital Anda...
+                  </p>
+                  <p className="text-xs text-gray-400 mt-2">Memverifikasi keamanan...</p>
+                </>
+              )}
             </motion.div>
           )}
+
 
           {/* === RESULT STATE === */}
           {!loadingQuestions &&
@@ -447,7 +523,7 @@ function KuisForm() {
             })()}
 
           {/* === ALREADY COMPLETED STATE === */}
-          {!loadingQuestions && !loading && !result && hasCompleted && (
+          {!loadingQuestions && !loadError && !loading && !result && hasCompleted && (
             <motion.div
               key="completed"
               variants={slideVariants}
@@ -466,18 +542,31 @@ function KuisForm() {
                 Setiap perangkat hanya diperkenankan mengisi kuis satu kali
                 untuk menjaga integritas data riset nasional.
               </p>
-              <Button
-                onClick={() => (window.location.href = "/")}
-                variant="primary"
-                className="w-full sm:w-auto px-8 py-3"
-              >
-                Kembali ke Beranda
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button
+                  onClick={() => (window.location.href = "/")}
+                  variant="primary"
+                  className="px-8 py-3"
+                >
+                  Kembali ke Beranda
+                </Button>
+                <Button
+                  onClick={() => {
+                    localStorage.removeItem("kuis_completed");
+                    setHasCompleted(false);
+                  }}
+                  variant="outline"
+                  className="px-8 py-3"
+                >
+                  Isi Ulang Kuis
+                </Button>
+              </div>
             </motion.div>
           )}
 
           {/* === REGISTRATION STATE === */}
           {!loadingQuestions &&
+            !loadError &&
             !loading &&
             !result &&
             !isStarted &&
@@ -553,6 +642,7 @@ function KuisForm() {
 
           {/* === QUIZ STATE === */}
           {!loadingQuestions &&
+            !loadError &&
             !loading &&
             !result &&
             isStarted &&
