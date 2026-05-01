@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, notFound } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { SchoolAutocomplete } from "@/components/SchoolAutocomplete";
 import {
@@ -133,6 +133,10 @@ function KuisForm() {
   const searchParams = useSearchParams();
   const source = searchParams.get("source") || undefined;
 
+  if (!source) {
+    notFound();
+  }
+
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [questions, setQuestions] = useState<any[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(true);
@@ -153,13 +157,7 @@ function KuisForm() {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Jika ada ?source= (dari QR Code), selalu izinkan isi ulang
-    const hasSource = !!searchParams.get("source");
-    if (
-      !hasSource &&
-      typeof window !== "undefined" &&
-      localStorage.getItem("kuis_completed") === "true"
-    ) {
+    if (typeof window !== "undefined" && localStorage.getItem("kuis_completed") === "true") {
       setHasCompleted(true);
     }
     async function loadQuestions() {

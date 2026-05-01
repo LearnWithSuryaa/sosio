@@ -337,9 +337,9 @@ export default function StudiKasusPage() {
                 Jadilah inspirasi bagi sekolah lain. Bagikan pengalaman unik sekolah Anda dalam membangun ekosistem digital yang sehat.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-                <Link href="/survei" className="flex-1 sm:flex-initial">
+                <Link href="/panduan" className="flex-1 sm:flex-initial">
                   <button className="w-full bg-white text-orange-600 font-black px-8 py-5 rounded-2xl shadow-xl hover:bg-orange-50 transition-all active:scale-95">
-                    Daftarkan Sekolah Sekarang
+                    Pelajari Panduan Kebijakan
                   </button>
                 </Link>
                 <button className="flex-1 sm:flex-initial bg-orange-600 text-white border border-white/20 font-black px-8 py-5 rounded-2xl hover:bg-orange-700 transition-all active:scale-95">

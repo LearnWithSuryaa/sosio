@@ -29,12 +29,12 @@ export function Navbar() {
   const [mobileInsightOpen, setMobileInsightOpen] = useState(false);
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
 
+  const isHiddenPage = pathname === "/kuis" || pathname === "/survei";
+
   // === PRIMARY (JANGAN DI DROPDOWN)
   const primaryLinks = [
     { href: "/", label: "Beranda" },
-    { href: "/survei", label: "Survei", icon: Activity },
     { href: "/peta", label: "Peta", icon: Map },
-    { href: "/kuis", label: "Kuis", icon: Lightbulb },
     { href: "/hasil", label: "Hasil", icon: BarChart3 },
   ];
   // === SECONDARY (DROPDOWN)
@@ -62,7 +62,7 @@ export function Navbar() {
       } else if (currentScrollY < lastScrollY) {
         setIsVisible(true);
       }
-      
+
       lastScrollY = currentScrollY;
     };
 
@@ -84,13 +84,15 @@ export function Navbar() {
     setMobileAboutOpen(false);
   };
 
+  if (isHiddenPage) return null;
+
   return (
     <>
       <nav
         className={cn(
           "fixed w-full top-0 z-50 transition-all duration-300",
           scrolled ? "glass-nav-light" : "bg-transparent",
-          !isVisible && "-translate-y-full"
+          !isVisible && "-translate-y-full",
         )}
       >
         <div className="max-w-7xl mx-auto px-4">
@@ -200,9 +202,9 @@ export function Navbar() {
 
             {/* Right side - Desktop */}
             <div className="hidden lg:flex items-center gap-4">
-              <Link href="/survei" className="relative group">
+              <Link href="/peta" className="relative group">
                 <Button variant="primary" className="text-sm px-6 py-2">
-                  Mulai Survei
+                  Peta Partisipasi
                 </Button>
               </Link>
             </div>
@@ -378,13 +380,13 @@ export function Navbar() {
 
               {/* Drawer Footer CTA */}
               <div className="px-5 py-5 border-t border-gray-100">
-                <Link href="/survei">
+                <Link href="/peta">
                   <Button
                     variant="primary"
                     className="w-full text-center text-sm"
                     onClick={closeMobile}
                   >
-                    Mulai Survei Sekarang
+                    Lihat Peta Nasional
                   </Button>
                 </Link>
               </div>

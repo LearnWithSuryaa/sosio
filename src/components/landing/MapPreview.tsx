@@ -80,11 +80,11 @@ export function MapPreview() {
                   Peta Interaktif Tersedia
                 </p>
                 <p className="text-gray-500 text-sm mb-5">
-                  Klik untuk melihat peta lengkap dengan data real-time
+                  Jelajahi peta persebaran secara lengkap
                 </p>
-                <Link href="/survei" className="block">
+                <Link href="/peta" className="block">
                   <Button variant="primary" className="w-full text-sm py-2">
-                    Mulai Survei Instansi
+                    Lihat Peta Lengkap
                   </Button>
                 </Link>
               </motion.div>

@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 import { Button } from "@/components/ui/Button";
@@ -10,7 +12,14 @@ const navLinks = [
   { href: "/kuis", label: "Kuis Digital" },
 ];
 
+import { usePathname } from "next/navigation";
+
 export function Footer() {
+  const pathname = usePathname();
+  const isHiddenPage = pathname === "/kuis" || pathname === "/survei";
+
+  if (isHiddenPage) return null;
+
   return (
     <footer className="bg-white border-t border-gray-200 relative overflow-hidden mt-auto pt-16 pb-8 sm:pt-20 sm:pb-10">
       {/* Decorative gradient top bar */}
@@ -95,16 +104,15 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* CTA Card */}
           <div className="clean-card p-6 bg-gradient-warm border-orange-100 flex flex-col justify-center h-full">
             <h4 className="text-gray-900 font-bold mb-2">Siap Bergabung?</h4>
             <p className="text-gray-700 text-sm mb-6 leading-relaxed">
-              Sekolah Anda bisa menjadi bagian dari gerakan nasional sadar
-              digital. Mari ciptakan ekosistem pendidikan yang lebih baik.
+              Jelajahi berbagai artikel dan wawasan terbaru untuk membangun
+              ekosistem digital yang sehat di sekolah Anda.
             </p>
-            <Link href="/survei" className="block w-full mt-2">
+            <Link href="/artikel" className="block w-full mt-2">
               <Button variant="primary" className="text-sm w-full py-2">
-                Mulai Survei
+                Baca Artikel
               </Button>
             </Link>
           </div>

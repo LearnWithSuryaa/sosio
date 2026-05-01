@@ -165,8 +165,8 @@ const STEPS = [
   },
   {
     num: "04",
-    title: "Daftarkan Komitmen",
-    desc: "Setelah implementasi, daftarkan sekolah di peta komitmen GESAMEGA.",
+    title: "Pahami Dampak Nasional",
+    desc: "Lihat bagaimana sekolah di seluruh Indonesia mengimplementasikan kebijakan ini di Peta Partisipasi.",
   },
 ];
 
@@ -359,17 +359,17 @@ export default function PanduanPage() {
             </div>
             <div className="relative z-10">
               <h3 className="font-extrabold text-gray-900 mb-1">
-                Sudah Siap Berkomitmen?
+                Butuh Inspirasi Lain?
               </h3>
               <p className="text-sm text-gray-600 mb-4">
-                Setelah mengunduh panduan, daftarkan sekolah Anda dan tampilkan
-                komitmen di Peta Partisipasi Nasional.
+                Pelajari bagaimana sekolah-sekolah pelopor mengimplementasikan
+                kebijakan ini secara efektif melalui studi kasus.
               </p>
               <Link
-                href="/survei"
+                href="/studi-kasus"
                 className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition-colors shadow-md shadow-orange-500/20"
               >
-                Mulai Survei <ArrowRight className="w-4 h-4" />
+                Baca Studi Kasus <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>

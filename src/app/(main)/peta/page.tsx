@@ -144,7 +144,7 @@ function PetaPageContent() {
         </div>
 
         {/* CTA Strip under Map */}
-        {from !== "komitmen" && (
+        {from === "survei" && (
           <div
             id="tour-peta-cta"
             className="mt-8 p-6 bg-gradient-to-r from-orange-50 to-rose-50 rounded-2xl border border-orange-100 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"

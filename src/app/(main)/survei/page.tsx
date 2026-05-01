@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, notFound } from "next/navigation";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/Button";
 import { SchoolAutocomplete } from "@/components/SchoolAutocomplete";
 import { submitSurvey } from "@/app/actions/survey";
@@ -68,12 +69,20 @@ function TileRadio({
 
 function SurveiForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const source = searchParams.get("source");
+
+  if (!source) {
+    notFound();
+  }
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [questions, setQuestions] = useState<any[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(true);
+  const [hasCompleted, setHasCompleted] = useState(false);
 
   // Wizard State
   const [currentStep, setCurrentStep] = useState(1);
@@ -89,6 +98,9 @@ function SurveiForm() {
   const [jawaban, setJawaban] = useState<Record<number, string>>({});
 
   useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("survei_completed") === "true") {
+      setHasCompleted(true);
+    }
     async function fetchQuestions() {
       try {
         const res = await fetch("/api/questions");
@@ -229,6 +241,7 @@ function SurveiForm() {
         ...form,
         jawaban: jawaban,
         captchaToken,
+        source: source || undefined,
       });
 
       if (!result.success) {
@@ -237,6 +250,9 @@ function SurveiForm() {
         return;
       }
 
+      if (typeof window !== "undefined") {
+        localStorage.setItem("survei_completed", "true");
+      }
       setSuccess(true);
       setTimeout(() => {
         router.push(`/peta?schoolId=${result.schoolId}&from=survei`);
@@ -273,6 +289,35 @@ function SurveiForm() {
     animate: { x: 0, opacity: 1 },
     exit: { x: -40, opacity: 0 },
   };
+
+  if (hasCompleted) {
+    return (
+      <div className="min-h-[80vh] flex flex-col items-center justify-center px-4 pt-20">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white rounded-3xl border border-gray-100 shadow-sm p-12 text-center max-w-md w-full"
+        >
+          <div className="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="w-10 h-10 text-orange-500" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">
+            Survei Sudah Diisi
+          </h2>
+          <p className="text-gray-500 mb-8 leading-relaxed">
+            Perangkat ini telah mengirimkan tanggapan untuk survei. Terima kasih
+            atas partisipasi Anda dalam memajukan ekosistem digital.
+          </p>
+          <Button
+            onClick={() => router.push("/")}
+            className="w-full py-4 text-lg"
+          >
+            Kembali ke Beranda
+          </Button>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[90vh] bg-[#FAFAFA] flex flex-col items-center pt-28 pb-12 px-4 relative overflow-hidden">
@@ -605,7 +650,15 @@ export default function SurveiPage() {
       reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
       language="id"
     >
-      <SurveiForm />
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            <Loader2 className="w-10 h-10 animate-spin text-orange-500" />
+          </div>
+        }
+      >
+        <SurveiForm />
+      </Suspense>
     </GoogleReCaptchaProvider>
   );
 }

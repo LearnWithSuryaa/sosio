@@ -4,28 +4,27 @@ import { Users, FileText, BarChart3, TrendingUp } from "lucide-react";
 export const revalidate = 0; // Disable cache for admin page
 
 async function getStats() {
-  // Single query: fetch only fields needed for both stats + category distribution
-  const { data: results, error } = await supabase
-    .from("quiz_results")
-    .select("id, result_category");
+  const [quizRes, surveyRes] = await Promise.all([
+    supabase.from("quiz_results").select("id, result_category"),
+    supabase.from("survey_results").select("id", { count: "exact" })
+  ]);
 
-  if (error) {
-    console.error("Failed to fetch admin stats", error);
-    return { totalUsers: 0, totalQuizzes: 0, categories: {} };
-  }
+  if (quizRes.error) console.error("Failed to fetch quiz stats", quizRes.error);
+  if (surveyRes.error) console.error("Failed to fetch survey stats", surveyRes.error);
 
-  const rows = results || [];
-  const totalQuizzes = rows.length;
+  const quizRows = quizRes.data || [];
+  const totalQuizzes = quizRows.length;
+  const totalSurveys = surveyRes.count || 0;
 
-  // Count unique users (by index, since all rows are individual submissions)
   const categories: Record<string, number> = {};
-  rows.forEach((r) => {
+  quizRows.forEach((r) => {
     categories[r.result_category] = (categories[r.result_category] || 0) + 1;
   });
 
   return {
-    totalUsers: totalQuizzes, // each quiz submission = one user
     totalQuizzes,
+    totalSurveys,
+    totalUsers: totalQuizzes + totalSurveys,
     categories,
   };
 }
@@ -34,9 +33,9 @@ export default async function AdminDashboard() {
   const stats = await getStats();
 
   const statCards = [
-    { title: "Total Pengguna", value: stats.totalUsers, icon: Users, color: "bg-blue-500" },
-    { title: "Kuis Diselesaikan", value: stats.totalQuizzes, icon: FileText, color: "bg-orange-500" },
-    { title: "Tingkat Penyelesaian", value: "100%", icon: TrendingUp, color: "bg-emerald-500" },
+    { title: "Total Partisipasi", value: stats.totalUsers, icon: Users, color: "bg-blue-500" },
+    { title: "Kuis Siswa Selesai", value: stats.totalQuizzes, icon: FileText, color: "bg-orange-500" },
+    { title: "Survei Instansi Selesai", value: stats.totalSurveys, icon: FileText, color: "bg-emerald-500" },
   ];
 
   return (

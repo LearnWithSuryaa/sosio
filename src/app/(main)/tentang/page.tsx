@@ -114,9 +114,9 @@ export default function TentangKamiPage() {
             {...fadeUp(0.3)}
             className="flex flex-wrap gap-4 justify-center mt-10"
           >
-            <Link href="/survei">
+            <Link href="/artikel">
               <button className="btn-pill-primary text-sm">
-                Mulai Survei <ArrowRight className="w-4 h-4 ml-2 inline" />
+                Baca Wawasan <ArrowRight className="w-4 h-4 ml-2 inline" />
               </button>
             </Link>
             <Link href="/visi-misi">
@@ -254,12 +254,12 @@ export default function TentangKamiPage() {
             <span className="text-orange-500">Bagian dari Gerakan</span>
           </h2>
           <p className="text-gray-600 mb-8 text-lg font-medium">
-            Daftarkan sekolahmu sekarang dan mulai perjalanan menuju ekosistem
-            digital yang lebih sehat.
+            Jelajahi berbagai wawasan dan panduan untuk membangun ekosistem
+            digital yang lebih sehat di sekolah Anda.
           </p>
-          <Link href="/survei">
+          <Link href="/artikel">
             <button className="btn-pill-primary text-sm">
-              Mulai Sekarang <ArrowRight className="w-4 h-4 ml-2 inline" />
+              Mulai Membaca <ArrowRight className="w-4 h-4 ml-2 inline" />
             </button>
           </Link>
         </motion.div>

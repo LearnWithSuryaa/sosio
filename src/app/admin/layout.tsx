@@ -7,10 +7,36 @@ import { LayoutDashboard, Database, QrCode, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 
-const NAV_ITEMS = [
-  { name: "Dashboard", path: "/admin", icon: LayoutDashboard },
-  { name: "Data Kuis", path: "/admin/data-kuis", icon: Database },
-  { name: "QR Generator", path: "/admin/qr-generator", icon: QrCode },
+type NavItem = {
+  name: string;
+  path: string;
+  icon: any;
+};
+
+type NavGroup = {
+  title: string;
+  items: NavItem[];
+};
+
+const NAV_GROUPS: NavGroup[] = [
+  {
+    title: "Overview",
+    items: [{ name: "Dashboard", path: "/admin", icon: LayoutDashboard }],
+  },
+  {
+    title: "Kuis Siswa",
+    items: [
+      { name: "Data Kuis", path: "/admin/data-kuis", icon: Database },
+      { name: "QR Kuis", path: "/admin/qr-generator", icon: QrCode },
+    ],
+  },
+  {
+    title: "Survei Instansi",
+    items: [
+      { name: "Data Survei", path: "/admin/data-survei", icon: Database },
+      { name: "QR Survei", path: "/admin/qr-survei", icon: QrCode },
+    ],
+  },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -42,27 +68,36 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           </span>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1.5">
-          {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.path;
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.path}
-                href={item.path}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                  isActive
-                    ? "bg-orange-50 text-orange-600 font-semibold"
-                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
-                }`}
-              >
-                <Icon
-                  className={`w-5 h-5 shrink-0 ${isActive ? "text-orange-500" : ""}`}
-                />
-                {item.name}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 p-4 space-y-6 overflow-y-auto">
+          {NAV_GROUPS.map((group) => (
+            <div key={group.title}>
+              <h3 className="px-4 text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
+                {group.title}
+              </h3>
+              <div className="space-y-1">
+                {group.items.map((item) => {
+                  const isActive = pathname === item.path;
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.path}
+                      href={item.path}
+                      className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 ${
+                        isActive
+                          ? "bg-orange-50 text-orange-700 font-bold"
+                          : "text-gray-500 font-medium hover:bg-gray-50 hover:text-gray-900"
+                      }`}
+                    >
+                      <Icon
+                        className={`w-5 h-5 shrink-0 transition-colors ${isActive ? "text-orange-500" : ""}`}
+                      />
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         <div className="p-4 border-t border-gray-100">

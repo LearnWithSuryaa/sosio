@@ -176,9 +176,9 @@ export default function VisiMisiPage() {
             pendidikan yang lebih baik.
           </p>
 
-          <Link href="/survei">
+          <Link href="/peta">
             <button className="btn-pill-primary px-10 py-4">
-              Mulai Sekarang <ArrowRight className="ml-2 inline w-5 h-5" />
+              Lihat Peta Partisipasi <ArrowRight className="ml-2 inline w-5 h-5" />
             </button>
           </Link>
         </motion.div>

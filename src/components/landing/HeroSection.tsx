@@ -160,9 +160,9 @@ export function HeroSection() {
             transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }}
           >
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Link href="/survei" className="w-full sm:w-auto">
+              <Link href="/panduan" className="w-full sm:w-auto">
                 <Button variant="primary" className="w-full sm:w-auto text-base shadow-orange-500/20 px-8 py-4">
-                  Survei Sekarang <ArrowRight className="w-5 h-5" />
+                  Pelajari Panduan <ArrowRight className="w-5 h-5" />
                 </Button>
               </Link>
               <Link href="/peta" className="w-full sm:w-auto">

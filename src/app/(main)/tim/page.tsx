@@ -96,10 +96,10 @@ export default function TimPengembangPage() {
             Visi & Misi
           </Link>
           <Link
-            href="/survei"
+            href="/tentang"
             className="w-full sm:w-auto btn-pill-primary text-sm"
           >
-            Mulai Partisipasi <ArrowRight className="w-4 h-4 ml-2 inline" />
+            Pelajari Gerakan Kami <ArrowRight className="w-4 h-4 ml-2 inline" />
           </Link>
         </motion.div>
 

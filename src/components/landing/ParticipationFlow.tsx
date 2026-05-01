@@ -9,16 +9,16 @@ const steps = [
   {
     icon: ClipboardList,
     step: "01",
-    title: "Isi Survei Evaluasi",
-    description: "Lengkapi survei penggunaan gadget di sekolah Anda. Proses hanya 2 menit.",
+    title: "Pelajari Panduan",
+    description: "Unduh dan pahami panduan serta template kebijakan digital untuk sekolah Anda.",
     color: "text-sky-500",
     bg: "bg-sky-50",
   },
   {
     icon: MapPin,
     step: "02",
-    title: "Temukan Sekolah di Peta",
-    description: "Sekolah Anda langsung muncul di peta partisipasi nasional secara real-time.",
+    title: "Terapkan Kebijakan",
+    description: "Sesuaikan template dengan kondisi sekolah dan sosialisasikan kebijakan baru.",
     color: "text-emerald-500",
     bg: "bg-emerald-50",
   },
@@ -115,9 +115,9 @@ export function ParticipationFlow() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center mt-14"
         >
-          <Link href="/survei">
+          <Link href="/panduan">
             <Button variant="primary" className="px-8 py-3.5 mx-auto">
-              Ikuti Tahap 1: Survei Diagnostik
+              Ikuti Tahap 1: Pelajari Panduan
             </Button>
           </Link>
         </motion.div>

@@ -1,103 +1,79 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { Metadata } from "next";
 import { supabase } from "@/lib/supabase";
-import {
-  Clock,
-  User,
-  Share2,
-  Calendar,
-  Link as LinkIcon,
-  Mail,
-  MessageCircle,
-} from "lucide-react";
+import { Clock, User, Calendar } from "lucide-react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import ShareButtons from "./ShareButtons";
 
-export default function ArtikelDetail() {
-  const params = useParams();
-  const router = useRouter();
-  const [article, setArticle] = useState<any>(null);
-  const [relatedBlogs, setRelatedBlogs] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+type Props = {
+  params: Promise<{ slug: string }>;
+};
 
-  useEffect(() => {
-    async function fetchArticle() {
-      if (!params.slug) return;
-
-      const { data, error } = await supabase
-        .from("articles")
-        .select("*")
-        .eq("id", params.slug)
-        .single();
-
-      if (data && !error) {
-        setArticle(data);
-      }
-      
-      const { data: related } = await supabase
-        .from("articles")
-        .select("id, judul, created_at, thumbnail_url")
-        .neq("id", params.slug)
-        .limit(3);
-      setRelatedBlogs(related || []);
-      
-      setLoading(false);
-    }
-    fetchArticle();
-  }, [params.slug]);
-  
-  const handleShare = async (platform: string) => {
-    const url = window.location.href;
-    const title = article?.judul || "Artikel SOSIO";
-    switch(platform) {
-      case 'share':
-        if (navigator.share) {
-          navigator.share({ title, url }).catch(console.error);
-        } else {
-          navigator.clipboard.writeText(url);
-          alert("Link disalin ke clipboard!");
-        }
-        break;
-      case 'mail':
-        window.location.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`;
-        break;
-      case 'wa':
-        window.open(`https://wa.me/?text=${encodeURIComponent(title + " " + url)}`, '_blank');
-        break;
-      case 'copy':
-        navigator.clipboard.writeText(url);
-        alert("Link disalin ke clipboard!");
-        break;
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white pt-32 pb-20 flex justify-center items-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-emerald-500"></div>
-      </div>
-    );
-  }
+// Generate SEO Metadata dynamically
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const resolvedParams = await params;
+  const { data: article } = await supabase
+    .from("articles")
+    .select("judul, isi, thumbnail_url, kategori")
+    .eq("id", resolvedParams.slug)
+    .single();
 
   if (!article) {
-    return (
-      <div className="min-h-screen bg-white pt-32 pb-20 text-center flex flex-col items-center justify-center">
-        <h1 className="text-3xl font-bold mb-4 text-gray-800">
-          Artikel Tidak Ditemukan
-        </h1>
-        <p className="text-gray-500 mb-8">
-          Maaf, artikel yang Anda cari tidak ada atau telah dihapus.
-        </p>
-        <button
-          onClick={() => router.back()}
-          className="px-6 py-3 bg-emerald-500 text-white font-bold rounded-2xl hover:bg-emerald-600 transition-colors"
-        >
-          Kembali ke Daftar Artikel
-        </button>
-      </div>
-    );
+    return {
+      title: "Artikel Tidak Ditemukan",
+    };
   }
+
+  const description = article.isi.substring(0, 160) + "...";
+  const ogImage =
+    article.thumbnail_url ||
+    "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80";
+
+  return {
+    title: `${article.judul} | GESAMEGA`,
+    description,
+    openGraph: {
+      title: article.judul,
+      description,
+      type: "article",
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: article.judul,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.judul,
+      description,
+      images: [ogImage],
+    },
+  };
+}
+
+export default async function ArtikelDetail({ params }: Props) {
+  const resolvedParams = await params;
+
+  const { data: article, error } = await supabase
+    .from("articles")
+    .select("*")
+    .eq("id", resolvedParams.slug)
+    .single();
+
+  if (error || !article) {
+    notFound();
+  }
+
+  const { data: related } = await supabase
+    .from("articles")
+    .select("id, judul, created_at, thumbnail_url")
+    .neq("id", resolvedParams.slug)
+    .limit(3);
+
+  const relatedBlogs = related || [];
 
   const dateStr = new Date(article.created_at).toLocaleDateString("id-ID", {
     day: "numeric",
@@ -112,7 +88,6 @@ export default function ArtikelDetail() {
 
   return (
     <div className="min-h-screen bg-white pt-28 pb-20">
-      {/* Decorative gradient similar to reference */}
       <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-br from-emerald-50/50 to-transparent pointer-events-none -z-10" />
 
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -180,7 +155,10 @@ export default function ArtikelDetail() {
             {/* Featured Image */}
             <div className="w-full aspect-[16/9] rounded-[2rem] overflow-hidden mb-12 relative shadow-sm border border-gray-100">
               <img
-                src={article.thumbnail_url || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80"}
+                src={
+                  article.thumbnail_url ||
+                  "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80"
+                }
                 alt={article.judul}
                 className="w-full h-full object-cover"
               />
@@ -216,27 +194,12 @@ export default function ArtikelDetail() {
               <h3 className="text-sm font-medium text-gray-500 mb-4">
                 Share on Social Media
               </h3>
-              <div className="flex items-center gap-3">
-                <button onClick={() => handleShare('share')} className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors">
-                  <Share2 className="w-4 h-4" />
-                </button>
-                <button onClick={() => handleShare('mail')} className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors">
-                  <Mail className="w-4 h-4" />
-                </button>
-                <button onClick={() => handleShare('wa')} className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors">
-                  <MessageCircle className="w-4 h-4" />
-                </button>
-                <button onClick={() => handleShare('copy')} className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors">
-                  <LinkIcon className="w-4 h-4" />
-                </button>
-              </div>
+              <ShareButtons title={article.judul} />
             </div>
 
             {/* All Tags */}
             <div>
-              <h3 className="text-sm font-medium text-gray-500 mb-4">
-                All Tags
-              </h3>
+              <h3 className="text-sm font-medium text-gray-500 mb-4">All Tags</h3>
               <div className="flex flex-wrap gap-2">
                 {[article.kategori || "Umum"].map((tag) => (
                   <span
@@ -256,18 +219,29 @@ export default function ArtikelDetail() {
               </h3>
               <div className="space-y-6">
                 {relatedBlogs.map((blog, i) => (
-                  <Link href={`/artikel/${blog.id}`} key={i} className="flex gap-4 group">
+                  <Link
+                    href={`/artikel/${blog.id}`}
+                    key={i}
+                    className="flex gap-4 group"
+                  >
                     <div className="w-24 h-[4.5rem] rounded-xl overflow-hidden flex-shrink-0">
                       <img
-                        src={blog.thumbnail_url || "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=200&q=80"}
+                        src={
+                          blog.thumbnail_url ||
+                          "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=200&q=80"
+                        }
                         alt={blog.judul}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1.5">
-                        <Calendar className="w-3 h-3" /> 
-                        {new Date(blog.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                        <Calendar className="w-3 h-3" />
+                        {new Date(blog.created_at).toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
                       </div>
                       <h4 className="text-sm font-semibold text-gray-900 leading-snug group-hover:text-emerald-600 transition-colors line-clamp-2">
                         {blog.judul}

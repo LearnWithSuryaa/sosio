@@ -10,6 +10,7 @@ export async function submitSurvey(data: {
   wilayah: string;
   jawaban: Record<string, any>;
   captchaToken: string;
+  source?: string;
 }) {
   try {
     const headersList = await headers();
@@ -80,6 +81,7 @@ export async function submitSurvey(data: {
         school_id: finalSchoolId,
         nama: data.nama || "Anonim",
         jawaban: data.jawaban,
+        source: data.source || null,
       });
 
     if (surveyError) throw surveyError;
