@@ -555,25 +555,13 @@ function KuisForm() {
                   Setiap perangkat hanya diperkenankan mengisi kuis satu kali
                   untuk menjaga integritas data riset nasional.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Button
-                    onClick={() => (window.location.href = "/")}
-                    variant="primary"
-                    className="px-8 py-3"
-                  >
-                    Kembali ke Beranda
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      localStorage.removeItem("kuis_completed");
-                      setHasCompleted(false);
-                    }}
-                    variant="outline"
-                    className="px-8 py-3"
-                  >
-                    Isi Ulang Kuis
-                  </Button>
-                </div>
+                <Button
+                  onClick={() => (window.location.href = "/")}
+                  variant="primary"
+                  className="px-8 py-3"
+                >
+                  Kembali ke Beranda
+                </Button>
               </motion.div>
             )}
 
