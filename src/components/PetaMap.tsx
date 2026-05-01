@@ -108,8 +108,8 @@ export default function PetaKomponen({ schoolId }: Props) {
   return (
     <div className="w-full h-full relative z-10 rounded-2xl overflow-hidden shadow-md border border-gray-200">
       <MapContainer 
-        center={[-2.5489, 118.0149]} 
-        zoom={5} 
+        center={[-7.4478, 112.7183]} 
+        zoom={11} 
         scrollWheelZoom={true} 
         className="w-full h-[600px] z-10"
       >

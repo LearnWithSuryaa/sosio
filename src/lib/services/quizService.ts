@@ -8,6 +8,7 @@ export interface SubmitQuizParams {
     option_id: number;
     score: number;
   }[];
+  source?: string;
 }
 
 export const quizService = {
@@ -66,6 +67,7 @@ export const quizService = {
         qualification: category,
         indicator_color,
         description,
+        source: params.source,
       },
       params.answers
     );

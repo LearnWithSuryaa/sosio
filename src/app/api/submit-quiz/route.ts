@@ -28,6 +28,7 @@ export async function POST(request: Request) {
       user_name: body.user_name || "Anonim",
       school_id: body.school_id || null,
       answers: body.answers,
+      source: body.source,
     });
 
     return NextResponse.json({ success: true, data: result });

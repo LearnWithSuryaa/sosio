@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { SchoolAutocomplete } from "@/components/SchoolAutocomplete";
 import {
@@ -129,6 +130,9 @@ const COLOR_CONFIG: Record<string, any> = {
 };
 
 function KuisForm() {
+  const searchParams = useSearchParams();
+  const source = searchParams.get("source") || undefined;
+  
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [questions, setQuestions] = useState<any[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(true);
@@ -222,6 +226,7 @@ function KuisForm() {
           user_name: userName,
           school_id: schoolId,
           answers: finalAnswers,
+          source: source,
           captchaToken,
         }),
       });
@@ -673,7 +678,9 @@ export default function KuisPage() {
       reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
       language="id"
     >
-      <KuisForm />
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-orange-500" /></div>}>
+        <KuisForm />
+      </Suspense>
     </GoogleReCaptchaProvider>
   );
 }

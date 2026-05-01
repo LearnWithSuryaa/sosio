@@ -22,6 +22,7 @@ export interface QuizResultPayload {
   qualification: string;
   indicator_color: string;
   description: string;
+  source?: string;
 }
 
 export interface QuizAnswerPayload {
@@ -81,6 +82,7 @@ export const quizRepository = {
         qualification: resultPayload.qualification,
         indicator_color: resultPayload.indicator_color,
         description: resultPayload.description,
+        source: resultPayload.source,
       })
       .select("id")
       .single();

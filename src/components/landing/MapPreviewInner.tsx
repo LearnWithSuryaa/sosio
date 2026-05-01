@@ -107,8 +107,8 @@ export default function MapPreviewInner() {
 
   return (
     <MapContainer
-      center={[-2.5489, 118.0149]}
-      zoom={5}
+      center={[-7.4478, 112.7183]}
+      zoom={11}
       zoomControl={false}
       attributionControl={false}
       className="w-full h-[420px]"
