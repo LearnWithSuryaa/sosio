@@ -132,7 +132,7 @@ const COLOR_CONFIG: Record<string, any> = {
 function KuisForm() {
   const searchParams = useSearchParams();
   const source = searchParams.get("source") || undefined;
-  
+
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [questions, setQuestions] = useState<any[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(true);
@@ -182,7 +182,7 @@ function KuisForm() {
       }
     }
     loadQuestions();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleStartQuiz = () => {
@@ -262,13 +262,15 @@ function KuisForm() {
         setSubmitError(
           json.error === "Token reCAPTCHA tidak ditemukan."
             ? "Verifikasi keamanan gagal. Pastikan koneksi internet Anda stabil dan coba lagi."
-            : (json.error || "Gagal menyimpan hasil. Silakan coba lagi.")
+            : json.error || "Gagal menyimpan hasil. Silakan coba lagi.",
         );
         setLoading(false);
       }
     } catch (e) {
       console.error("Could not save to API", e);
-      setSubmitError("Tidak dapat terhubung ke server. Periksa koneksi internet Anda.");
+      setSubmitError(
+        "Tidak dapat terhubung ke server. Periksa koneksi internet Anda.",
+      );
       setLoading(false);
     } finally {
       setLoading(false);
@@ -344,7 +346,9 @@ function KuisForm() {
               <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
                 <AlertTriangle className="w-8 h-8 text-red-400" />
               </div>
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Gagal Memuat Kuis</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
+                Gagal Memuat Kuis
+              </h2>
               <p className="text-gray-500 mb-6 max-w-sm mx-auto">{loadError}</p>
               <button
                 onClick={() => window.location.reload()}
@@ -370,8 +374,12 @@ function KuisForm() {
                   <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-50 flex items-center justify-center">
                     <AlertTriangle className="w-8 h-8 text-red-400" />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900 mb-2">Gagal Menyimpan Hasil</h2>
-                  <p className="text-gray-500 mb-6 max-w-sm mx-auto text-sm">{submitError}</p>
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">
+                    Gagal Menyimpan Hasil
+                  </h2>
+                  <p className="text-gray-500 mb-6 max-w-sm mx-auto text-sm">
+                    {submitError}
+                  </p>
                   <button
                     onClick={() => {
                       setSubmitError(null);
@@ -391,12 +399,13 @@ function KuisForm() {
                   <p className="text-lg font-semibold text-gray-600 animate-pulse">
                     Menganalisis profil digital Anda...
                   </p>
-                  <p className="text-xs text-gray-400 mt-2">Memverifikasi keamanan...</p>
+                  <p className="text-xs text-gray-400 mt-2">
+                    Memverifikasi keamanan...
+                  </p>
                 </>
               )}
             </motion.div>
           )}
-
 
           {/* === RESULT STATE === */}
           {!loadingQuestions &&
@@ -509,7 +518,7 @@ function KuisForm() {
                   </div>
 
                   {/* CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row items-center gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <Button
                       onClick={() => (window.location.href = "/")}
                       variant="outline"
@@ -523,46 +532,50 @@ function KuisForm() {
             })()}
 
           {/* === ALREADY COMPLETED STATE === */}
-          {!loadingQuestions && !loadError && !loading && !result && hasCompleted && (
-            <motion.div
-              key="completed"
-              variants={slideVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              className="bg-white rounded-3xl border border-gray-100 shadow-sm p-12 text-center"
-            >
-              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <CheckCircle2 className="w-8 h-8 text-emerald-500" />
-              </div>
-              <h2 className="text-2xl font-extrabold text-gray-900 mb-4">
-                Anda Sudah Mengisi Kuis
-              </h2>
-              <p className="text-gray-500 mb-8 max-w-sm mx-auto">
-                Setiap perangkat hanya diperkenankan mengisi kuis satu kali
-                untuk menjaga integritas data riset nasional.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Button
-                  onClick={() => (window.location.href = "/")}
-                  variant="primary"
-                  className="px-8 py-3"
-                >
-                  Kembali ke Beranda
-                </Button>
-                <Button
-                  onClick={() => {
-                    localStorage.removeItem("kuis_completed");
-                    setHasCompleted(false);
-                  }}
-                  variant="outline"
-                  className="px-8 py-3"
-                >
-                  Isi Ulang Kuis
-                </Button>
-              </div>
-            </motion.div>
-          )}
+          {!loadingQuestions &&
+            !loadError &&
+            !loading &&
+            !result &&
+            hasCompleted && (
+              <motion.div
+                key="completed"
+                variants={slideVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="bg-white rounded-3xl border border-gray-100 shadow-sm p-12 text-center"
+              >
+                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-500" />
+                </div>
+                <h2 className="text-2xl font-extrabold text-gray-900 mb-4">
+                  Anda Sudah Mengisi Kuis
+                </h2>
+                <p className="text-gray-500 mb-8 max-w-sm mx-auto">
+                  Setiap perangkat hanya diperkenankan mengisi kuis satu kali
+                  untuk menjaga integritas data riset nasional.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button
+                    onClick={() => (window.location.href = "/")}
+                    variant="primary"
+                    className="px-8 py-3"
+                  >
+                    Kembali ke Beranda
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      localStorage.removeItem("kuis_completed");
+                      setHasCompleted(false);
+                    }}
+                    variant="outline"
+                    className="px-8 py-3"
+                  >
+                    Isi Ulang Kuis
+                  </Button>
+                </div>
+              </motion.div>
+            )}
 
           {/* === REGISTRATION STATE === */}
           {!loadingQuestions &&
@@ -768,7 +781,13 @@ export default function KuisPage() {
       reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
       language="id"
     >
-      <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-orange-500" /></div>}>
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            <Loader2 className="w-10 h-10 animate-spin text-orange-500" />
+          </div>
+        }
+      >
         <KuisForm />
       </Suspense>
     </GoogleReCaptchaProvider>
