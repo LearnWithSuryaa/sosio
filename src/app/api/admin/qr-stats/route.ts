@@ -2,10 +2,9 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 // GET: Fetch all QR campaigns with participant counts
-// Uses 2 parallel queries instead of N+1 (one per campaign)
 export async function GET() {
   try {
-    // Fetch campaigns & all quiz_results sources in parallel
+    // Fetch campaigns & pre-aggregated stats in parallel
     const [campaignsRes, countsRes] = await Promise.all([
       supabaseAdmin
         .from("qr_campaigns")
@@ -13,9 +12,8 @@ export async function GET() {
         .not("source", "ilike", "survei-%")
         .order("created_at", { ascending: false }),
       supabaseAdmin
-        .from("quiz_results")
-        .select("source")
-        .not("source", "is", null),
+        .from("quiz_source_stats")
+        .select("source, participant_count"),
     ]);
 
     if (campaignsRes.error) throw campaignsRes.error;
@@ -25,7 +23,7 @@ export async function GET() {
     const countMap: Record<string, number> = {};
     for (const row of countsRes.data || []) {
       if (row.source) {
-        countMap[row.source] = (countMap[row.source] || 0) + 1;
+        countMap[row.source] = Number(row.participant_count) || 0;
       }
     }
 

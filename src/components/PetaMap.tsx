@@ -63,6 +63,7 @@ interface School {
 
 interface Props {
   schoolId?: string;
+  schools: School[];
 }
 
 function MapController({ schools, targetId }: { schools: School[], targetId?: string }) {
@@ -78,25 +79,7 @@ function MapController({ schools, targetId }: { schools: School[], targetId?: st
   return null;
 }
 
-export default function PetaKomponen({ schoolId }: Props) {
-  const [schools, setSchools] = useState<School[]>([]);
-
-  useEffect(() => {
-    async function fetchSchools() {
-      const { data, error } = await supabase
-        .from("schools")
-        .select("id, nama_sekolah, latitude, longitude, status, status_validasi")
-        .neq("status_validasi", "flagged")
-        .not("latitude", "is", null)
-        .not("longitude", "is", null)
-        .limit(500);
-      if (error) {
-        console.error("Gagal mengambil data peta dari Supabase:", error);
-      }
-      if (data) setSchools(data);
-    }
-    fetchSchools();
-  }, []);
+export default function PetaKomponen({ schoolId, schools }: Props) {
 
   const getIcon = (status: string, validasi: string) => {
     const isPending = validasi === "pending";

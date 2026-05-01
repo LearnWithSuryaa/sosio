@@ -10,9 +10,8 @@ export async function GET() {
         .ilike("source", "survei-%")
         .order("created_at", { ascending: false }),
       supabaseAdmin
-        .from("survey_results")
-        .select("source")
-        .not("source", "is", null)
+        .from("survey_source_stats")
+        .select("source, participant_count")
     ]);
 
     if (campaignsRes.error) throw campaignsRes.error;
@@ -23,7 +22,7 @@ export async function GET() {
     for (const row of surveyRes.data || []) {
       const source = row.source;
       if (source) {
-        countMap[source] = (countMap[source] || 0) + 1;
+        countMap[source] = Number(row.participant_count) || 0;
       }
     }
 
