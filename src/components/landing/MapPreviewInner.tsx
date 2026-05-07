@@ -150,16 +150,13 @@ export default function MapPreviewInner() {
       className="w-full h-[420px]"
       style={{ cursor: "default", background: "#080c14" }}
     >
-      {/*
-        Dark tile: Stadia Alidade Smooth Dark
-        — tidak butuh API key, production-ready, sangat gelap & kontras tinggi.
-        Alternatif jika ingin lebih ke charcoal: CartoDB Dark Matter (sudah dipakai sebelumnya).
-      */}
-      <TileLayer
-        url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-        // fallback ke CartoDB jika Stadia tidak tersedia:
-        // url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-      />
+       <TileLayer
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          subdomains="abcd"
+          maxZoom={19}
+        />
+        
       <DisableInteractions />
 
       {schools
