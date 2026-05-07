@@ -100,7 +100,8 @@ export default function QRGeneratorPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Hapus kampanye ini? Tindakan tidak dapat dibatalkan.")) return;
+    if (!confirm("Hapus kampanye ini? Tindakan tidak dapat dibatalkan."))
+      return;
     try {
       const res = await fetch(`/api/admin/qr-campaigns?id=${id}`, {
         method: "DELETE",
@@ -157,7 +158,13 @@ export default function QRGeneratorPage() {
       ctx.fillRect(0, 0, W, H);
 
       // 2. Abstract glowing blobs
-      const drawBlob = (x: number, y: number, r: number, color: string, alpha: number) => {
+      const drawBlob = (
+        x: number,
+        y: number,
+        r: number,
+        color: string,
+        alpha: number,
+      ) => {
         ctx.save();
         ctx.globalAlpha = alpha;
         const g = ctx.createRadialGradient(x, y, 0, x, y, r);
@@ -204,7 +211,9 @@ export default function QRGeneratorPage() {
 
       // 5. GESAMEGA top badge
       const badgeY = 44;
-      const pillW = 200; const pillH = 38; const pillX = (W - pillW) / 2;
+      const pillW = 200;
+      const pillH = 38;
+      const pillX = (W - pillW) / 2;
       ctx.save();
       ctx.beginPath();
       ctx.roundRect(pillX, badgeY, pillW, pillH, 19);
@@ -221,7 +230,8 @@ export default function QRGeneratorPage() {
       ctx.restore();
 
       // 6. White QR card
-      const cardW = 300; const cardH = 300;
+      const cardW = 300;
+      const cardH = 300;
       const cardX = (W - cardW) / 2;
       const cardY = 106;
       const cardR = 24;
@@ -244,7 +254,13 @@ export default function QRGeneratorPage() {
       ctx.fill();
       ctx.clip();
       const qrPad = 28;
-      ctx.drawImage(qrImg, cardX + qrPad, cardY + qrPad, cardW - qrPad * 2, cardH - qrPad * 2);
+      ctx.drawImage(
+        qrImg,
+        cardX + qrPad,
+        cardY + qrPad,
+        cardW - qrPad * 2,
+        cardH - qrPad * 2,
+      );
       ctx.restore();
 
       // Orange corner accents on card
@@ -264,7 +280,8 @@ export default function QRGeneratorPage() {
       ctx.closePath();
       ctx.fill();
       // bottom-right corner
-      const brX = cardX + cardW; const brY = cardY + cardH;
+      const brX = cardX + cardW;
+      const brY = cardY + cardH;
       ctx.beginPath();
       ctx.moveTo(brX, brY - cardR);
       ctx.arcTo(brX, brY, brX - cardR, brY, cardR);
@@ -288,7 +305,10 @@ export default function QRGeneratorPage() {
       ctx.font = "bold 26px system-ui, sans-serif";
       ctx.fillStyle = "#ffffff";
       let displayName = campaign.name;
-      while (ctx.measureText(displayName).width > W - 80 && displayName.length > 4) {
+      while (
+        ctx.measureText(displayName).width > W - 80 &&
+        displayName.length > 4
+      ) {
         displayName = displayName.slice(0, -1);
       }
       if (displayName !== campaign.name) displayName += "…";
@@ -302,7 +322,9 @@ export default function QRGeneratorPage() {
       ctx.font = "13px 'Courier New', monospace";
       ctx.textAlign = "center";
       const chipTW = ctx.measureText(chipText).width;
-      const chipW2 = chipTW + 30; const chipH2 = 32; const chipX2 = (W - chipW2) / 2;
+      const chipW2 = chipTW + 30;
+      const chipH2 = 32;
+      const chipX2 = (W - chipW2) / 2;
       ctx.fillStyle = "rgba(249,115,22,0.13)";
       ctx.strokeStyle = "rgba(249,115,22,0.3)";
       ctx.lineWidth = 1;
@@ -335,7 +357,11 @@ export default function QRGeneratorPage() {
       ctx.textBaseline = "middle";
       ctx.font = "12px system-ui, sans-serif";
       ctx.fillStyle = "rgba(253,186,116,0.5)";
-      ctx.fillText("Scan QR Code untuk mengisi Kuis Refleksi Digital", W / 2, footerY);
+      ctx.fillText(
+        "Scan QR Code untuk mengisi Kuis Refleksi Digital",
+        W / 2,
+        footerY,
+      );
       ctx.font = "bold 13px system-ui, sans-serif";
       ctx.fillStyle = "rgba(249,115,22,0.75)";
       ctx.fillText("gesamega.web.id", W / 2, footerY + 22);
@@ -350,7 +376,6 @@ export default function QRGeneratorPage() {
     };
     qrImg.src = svgUrl;
   };
-
 
   const selected = campaigns.find((c) => c.id === selectedId);
 
@@ -393,23 +418,8 @@ export default function QRGeneratorPage() {
               <p className="text-sm text-amber-700 mb-3">
                 {isTableMissing
                   ? "Tabel qr_campaigns belum ada di Supabase. Jalankan SQL berikut di Supabase → SQL Editor:"
-                  : (fetchError || createError)}
+                  : fetchError || createError}
               </p>
-              {isTableMissing && (
-                <pre className="bg-amber-100 border border-amber-200 rounded-xl p-4 text-xs font-mono text-amber-900 overflow-x-auto whitespace-pre-wrap">
-{`-- 1. Tambah kolom source ke quiz_results (jika belum ada)
-ALTER TABLE quiz_results 
-ADD COLUMN IF NOT EXISTS source TEXT DEFAULT NULL;
-
--- 2. Buat tabel qr_campaigns
-CREATE TABLE IF NOT EXISTS qr_campaigns (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name TEXT NOT NULL,
-  source TEXT NOT NULL UNIQUE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);`}
-                </pre>
-              )}
               <button
                 onClick={fetchCampaigns}
                 className="mt-3 text-sm font-semibold text-amber-700 underline hover:text-amber-900"
@@ -581,7 +591,7 @@ CREATE TABLE IF NOT EXISTS qr_campaigns (
                             onClick={() =>
                               handleCopyLink(
                                 `${baseUrl}/kuis?source=${selected.source}`,
-                                selected.id
+                                selected.id,
                               )
                             }
                             className="text-gray-400 hover:text-orange-500 transition-colors shrink-0"

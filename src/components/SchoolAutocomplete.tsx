@@ -17,10 +17,31 @@ interface Props {
   hasError?: boolean;
 }
 
-const statusConfig: Record<string, { label: string; color: string; icon: typeof CheckCircle2 }> = {
-  komitmen: { label: "Komitmen ✓",  color: "text-emerald-600 bg-emerald-50",  icon: CheckCircle2 },
-  survei:   { label: "Sudah Survei", color: "text-amber-600 bg-amber-50",      icon: Clock },
-  belum:    { label: "Belum Ikut",   color: "text-gray-500 bg-gray-100",        icon: Circle },
+const statusConfig: Record<string, { label: string; dotColor: string; badgeBg: string; badgeText: string; badgeBorder: string; icon: typeof CheckCircle2 }> = {
+  komitmen: {
+    label: "Komitmen ✓",
+    dotColor: "#34d399",
+    badgeBg: "rgba(16,185,129,0.15)",
+    badgeText: "#34d399",
+    badgeBorder: "rgba(16,185,129,0.30)",
+    icon: CheckCircle2,
+  },
+  survei: {
+    label: "Sudah Survei",
+    dotColor: "#fbbf24",
+    badgeBg: "rgba(245,158,11,0.15)",
+    badgeText: "#fbbf24",
+    badgeBorder: "rgba(245,158,11,0.30)",
+    icon: Clock,
+  },
+  belum: {
+    label: "Belum Ikut",
+    dotColor: "rgba(255,255,255,0.30)",
+    badgeBg: "rgba(255,255,255,0.07)",
+    badgeText: "rgba(255,255,255,0.45)",
+    badgeBorder: "rgba(255,255,255,0.12)",
+    icon: Circle,
+  },
 };
 
 export function SchoolAutocomplete({
@@ -32,16 +53,13 @@ export function SchoolAutocomplete({
   const [schools, setSchools] = useState<School[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [searching, setSearching] = useState(false);
+  const [focused, setFocused] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Debounced server-side search — only fires when user has typed ≥ 2 chars
   const searchSchools = (query: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (query.length < 2) {
-      setSchools([]);
-      return;
-    }
+    if (query.length < 2) { setSchools([]); return; }
     debounceRef.current = setTimeout(async () => {
       setSearching(true);
       const { data } = await supabase
@@ -71,7 +89,10 @@ export function SchoolAutocomplete({
     <div className="relative w-full" ref={wrapperRef}>
       {/* Input */}
       <div className="relative">
-        <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-orange-400 pointer-events-none" />
+        <MapPin
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+          style={{ color: focused ? "#f97316" : "rgba(255,255,255,0.35)" }}
+        />
         <input
           required
           type="text"
@@ -81,21 +102,74 @@ export function SchoolAutocomplete({
             setIsOpen(true);
             searchSchools(e.target.value);
           }}
-          onFocus={() => { setIsOpen(true); if (value.length >= 2) searchSchools(value); }}
+          onFocus={() => { setFocused(true); setIsOpen(true); if (value.length >= 2) searchSchools(value); }}
+          onBlur={() => setFocused(false)}
           placeholder={placeholder}
-          className={`form-input pl-10 ${hasError ? "has-error" : ""}`}
+          style={{
+            width: "100%",
+            paddingLeft: "2.5rem",
+            paddingRight: "1rem",
+            paddingTop: "0.75rem",
+            paddingBottom: "0.75rem",
+            borderRadius: "0.75rem",
+            fontSize: "0.875rem",
+            fontWeight: 500,
+            color: "#ffffff",
+            background: hasError
+              ? "rgba(239,68,68,0.08)"
+              : focused
+              ? "rgba(255,255,255,0.08)"
+              : "rgba(255,255,255,0.06)",
+            border: hasError
+              ? "1px solid rgba(239,68,68,0.40)"
+              : focused
+              ? "1px solid rgba(249,115,22,0.60)"
+              : "1px solid rgba(255,255,255,0.12)",
+            boxShadow: focused ? "0 0 0 4px rgba(249,115,22,0.10)" : "none",
+            outline: "none",
+            transition: "all 0.2s ease",
+          }}
         />
+        {/* Searching spinner */}
+        {searching && (
+          <div
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 animate-spin"
+            style={{ borderColor: "rgba(255,255,255,0.15)", borderTopColor: "#f97316" }}
+          />
+        )}
       </div>
 
       {/* Dropdown */}
       {isOpen && value.length > 0 && (
-        <div className="absolute z-50 w-full mt-1.5 bg-white rounded-2xl shadow-xl border border-orange-100 overflow-hidden">
+        <div
+          className="absolute z-50 w-full mt-2 overflow-hidden"
+          style={{
+            background: "#0e0e0e",
+            border: "1px solid rgba(255,255,255,0.10)",
+            borderRadius: "1rem",
+            boxShadow: "0 24px 48px rgba(0,0,0,0.60), 0 0 0 1px rgba(255,255,255,0.04)",
+          }}
+        >
           {filtered.length > 0 ? (
             <ul>
-              <li className="px-4 py-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50/80 border-b border-gray-100 flex items-center gap-2">
-                <Search className="w-3 h-3" />
-                {searching ? "Mencari..." : `Sekolah Terdaftar (${filtered.length})`}
+              {/* Header */}
+              <li
+                className="flex items-center gap-2 px-4 py-2.5"
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  borderBottom: "1px solid rgba(255,255,255,0.07)",
+                }}
+              >
+                <Search className="w-3 h-3" style={{ color: "rgba(255,255,255,0.30)" }} />
+                <span
+                  className="text-[10px] font-black uppercase tracking-widest"
+                  style={{ color: "rgba(255,255,255,0.30)" }}
+                >
+                  {searching ? "Mencari..." : `Sekolah Terdaftar (${filtered.length})`}
+                </span>
               </li>
+
+              {/* Items */}
               {filtered.map((school) => {
                 const cfg = statusConfig[school.status] || statusConfig["belum"];
                 const Icon = cfg.icon;
@@ -103,13 +177,45 @@ export function SchoolAutocomplete({
                   <li
                     key={school.id}
                     onClick={() => { onChange(school.nama_sekolah, school); setIsOpen(false); }}
-                    className="px-4 py-3 hover:bg-orange-50 cursor-pointer flex items-center gap-3 transition-colors border-b border-gray-50 last:border-0"
+                    className="flex items-center gap-3 px-4 py-3 cursor-pointer transition-all duration-150"
+                    style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
+                    onMouseEnter={e => {
+                      Object.assign((e.currentTarget as HTMLLIElement).style, {
+                        background: "rgba(249,115,22,0.10)",
+                      });
+                    }}
+                    onMouseLeave={e => {
+                      Object.assign((e.currentTarget as HTMLLIElement).style, {
+                        background: "transparent",
+                      });
+                    }}
                   >
-                    <Icon className={`w-4 h-4 shrink-0 ${school.status === 'komitmen' ? 'text-emerald-500' : school.status === 'survei' ? 'text-amber-500' : 'text-gray-400'}`} />
-                    <span className="text-sm font-semibold text-gray-800 flex-1 leading-tight">
+                    {/* Status dot */}
+                    <div
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{
+                        background: cfg.dotColor,
+                        boxShadow: school.status !== "belum" ? `0 0 6px ${cfg.dotColor}` : "none",
+                      }}
+                    />
+
+                    {/* Name */}
+                    <span
+                      className="text-sm font-semibold flex-1 leading-tight"
+                      style={{ color: "rgba(255,255,255,0.85)" }}
+                    >
                       {school.nama_sekolah}
                     </span>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${cfg.color}`}>
+
+                    {/* Badge */}
+                    <span
+                      className="text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0"
+                      style={{
+                        background: cfg.badgeBg,
+                        color: cfg.badgeText,
+                        border: `1px solid ${cfg.badgeBorder}`,
+                      }}
+                    >
                       {cfg.label}
                     </span>
                   </li>
@@ -117,10 +223,18 @@ export function SchoolAutocomplete({
               })}
             </ul>
           ) : (
-            <div className="px-5 py-5 text-center">
-              <p className="text-sm font-semibold text-gray-700 mb-1">Sekolah tidak ditemukan</p>
-              <p className="text-xs text-gray-500 leading-relaxed">
-                Pastikan nama sekolah sesuai dengan nama resmi yang terdaftar di database nasional.
+            <div className="px-5 py-6 text-center">
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3"
+                style={{ background: "rgba(255,255,255,0.05)" }}
+              >
+                <Search className="w-5 h-5" style={{ color: "rgba(255,255,255,0.20)" }} />
+              </div>
+              <p className="text-sm font-bold mb-1" style={{ color: "rgba(255,255,255,0.55)" }}>
+                Sekolah tidak ditemukan
+              </p>
+              <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.28)" }}>
+                Pastikan nama sesuai nama resmi yang terdaftar di database nasional.
               </p>
             </div>
           )}

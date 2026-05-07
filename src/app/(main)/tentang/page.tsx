@@ -19,32 +19,40 @@ const pillars = [
     title: "Berorientasi Dampak",
     description:
       "Setiap fitur dirancang untuk menghasilkan perubahan nyata di ekosistem pendidikan digital Indonesia.",
-    iconColor: "text-orange-500",
-    bg: "bg-orange-50",
+    glowColor: "rgba(249,115,22,0.12)",
+    glowBorder: "rgba(249,115,22,0.25)",
+    iconColor: "text-orange-400",
+    hoverGlow: "rgba(249,115,22,0.08)",
   },
   {
     icon: Globe2,
     title: "Jangkauan Nasional",
     description:
       "Menghubungkan ribuan sekolah dari Sabang sampai Merauke dalam satu gerakan kolaboratif.",
-    iconColor: "text-emerald-500",
-    bg: "bg-emerald-50",
+    glowColor: "rgba(16,185,129,0.12)",
+    glowBorder: "rgba(16,185,129,0.25)",
+    iconColor: "text-emerald-400",
+    hoverGlow: "rgba(16,185,129,0.08)",
   },
   {
     icon: ShieldCheck,
     title: "Berbasis Komitmen",
     description:
       "Mendorong sekolah untuk tidak hanya berpartisipasi, tetapi juga berkomitmen secara resmi.",
-    iconColor: "text-violet-500",
-    bg: "bg-violet-50",
+    glowColor: "rgba(139,92,246,0.12)",
+    glowBorder: "rgba(139,92,246,0.25)",
+    iconColor: "text-violet-400",
+    hoverGlow: "rgba(139,92,246,0.08)",
   },
   {
     icon: BookOpen,
     title: "Berbagi Pengetahuan",
     description:
       "Platform studi kasus yang menampilkan praktik terbaik dari sekolah-sekolah pelopor digital.",
-    iconColor: "text-rose-500",
-    bg: "bg-rose-50",
+    glowColor: "rgba(244,63,94,0.12)",
+    glowBorder: "rgba(244,63,94,0.25)",
+    iconColor: "text-rose-400",
+    hoverGlow: "rgba(244,63,94,0.08)",
   },
 ];
 
@@ -79,31 +87,43 @@ const fadeUp = (delay = 0) => ({
 
 export default function TentangKamiPage() {
   return (
-    <div className="bg-[#FAFAFA] min-h-screen">
-      {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section className="relative pt-36 pb-24 px-4 overflow-hidden bg-white">
-        {/* soft bg blobs */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-orange-50 rounded-full blur-3xl opacity-60 pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-rose-50 rounded-full blur-3xl opacity-50 pointer-events-none" />
+    <div className="bg-[#050505] min-h-screen">
+      {/* ── HERO ── */}
+      <section className="relative pt-36 pb-24 px-4 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-[5%] right-[10%] w-[600px] h-[600px] bg-orange-600/10 rounded-full blur-[160px] mix-blend-screen" />
+          <div className="absolute bottom-0 left-[5%] w-[500px] h-[500px] bg-rose-500/8 rounded-full blur-[140px] mix-blend-screen" />
+        </div>
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div {...fadeUp(0)}>
-            <span className="section-label-light bg-orange-50 text-orange-600 mb-5">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-[0.15em] mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
               Tentang Kami
             </span>
           </motion.div>
 
           <motion.h1
             {...fadeUp(0.1)}
-            className="text-4xl md:text-6xl font-extrabold text-gray-900 mt-6 mb-6 leading-tight tracking-tight"
+            className="text-4xl md:text-6xl font-extrabold text-white mt-4 mb-6 leading-tight tracking-tight"
           >
             Gerakan Digital{" "}
-            <span className="text-orange-500">untuk Sekolah</span> Indonesia
+            <span
+              style={{
+                background: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              untuk Sekolah
+            </span>{" "}
+            Indonesia
           </motion.h1>
 
           <motion.p
             {...fadeUp(0.2)}
-            className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-medium leading-relaxed"
+            className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto font-medium leading-relaxed"
           >
             GESEMEGA adalah platform kolaboratif nasional yang membantu sekolah
             membangun ekosistem digital yang sehat, terukur, dan berdampak nyata
@@ -120,7 +140,7 @@ export default function TentangKamiPage() {
               </button>
             </Link>
             <Link href="/visi-misi">
-              <button className="btn-pill-outline text-sm">
+              <button className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-white font-semibold text-sm transition-all duration-300">
                 Visi &amp; Misi
               </button>
             </Link>
@@ -128,9 +148,21 @@ export default function TentangKamiPage() {
         </div>
       </section>
 
-      {/* ── STATS STRIP ───────────────────────────────────────────── */}
-      <section className="py-10 px-4 bg-gradient-to-r from-orange-500 to-rose-500">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-white text-center">
+      {/* ── STATS STRIP ── */}
+      <section className="relative py-12 px-4 overflow-hidden">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(249,115,22,0.85) 0%, rgba(244,63,94,0.85) 100%)",
+          }}
+        />
+        {/* Glassmorphism shine overlay */}
+        <div className="absolute inset-0 bg-white/5 mix-blend-overlay" />
+        <div className="absolute top-0 inset-x-0 h-px bg-white/20" />
+        <div className="absolute bottom-0 inset-x-0 h-px bg-black/20" />
+
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-white text-center relative z-10">
           {[
             { value: "3.600+", label: "Sekolah Terdaftar", icon: School },
             { value: "34", label: "Provinsi", icon: Globe2 },
@@ -154,15 +186,30 @@ export default function TentangKamiPage() {
         </div>
       </section>
 
-      {/* ── PILLAR CARDS ──────────────────────────────────────────── */}
-      <section className="py-24 px-4 bg-[#FAFAFA]">
+      {/* ── PILLAR CARDS ── */}
+      <section className="py-24 px-4 relative">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] left-[10%] w-[400px] h-[400px] bg-orange-500/5 rounded-full blur-[120px]" />
+        </div>
         <div className="max-w-6xl mx-auto">
           <motion.div {...fadeUp(0)} className="text-center mb-14">
-            <span className="section-label-light bg-orange-50 text-orange-600 mb-5">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-[0.15em] mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
               Nilai Kami
             </span>
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mt-5 mb-4 leading-tight tracking-tight">
-              Fondasi yang <span className="text-orange-500">Kami Pegang</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mt-4 mb-4 leading-tight tracking-tight">
+              Fondasi yang{" "}
+              <span
+                style={{
+                  background:
+                    "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                Kami Pegang
+              </span>
             </h2>
           </motion.div>
 
@@ -172,17 +219,33 @@ export default function TentangKamiPage() {
                 key={p.title}
                 {...fadeUp(i * 0.1)}
                 whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                className="clean-card p-6 flex flex-col items-start bg-white"
+                className="group rounded-3xl p-6 flex flex-col items-start relative overflow-hidden transition-all duration-300"
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
               >
+                {/* Hover glow */}
                 <div
-                  className={`w-14 h-14 rounded-2xl ${p.bg} flex items-center justify-center mb-6 shadow-sm`}
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{
+                    background: `radial-gradient(circle at top left, ${p.hoverGlow} 0%, transparent 70%)`,
+                  }}
+                />
+
+                <div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-sm relative z-10 shrink-0"
+                  style={{
+                    background: p.glowColor,
+                    border: `1px solid ${p.glowBorder}`,
+                  }}
                 >
                   <p.icon className={`w-7 h-7 ${p.iconColor}`} />
                 </div>
-                <h3 className="font-bold text-gray-900 mb-3 text-lg leading-snug">
+                <h3 className="font-bold text-white mb-3 text-lg leading-snug relative z-10">
                   {p.title}
                 </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
+                <p className="text-white/50 text-sm leading-relaxed relative z-10">
                   {p.description}
                 </p>
               </motion.div>
@@ -191,22 +254,35 @@ export default function TentangKamiPage() {
         </div>
       </section>
 
-      {/* ── MILESTONE TIMELINE ────────────────────────────────────── */}
-      <section className="py-24 px-4 bg-white">
+      {/* ── MILESTONE TIMELINE ── */}
+      <section className="py-24 px-4 relative">
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+
         <div className="max-w-4xl mx-auto">
           <motion.div {...fadeUp(0)} className="text-center mb-14">
-            <span className="section-label-light bg-orange-50 text-orange-600 mb-5">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-[0.15em] mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
               Perjalanan
             </span>
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mt-5 mb-4 leading-tight tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mt-4 mb-4 leading-tight tracking-tight">
               Dari Ide ke{" "}
-              <span className="text-orange-500">Gerakan Nasional</span>
+              <span
+                style={{
+                  background:
+                    "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                Gerakan Nasional
+              </span>
             </h2>
           </motion.div>
 
           <div className="relative">
-            {/* vertical line */}
-            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-gray-200 -translate-x-1/2" />
+            {/* Vertical line */}
+            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-orange-500/30 via-white/30 to-transparent -translate-x-1/2" />
 
             <div className="space-y-10">
               {milestones.map((m, i) => (
@@ -215,23 +291,34 @@ export default function TentangKamiPage() {
                   {...fadeUp(i * 0.15)}
                   className={`relative flex items-start gap-6 md:gap-0 ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}
                 >
-                  {/* content */}
+                  {/* Card */}
                   <div
-                    className={`clean-card p-6 bg-white ml-14 md:ml-0 md:w-[calc(50%-2.5rem)] ${i % 2 === 0 ? "md:mr-auto md:pr-10" : "md:ml-auto md:pl-10"}`}
+                    className={`group rounded-2xl p-6 ml-14 md:ml-0 md:w-[calc(50%-2.5rem)] relative overflow-hidden transition-all duration-300 hover:-translate-y-1 ${i % 2 === 0 ? "md:mr-auto md:pr-10" : "md:ml-auto md:pl-10"}`}
+                    style={{
+                      background: "rgba(255,255,255,0.03)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                    }}
                   >
-                    <span className="section-label-light bg-orange-50 text-orange-600 mb-3 text-xs">
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                      style={{
+                        background:
+                          "radial-gradient(circle at top right, rgba(249,115,22,0.07) 0%, transparent 70%)",
+                      }}
+                    />
+                    <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-widest mb-3 relative z-10">
                       {m.year}
                     </span>
-                    <h3 className="font-bold text-gray-900 text-lg mt-2 mb-2">
+                    <h3 className="font-bold text-white text-lg mt-2 mb-2 relative z-10">
                       {m.label}
                     </h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">
+                    <p className="text-white/50 text-sm leading-relaxed relative z-10">
                       {m.desc}
                     </p>
                   </div>
 
-                  {/* dot */}
-                  <div className="absolute left-8 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-orange-500 border-4 border-white shadow" />
+                  {/* Dot */}
+                  <div className="absolute left-8 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-orange-500 border-4 border-[#050505] shadow-lg shadow-orange-500/30 z-10" />
                 </motion.div>
               ))}
             </div>
@@ -239,25 +326,47 @@ export default function TentangKamiPage() {
         </div>
       </section>
 
-      {/* ── CTA ───────────────────────────────────────────────────── */}
-      <section className="py-20 px-4 bg-[#FAFAFA]">
+      {/* ── CTA ── */}
+      <section className="py-20 px-4 relative">
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+
         <motion.div
           {...fadeUp(0)}
-          className="max-w-3xl mx-auto clean-card bg-white p-10 md:p-14 text-center"
+          className="max-w-3xl mx-auto rounded-3xl p-10 md:p-14 text-center relative overflow-hidden"
+          style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}
         >
-          <span className="section-label-light bg-orange-50 text-orange-600 mb-5">
+          {/* Glow corner */}
+          <div className="absolute -top-20 -right-20 w-72 h-72 bg-orange-500/10 blur-[100px] rounded-full pointer-events-none" />
+
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-[0.15em] mb-6 relative z-10">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
             Bergabung
           </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mt-5 mb-4 leading-tight tracking-tight">
+
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-4 mb-4 leading-tight tracking-tight relative z-10">
             Jadikan Sekolahmu
             <br />
-            <span className="text-orange-500">Bagian dari Gerakan</span>
+            <span
+              style={{
+                background: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Bagian dari Gerakan
+            </span>
           </h2>
-          <p className="text-gray-600 mb-8 text-lg font-medium">
+
+          <p className="text-white/50 mb-8 text-lg font-medium relative z-10">
             Jelajahi berbagai wawasan dan panduan untuk membangun ekosistem
             digital yang lebih sehat di sekolah Anda.
           </p>
-          <Link href="/artikel">
+
+          <Link href="/artikel" className="relative z-10">
             <button className="btn-pill-primary text-sm">
               Mulai Membaca <ArrowRight className="w-4 h-4 ml-2 inline" />
             </button>

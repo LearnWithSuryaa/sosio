@@ -39,28 +39,46 @@ export function LiveStatsSection({ schools, commitments }: LiveStatsSectionProps
   const participationRate = schools > 0 ? Math.round((commitments / schools) * 100) : 0;
 
   const stats = [
-    { icon: School,     value: schools,           suffix: "+", label: "Sekolah Terdaftar",   color: "text-sky-500", bg: "bg-sky-50 border-sky-100" },
-    { icon: Handshake,  value: commitments,        suffix: "+", label: "Komitmen Tersahkan",  color: "text-emerald-500", bg: "bg-emerald-50 border-emerald-100" },
-    { icon: TrendingUp, value: participationRate,  suffix: "%", label: "Rasio Partisipasi",   color: "text-amber-500", bg: "bg-amber-50 border-amber-100" },
+    { icon: School,     value: schools,           suffix: "+", label: "Sekolah Terdaftar",   color: "#38bdf8", bg: "rgba(56,189,248,0.12)", border: "rgba(56,189,248,0.25)" },
+    { icon: Handshake,  value: commitments,        suffix: "+", label: "Komitmen Tersahkan",  color: "#10b981", bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.25)" },
+    { icon: TrendingUp, value: participationRate,  suffix: "%", label: "Rasio Partisipasi",   color: "#f59e0b", bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.25)" },
   ];
 
   return (
-    <section className="py-24 px-4 relative overflow-hidden bg-white">
+    <section className="relative overflow-hidden py-24 px-4 bg-[#050505]">
+      {/* ── Dynamic Glowing Mesh ── */}
+      <div className="absolute inset-0 bg-white/[0.01] mix-blend-overlay" />
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-sky-500/10 blur-[130px] rounded-[100%] mix-blend-screen pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[10%] w-[400px] h-[400px] bg-emerald-500/10 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
+      </div>
       <div className="max-w-5xl mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="section-label-light bg-sky-50 text-sky-600 mb-5">Data Real-Time</span>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-5 mb-4 leading-tight tracking-tight">
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-400 text-xs font-bold uppercase tracking-[0.15em] mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
+            Data Real-Time
+          </span>
+          <h2 className="text-4xl md:text-6xl font-black text-white mt-2 mb-4 leading-[1.05] tracking-tight">
             Statistik{" "}
-            <span className="text-sky-500">Partisipasi</span>{" "}
+            <span
+              style={{
+                background: "linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Partisipasi
+            </span>{" "}
             Terkini
           </h2>
-          <p className="text-gray-600 font-medium max-w-xl mx-auto text-lg">
+          <p className="text-white/50 font-medium max-w-xl mx-auto text-lg leading-relaxed">
             Data langsung dari sistem kami, diperbarui secara otomatis setiap kali sekolah baru berpartisipasi.
           </p>
         </motion.div>
@@ -74,18 +92,31 @@ export function LiveStatsSection({ schools, commitments }: LiveStatsSectionProps
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="clean-card bg-white rounded-3xl p-8 text-center flex flex-col items-center"
+              className="relative rounded-[32px] p-8 text-center flex flex-col items-center group overflow-hidden border"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.03)",
+                borderColor: "rgba(255,255,255,0.08)",
+              }}
             >
+              {/* Hover glow */}
               <div
-                className={`inline-flex p-4 rounded-2xl ${stat.bg} mb-6 shadow-sm border`}
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                style={{
+                  background: `radial-gradient(circle at 50% 50%, ${stat.color}15 0%, transparent 70%)`,
+                }}
+              />
+
+              <div
+                className="relative z-10 inline-flex p-4 rounded-2xl mb-6 shadow-sm border transition-transform duration-300 group-hover:scale-110"
+                style={{ backgroundColor: stat.bg, borderColor: stat.border }}
               >
-                <stat.icon className={`w-8 h-8 ${stat.color}`} />
+                <stat.icon className="w-8 h-8" style={{ color: stat.color }} />
               </div>
 
-              <h3 className="text-5xl font-black text-gray-900 mb-2 tracking-tight">
+              <h3 className="relative z-10 text-5xl font-black text-white mb-2 tracking-tight">
                 <AnimatedNumber value={stat.value} suffix={stat.suffix} />
               </h3>
-              <p className="text-gray-500 font-semibold uppercase text-xs tracking-wide">{stat.label}</p>
+              <p className="relative z-10 text-white/40 font-semibold uppercase text-xs tracking-widest">{stat.label}</p>
             </motion.div>
           ))}
         </div>

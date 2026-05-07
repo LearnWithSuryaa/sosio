@@ -23,33 +23,83 @@ const ICON_MAP_PIN =
   `<path d="M20 10c0 6-8 13-8 13s-8-7-8-13a8 8 0 0 1 16 0Z"/>` +
   `<circle cx="12" cy="10" r="3"/>`;
 
-function makeLucideMarker(svgPaths: string, bg: string, border: string, isPending: boolean = false): L.DivIcon {
+function makeLucideMarker(
+  svgPaths: string,
+  bg: string,
+  border: string,
+  shadow: string,
+  isPending: boolean = false,
+): L.DivIcon {
+  const size = isPending ? 24 : 30;
+  const iconSize = isPending ? 12 : 15;
+
   const html = `
     <div style="
-      width:28px; height:28px;
+      width:${size}px; height:${size}px;
       background:${bg};
       border-radius:50%;
       border:2px solid ${border};
-      box-shadow:0 2px 8px ${bg}90;
-      opacity: ${isPending ? 0.5 : 1};
+      box-shadow: 0 0 10px ${shadow}, 0 2px 6px rgba(0,0,0,0.6);
+      opacity: ${isPending ? 0.45 : 1};
       display:flex; align-items:center; justify-content:center;
     ">
-      <svg width="14" height="14" viewBox="0 0 24 24"
+      <svg width="${iconSize}" height="${iconSize}" viewBox="0 0 24 24"
         fill="none" stroke="white"
         stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         ${svgPaths}
       </svg>
     </div>`;
-  return L.divIcon({ html, className: "", iconSize: isPending ? [24, 24] : [28, 28], iconAnchor: isPending ? [12, 12] : [14, 14], popupAnchor: [0, -16] });
+
+  return L.divIcon({
+    html,
+    className: "",
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    popupAnchor: [0, -16],
+  });
 }
 
-const iconGreen  = makeLucideMarker(ICON_CHECK,     "#10B981", "#059669");
-const iconYellow = makeLucideMarker(ICON_CLIPBOARD, "#F59E0B", "#D97706");
-const iconGray   = makeLucideMarker(ICON_MAP_PIN,   "#94A3B8", "#64748B");
+// ── Icons — vivid on dark map ──────────────────────────────────────────────
+const iconGreen = makeLucideMarker(
+  ICON_CHECK,
+  "#10B981",
+  "#34d399",
+  "#10b98170",
+);
+const iconYellow = makeLucideMarker(
+  ICON_CLIPBOARD,
+  "#f59e0b",
+  "#fbbf24",
+  "#f59e0b70",
+);
+const iconGray = makeLucideMarker(
+  ICON_MAP_PIN,
+  "#475569",
+  "#64748b",
+  "#47556940",
+);
 
-const iconGreenPending  = makeLucideMarker(ICON_CHECK,     "#10B981", "#059669", true);
-const iconYellowPending = makeLucideMarker(ICON_CLIPBOARD, "#F59E0B", "#D97706", true);
-const iconGrayPending   = makeLucideMarker(ICON_MAP_PIN,   "#94A3B8", "#64748B", true);
+const iconGreenPending = makeLucideMarker(
+  ICON_CHECK,
+  "#10B981",
+  "#34d399",
+  "#10b98140",
+  true,
+);
+const iconYellowPending = makeLucideMarker(
+  ICON_CLIPBOARD,
+  "#f59e0b",
+  "#fbbf24",
+  "#f59e0b40",
+  true,
+);
+const iconGrayPending = makeLucideMarker(
+  ICON_MAP_PIN,
+  "#475569",
+  "#64748b",
+  "#00000020",
+  true,
+);
 
 
 interface School {
@@ -89,16 +139,16 @@ export default function PetaKomponen({ schoolId, schools }: Props) {
   };
 
   return (
-    <div className="w-full h-full relative z-10 rounded-2xl overflow-hidden shadow-md border border-gray-200">
+    <div className="w-full h-full relative z-10 rounded-2xl overflow-hidden" style={{ background: "#080c14" }}>
       <MapContainer 
         center={[-7.4478, 112.7183]} 
         zoom={11} 
         scrollWheelZoom={true} 
         className="w-full h-[600px] z-10"
+        style={{ background: "#080c14" }}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
         />
         <MapController schools={schools} targetId={schoolId} />
         
@@ -110,10 +160,10 @@ export default function PetaKomponen({ schoolId, schools }: Props) {
           >
             <Popup>
               <div className="text-center font-sans">
-                <h3 className="font-bold text-kominfo-navy mb-1">{school.nama_sekolah}</h3>
+                <h3 className="font-bold text-gray-900 mb-1">{school.nama_sekolah}</h3>
                 <span className={`inline-block px-2 py-1 text-xs rounded-md uppercase tracking-wider font-semibold ${
-                  school.status === 'komitmen' ? 'bg-green-100 text-green-700' : 
-                  school.status === 'survei' ? 'bg-yellow-100 text-amber-700' : 
+                  school.status === 'komitmen' ? 'bg-emerald-100 text-emerald-700' : 
+                  school.status === 'survei' ? 'bg-orange-100 text-orange-700' : 
                   'bg-gray-100 text-gray-700'
                 }`}>
                   {school.status}
@@ -121,7 +171,7 @@ export default function PetaKomponen({ schoolId, schools }: Props) {
 
                 {school.status !== 'komitmen' && (
                   <div className="mt-4 border-t pt-3">
-                     <a href="/komitmen" className="block text-xs bg-kominfo-blue text-white px-3 py-2 rounded-md hover:bg-blue-700 transition">
+                     <a href="/komitmen" className="block text-xs bg-orange-500 text-white px-3 py-2 rounded-md hover:bg-orange-600 transition">
                        Sahkan Komitmen
                      </a>
                   </div>

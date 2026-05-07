@@ -1,6 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { supabase } from "@/lib/supabase";
 import { verifyRecaptcha } from "@/lib/recaptcha";
 
@@ -110,6 +111,9 @@ export async function submitSurvey(data: {
         })
         .eq("id", school.id);
     }
+
+    // Invalidate peta page cache so new survei marker appears immediately
+    revalidatePath("/peta");
 
     return { success: true, schoolId: finalSchoolId };
   } catch (error: any) {

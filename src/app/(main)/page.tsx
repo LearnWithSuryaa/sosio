@@ -20,15 +20,28 @@ export const revalidate = 3600;
 async function getLandingData() {
   try {
     const [
-      { count: totalSchools }, 
+      { count: totalSchools },
       { count: totalCommitments },
       { data: caseStudies },
-      { data: articles }
+      { data: articles },
     ] = await Promise.all([
       supabase.from("schools").select("*", { count: "exact", head: true }),
-      supabase.from("schools").select("*", { count: "exact", head: true }).eq("status", "komitmen"),
-      supabase.from("case_studies").select("id, judul, isi, penulis, category, impact, badge, created_at, school_id, schools(nama_sekolah)").order("created_at", { ascending: false }).limit(3),
-      supabase.from("articles").select("id, judul, isi, penulis, kategori, thumbnail_url, created_at").order("created_at", { ascending: false }).limit(3),
+      supabase
+        .from("schools")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "komitmen"),
+      supabase
+        .from("case_studies")
+        .select(
+          "id, judul, isi, penulis, category, impact, badge, created_at, school_id, schools(nama_sekolah)",
+        )
+        .order("created_at", { ascending: false })
+        .limit(3),
+      supabase
+        .from("articles")
+        .select("id, judul, isi, penulis, kategori, thumbnail_url, created_at")
+        .order("created_at", { ascending: false })
+        .limit(3),
     ]);
 
     return {
@@ -38,11 +51,11 @@ async function getLandingData() {
       articles: articles || [],
     };
   } catch {
-    return { 
-      schools: BASE_SCHOOLS, 
+    return {
+      schools: BASE_SCHOOLS,
       commitments: BASE_COMMITMENTS,
       caseStudies: [],
-      articles: []
+      articles: [],
     };
   }
 }
@@ -75,12 +88,6 @@ export default async function Home() {
 
       {/* 8. Articles - Insights */}
       <ArticleSection articles={data.articles} />
-
-      {/* 9. Quiz - Personal Hook */}
-      <QuizSection />
-
-      {/* 10. Final CTA - Conversion */}
-      <FinalCTA />
     </div>
   );
 }

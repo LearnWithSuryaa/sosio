@@ -45,15 +45,21 @@ export default async function DataKuisPage() {
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
                 <th className="p-4 text-sm font-bold text-gray-600">Nama</th>
-                <th className="p-4 text-sm font-bold text-gray-600">Kategori Hasil</th>
-                <th className="p-4 text-sm font-bold text-gray-600">Source (QR)</th>
+                <th className="p-4 text-sm font-bold text-gray-600">
+                  Kategori Hasil
+                </th>
+                <th className="p-4 text-sm font-bold text-gray-600">
+                  Source (QR)
+                </th>
                 <th className="p-4 text-sm font-bold text-gray-600">Waktu</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {data.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="p-4 text-sm text-gray-900 font-medium">{row.user_name}</td>
+                  <td className="p-4 text-sm text-gray-900 font-medium">
+                    {row.user_name}
+                  </td>
                   <td className="p-4 text-sm">
                     <span className="inline-block px-2.5 py-1 bg-orange-50 text-orange-700 text-xs font-bold rounded-lg border border-orange-100">
                       {row.result_category}

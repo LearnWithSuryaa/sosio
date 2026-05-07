@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Check, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 const steps = [
   { path: "/survei",   label: "Diagnostik",  hint: "Isi Survei",      id: 1 },
@@ -22,18 +23,21 @@ export function JourneyBar() {
     : "0%";
 
   return (
-    <div id="tour-journey-bar" className="w-full max-w-2xl mx-auto mb-10 mt-4 px-2">
+    <div id="tour-journey-bar" className="w-full max-w-3xl mx-auto mb-16 mt-8 px-6">
       {/* Step track */}
       <div className="relative flex items-center justify-between">
-        {/* Background connector */}
-        <div className="absolute top-5 left-0 right-0 h-[2px] bg-gray-200 mx-[2.5rem]" />
+        {/* Background connector - Subtle glass line */}
+        <div className="absolute top-6 left-0 right-0 h-[2px] bg-white/5 mx-12 rounded-full overflow-hidden">
+           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+        </div>
 
-        {/* Active connector */}
+        {/* Active connector - Glowing gradient */}
         <div
-          className="absolute top-5 left-0 h-[2px] mx-[2.5rem] transition-all duration-700 ease-out"
+          className="absolute top-6 left-0 h-[2px] mx-12 transition-all duration-[1.5s] ease-[0.22,1,0.36,1]"
           style={{
-            width: progressPct,
-            background: "linear-gradient(90deg, #f97316, #fb7185)",
+            width: `calc(${progressPct} - ${currentStep === 1 ? '0px' : '48px'})`,
+            background: "linear-gradient(90deg, #f97316, #fb923c, #ea580c)",
+            boxShadow: "0 0 20px rgba(249,115,22,0.4), 0 0 40px rgba(249,115,22,0.1)",
           }}
         />
 
@@ -43,46 +47,88 @@ export function JourneyBar() {
           const isFuture  = currentStep < step.id;
 
           return (
-            <div key={step.id} className="relative z-10 flex flex-col items-center gap-2 w-1/3">
-              {/* Circle */}
-              <div
-                className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-400 border-2",
-                  isPassed
-                    ? "bg-gradient-to-br from-orange-400 to-rose-500 border-orange-400 text-white shadow-lg shadow-orange-400/30"
-                    : isActive
-                    ? "bg-white border-orange-400 text-orange-500 shadow-lg shadow-orange-400/20 animate-pulse-ring"
-                    : "bg-white border-gray-200 text-gray-400"
+            <div key={step.id} className="relative z-10 flex flex-col items-center gap-4 w-1/3 group">
+              {/* Circle Container */}
+              <div className="relative">
+                {/* Outer Glow for Active */}
+                {isActive && (
+                  <motion.div 
+                    layoutId="journey-glow"
+                    className="absolute -inset-4 bg-orange-500/20 rounded-full blur-xl"
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                  />
                 )}
-              >
-                {isPassed
-                  ? <Check className="w-5 h-5 stroke-[3]" />
-                  : <span className="text-sm font-bold">{step.id}</span>
-                }
+
+                {/* Main Circle */}
+                <div
+                  className={cn(
+                    "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-700 border-2 relative overflow-hidden",
+                    isPassed
+                      ? "bg-orange-500 border-orange-400 text-white shadow-[0_10px_25px_rgba(234,88,12,0.4)] rotate-0"
+                      : isActive
+                      ? "bg-[#0a0a0a] border-orange-500 text-orange-400 shadow-[0_0_30px_rgba(249,115,22,0.3)] scale-110"
+                      : "bg-white/2 border-white/5 text-white/20 backdrop-blur-xl hover:border-white/10"
+                  )}
+                >
+                  {/* Decorative background for active */}
+                  {isActive && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent" />
+                  )}
+
+                  {isPassed ? (
+                    <motion.div
+                      initial={{ scale: 0, rotate: -45 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                    >
+                      <Check className="w-6 h-6 stroke-[4]" />
+                    </motion.div>
+                  ) : (
+                    <span className="text-lg font-black relative z-10 tracking-tighter">
+                      0{step.id}
+                    </span>
+                  )}
+                </div>
               </div>
 
-              {/* Label */}
+              {/* Label Group */}
               <div className="flex flex-col items-center text-center">
                 <span
                   className={cn(
-                    "text-xs font-bold tracking-wide transition-colors",
-                    isActive  ? "text-orange-600"
-                    : isPassed ? "text-orange-400"
-                    : "text-gray-400"
+                    "text-[10px] font-black uppercase tracking-[0.3em] transition-all duration-500",
+                    isActive  ? "text-white translate-y-0"
+                    : isPassed ? "text-orange-500/60"
+                    : "text-white/10 group-hover:text-white/20"
                   )}
                 >
                   {step.label}
                 </span>
-                {isActive && (
-                  <span className="text-[10px] text-orange-400 font-medium mt-0.5 hidden sm:block">
-                    ← Sekarang
-                  </span>
-                )}
-                {isFuture && step.id === currentStep + 1 && (
-                  <span className="text-[10px] text-gray-400 font-medium mt-0.5 hidden sm:block flex items-center gap-0.5">
-                    Berikutnya <ArrowRight className="w-2.5 h-2.5 inline" />
-                  </span>
-                )}
+                
+                <div className="h-5 overflow-hidden">
+                  <AnimatePresence mode="wait">
+                    {isActive ? (
+                      <motion.span
+                        key="active"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="text-[9px] text-orange-500 font-black uppercase tracking-[0.2em] mt-1 block"
+                      >
+                        Sedang Berjalan
+                      </motion.span>
+                    ) : isPassed ? (
+                      <motion.span
+                        key="done"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="text-[9px] text-emerald-500/50 font-black uppercase tracking-[0.2em] mt-1 block"
+                      >
+                        Selesai
+                      </motion.span>
+                    ) : null}
+                  </AnimatePresence>
+                </div>
               </div>
             </div>
           );

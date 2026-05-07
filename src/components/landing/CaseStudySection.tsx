@@ -51,20 +51,20 @@ export function CaseStudySection({ caseStudies = [] }: CaseStudySectionProps) {
     
     switch (cs.category) {
       case "regulasi":
-        tagColor = "bg-orange-50 text-orange-600 border-orange-200";
-        accent = "text-orange-500";
+        tagColor = "bg-orange-500/10 text-orange-400 border-orange-500/20";
+        accent = "#f97316"; // orange-500
         break;
       case "pembelajaran":
-        tagColor = "bg-blue-50 text-blue-600 border-blue-200";
-        accent = "text-blue-500";
+        tagColor = "bg-blue-500/10 text-blue-400 border-blue-500/20";
+        accent = "#3b82f6"; // blue-500
         break;
       case "literasi":
-        tagColor = "bg-emerald-50 text-emerald-600 border-emerald-200";
-        accent = "text-emerald-500";
+        tagColor = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+        accent = "#10b981"; // emerald-500
         break;
       case "inovasi":
-        tagColor = "bg-rose-50 text-rose-600 border-rose-200";
-        accent = "text-rose-500";
+        tagColor = "bg-rose-500/10 text-rose-400 border-rose-500/20";
+        accent = "#f43f5e"; // rose-500
         break;
     }
 
@@ -79,26 +79,48 @@ export function CaseStudySection({ caseStudies = [] }: CaseStudySectionProps) {
       accent,
       stars: 5,
     };
-  }) : fallbackStudies;
+  }) : fallbackStudies.map(fs => ({
+    ...fs,
+    tagColor: fs.tagColor.replace('50', '500/10').replace('600', '400').replace('200', '500/20'),
+    accent: fs.accent === "text-emerald-500" ? "#10b981" : 
+            fs.accent === "text-sky-500" ? "#0ea5e9" : 
+            fs.accent === "text-violet-500" ? "#8b5cf6" : "#10b981",
+  }));
 
   return (
-    <section className="py-24 px-4 bg-white relative overflow-hidden">
+    <section className="relative py-28 px-4 overflow-hidden bg-[#050505]">
+      {/* ── Dynamic Glowing Mesh ── */}
+      <div className="absolute inset-0 bg-white/[0.01] mix-blend-overlay" />
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[20%] right-[5%] w-[600px] h-[600px] bg-emerald-500/10 blur-[150px] rounded-full mix-blend-screen" />
+        <div className="absolute bottom-[10%] left-[5%] w-[500px] h-[500px] bg-sky-500/10 blur-[130px] rounded-full mix-blend-screen" />
+      </div>
       <div className="max-w-6xl mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="section-label-light bg-emerald-50 text-emerald-600 mb-5">
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-bold uppercase tracking-[0.15em] mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             Inspirasi
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-5 mb-4 leading-tight tracking-tight">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mt-2 mb-4 leading-tight tracking-tight">
             Praktik Baik dari{" "}
-            <span className="text-emerald-500">Sekolah Lain</span>
+            <span
+              style={{
+                background: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Sekolah Lain
+            </span>
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-lg font-medium">
+          <p className="text-white/50 max-w-2xl mx-auto text-lg font-medium leading-relaxed">
             Pelajari pendekatan inovatif yang telah terbukti berhasil dalam mengelola penggunaan gadget di lingkungan sekolah.
           </p>
         </motion.div>
@@ -112,32 +134,40 @@ export function CaseStudySection({ caseStudies = [] }: CaseStudySectionProps) {
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.6, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="clean-card bg-white rounded-2xl p-7 relative flex flex-col"
+              className="relative bg-white/[0.03] border border-white/10 backdrop-blur-sm rounded-[24px] p-8 flex flex-col group overflow-hidden"
             >
+              {/* Hover glow */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                style={{
+                  background: `radial-gradient(circle at 0% 0%, ${cs.accent}12 0%, transparent 60%)`,
+                }}
+              />
+
               {/* Top accent */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100" />
+              <div className="absolute top-0 left-0 right-0 h-1" style={{ background: `linear-gradient(to right, transparent, ${cs.accent}50, transparent)` }} />
 
               {/* Tag */}
-              <span className={`self-start inline-block text-xs font-bold px-3 py-1 rounded-full border mb-5 ${cs.tagColor}`}>
+              <span className={`relative z-10 self-start inline-block text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border mb-6 ${cs.tagColor}`}>
                 {cs.tag}
               </span>
 
               {/* Stars */}
-              <div className="flex gap-1 mb-4">
+              <div className="relative z-10 flex gap-1 mb-5">
                 {Array.from({ length: cs.stars }).map((_, j) => (
-                  <Star key={j} className={`w-3.5 h-3.5 fill-current ${cs.accent}`} />
+                  <Star key={j} className="w-4 h-4" style={{ fill: cs.accent, color: cs.accent }} />
                 ))}
               </div>
 
-              <h3 className="text-xl font-bold text-gray-900 mb-1">{cs.title}</h3>
-              <p className={`text-sm font-bold mb-4 ${cs.accent}`}>{cs.school}</p>
+              <h3 className="relative z-10 text-xl font-bold text-white mb-2 leading-snug">{cs.title}</h3>
+              <p className="relative z-10 text-sm font-bold mb-5" style={{ color: cs.accent }}>{cs.school}</p>
 
-              <p className="text-gray-600 text-sm leading-relaxed mb-6 flex-1">{cs.story}</p>
+              <p className="relative z-10 text-white/50 text-sm leading-relaxed mb-8 flex-1">{cs.story}</p>
 
               {/* Quote block */}
-              <div className="relative mt-auto pt-4 border-t border-gray-100">
-                <Quote className="absolute top-2 right-2 w-12 h-12 text-gray-100 -z-10" />
-                <p className="text-sm italic text-gray-500 font-medium leading-relaxed">
+              <div className="relative z-10 mt-auto pt-5 border-t border-white/10">
+                <Quote className="absolute top-3 right-0 w-12 h-12 text-white/5 -z-10" />
+                <p className="text-sm italic text-white/40 font-medium leading-relaxed">
                   &ldquo;{cs.quote}&rdquo;
                 </p>
               </div>
@@ -150,12 +180,12 @@ export function CaseStudySection({ caseStudies = [] }: CaseStudySectionProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="text-center mt-12"
+          className="text-center mt-16"
         >
           <Link href="/studi-kasus">
-            <button className="btn-pill-outline px-8 py-3.5 mx-auto text-sm">
+            <button className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold text-sm transition-all duration-300 hover:scale-[1.02]">
               Lihat Semua Studi Kasus
-              <ArrowRight className="w-4 h-4 ml-2" />
+              <ArrowRight className="w-4 h-4" />
             </button>
           </Link>
         </motion.div>

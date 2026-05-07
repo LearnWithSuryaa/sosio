@@ -3,26 +3,27 @@ import { PetaClient } from "./PetaClient";
 import { supabase } from "@/lib/supabase";
 import { unstable_cache } from "next/cache";
 
-export const revalidate = 3600;
+export const revalidate = 60; // fallback ISR: 1 menit (revalidatePath/revalidateTag di server action sbg mekanisme utama)
 
 const getCachedMapData = unstable_cache(
   async () => {
-    const [
-      { count: t },
-      { count: k },
-      { data: schools }
-    ] = await Promise.all([
+    const [{ count: t }, { count: k }, { data: schools }] = await Promise.all([
       supabase.from("schools").select("*", { count: "exact", head: true }),
-      supabase.from("schools").select("*", { count: "exact", head: true }).eq("status", "komitmen"),
       supabase
         .from("schools")
-        .select("id, nama_sekolah, latitude, longitude, status, status_validasi")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "komitmen"),
+      supabase
+        .from("schools")
+        .select(
+          "id, nama_sekolah, latitude, longitude, status, status_validasi",
+        )
         .neq("status_validasi", "flagged")
         .not("latitude", "is", null)
         .not("longitude", "is", null)
-        .limit(500)
+        .limit(500),
     ]);
-    
+
     return {
       total: t || 0,
       komitmen: k || 0,
@@ -31,8 +32,9 @@ const getCachedMapData = unstable_cache(
   },
   ["peta-map-data"],
   {
-    revalidate: 3600, // cache for 1 hour
-  }
+    revalidate: 60, // fallback: data paling tua 1 menit jika revalidateTag gagal dipanggil
+    tags: ["peta-map-data"], // tag agar bisa di-invalidate via revalidateTag()
+  },
 );
 
 export default async function PetaPage() {
@@ -46,9 +48,9 @@ export default async function PetaPage() {
         </div>
       }
     >
-      <PetaClient 
-        schools={data.schools} 
-        counts={{ total: data.total, komitmen: data.komitmen }} 
+      <PetaClient
+        schools={data.schools}
+        counts={{ total: data.total, komitmen: data.komitmen }}
       />
     </Suspense>
   );

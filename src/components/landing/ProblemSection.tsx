@@ -6,132 +6,212 @@ import { Smartphone, ShieldAlert, Users, AlertTriangle } from "lucide-react";
 const problems = [
   {
     icon: Smartphone,
-    title: "Penyalahgunaan Gadget",
+    title: "Distraksi Gadget di Kelas",
     description:
-      "Lebih dari 70% siswa menggunakan smartphone untuk hiburan selama jam pelajaran, bukan untuk belajar.",
-    iconBg: "bg-red-100",
-    iconColor: "text-red-500",
-    tag: "Krisis",
-    tagColor: "bg-red-50 text-red-600 border border-red-200",
+      "Penggunaan smartphone di lingkungan sekolah sering kali tidak terkontrol. Alih-alih membantu proses belajar, gadget justru membuat siswa kehilangan fokus karena lebih tertarik pada media sosial, game, dan hiburan digital lainnya. Kondisi ini berdampak langsung pada konsentrasi dan kualitas pembelajaran di kelas.",
+    stat: "70%",
+    color: "#f97316",
+    size: "large",
   },
   {
     icon: ShieldAlert,
-    title: "Literasi Digital Rendah",
+    title: "Sulit Membedakan Informasi",
     description:
-      "Sebagian besar siswa tidak mampu membedakan informasi valid dari hoaks, meningkatkan risiko misinformasi.",
-    iconBg: "bg-orange-100",
-    iconColor: "text-orange-500",
-    tag: "Darurat",
-    tagColor: "bg-orange-50 text-orange-600 border border-orange-200",
+      "Banyak siswa masih belum mampu memilah informasi yang benar dan yang menyesatkan di internet.",
+    stat: "60%",
+    color: "#ef4444",
+    size: "normal",
   },
   {
     icon: Users,
-    title: "Minimnya Kolaborasi",
+    title: "Kurangnya Kerja Sama",
     description:
-      "Sekolah menangani masalah digital secara terisolasi, tanpa best-practice dari institusi lain.",
-    iconBg: "bg-amber-100",
-    iconColor: "text-amber-500",
-    tag: "Tantangan",
-    tagColor: "bg-amber-50 text-amber-600 border border-amber-200",
+      "Pengawasan aktivitas digital siswa masih belum berjalan optimal antara sekolah, guru, dan orang tua.",
+    stat: "80%",
+    color: "#f59e0b",
+    size: "normal",
   },
   {
     icon: AlertTriangle,
-    title: "Ancaman Cyberbullying",
+    title: "Meningkatnya Risiko Cyberbullying",
     description:
-      "Kasus perundungan digital meningkat tajam tanpa adanya sistem pelaporan maupun edukasi preventif.",
-    iconBg: "bg-rose-100",
-    iconColor: "text-rose-500",
-    tag: "Kritis",
-    tagColor: "bg-rose-50 text-rose-600 border border-rose-200",
+      "Interaksi digital yang semakin intens membuka peluang lebih besar terjadinya cyberbullying. Tanpa edukasi dan pengawasan yang tepat, hal ini dapat berdampak pada kesehatan mental, rasa aman, dan perkembangan sosial siswa di lingkungan sekolah maupun di luar sekolah.",
+    stat: "90%",
+    color: "#f43f5e",
+    size: "wide",
   },
 ];
 
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: {
+    opacity: 0,
+    y: 24,
+  },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" as const },
+    transition: {
+      duration: 0.45,
+      ease: "easeOut" as const,
+    },
   },
 };
 
 export function ProblemSection() {
   return (
-    <section className="py-24 px-4 bg-[#FAFAFA] relative overflow-hidden">
-      {/* ===== Background Enhancement (TAMBAHAN) ===== */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#fff7ed] via-[#fffaf5] to-[#ffffff]" />
-      <div className="absolute -top-20 -left-20 w-[300px] h-[300px] bg-orange-200/30 blur-3xl rounded-full" />
-      <div className="absolute top-40 -right-20 w-[280px] h-[280px] bg-rose-200/30 blur-3xl rounded-full" />
+    <section className="relative overflow-hidden py-28 px-6 bg-[#050505]">
+      {/* Lightweight texture */}
+      <div className="absolute inset-0 bg-white/[0.01] mix-blend-overlay" />
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* ===== HEADER (TETAP, hanya tweak kecil class) ===== */}
+      {/* Optimized blur orbs for Vite-style mesh */}
+      <div className="absolute top-[10%] left-[10%] w-[400px] h-[400px] rounded-full bg-orange-500/15 blur-[120px] pointer-events-none mix-blend-screen" />
+      <div className="absolute bottom-[10%] right-[10%] w-[500px] h-[500px] rounded-full bg-rose-500/10 blur-[130px] pointer-events-none mix-blend-screen" />
+
+      <div className="relative z-10 max-w-7xl mx-auto">
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.5 }}
+          className="max-w-3xl mb-16"
         >
-          <span className="section-label-light bg-red-50 text-red-600 mb-5">
-            Permasalahan
+          <span className="inline-block text-xs uppercase tracking-[0.25em] text-orange-400 mb-5">
+            Problem Mapping
           </span>
 
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-5 mb-4 leading-tight tracking-tight">
-            Tantangan <span className="text-rose-500">Penggunaan Gadget</span>
+          <h2 className="text-4xl md:text-6xl font-black text-white leading-[0.95] tracking-tight">
+            Realita Digital
             <br />
-            di Lingkungan Sekolah
+            <span className="bg-gradient-to-r from-orange-400 to-rose-500 bg-clip-text text-transparent">
+              di Dunia Pendidikan
+            </span>
           </h2>
 
-          <p className="text-gray-600 max-w-2xl mx-auto text-lg font-medium">
-            Berbagai permasalahan nyata yang dihadapi ekosistem pendidikan
-            Indonesia saat ini akibat kurangnya edukasi dan kesadaran digital.
+          <p className="mt-6 text-base md:text-lg text-white/50 leading-relaxed max-w-xl">
+            Transformasi digital menghadirkan peluang besar sekaligus tantangan
+            yang membutuhkan literasi, pengawasan, dan kolaborasi yang lebih
+            baik.
           </p>
         </motion.div>
 
-        {/* ===== GRID (LOGIKA ASLI TIDAK DIUBAH) ===== */}
+        {/* Optimized Bento Grid */}
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
+          className="grid grid-cols-1 md:grid-cols-6 gap-5 auto-rows-[220px]"
         >
-          {problems.map((item) => (
-            <motion.div
-              key={item.title}
-              variants={cardVariants}
-              whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="clean-card p-6 flex flex-col items-start bg-white relative overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 group"
-            >
-              {/* ===== Hover Gradient (TAMBAHAN) ===== */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-50/0 to-rose-50/0 group-hover:from-orange-50/40 group-hover:to-rose-50/40 transition duration-300" />
+          {problems.map((item, index) => {
+            const Icon = item.icon;
 
-              <span
-                className={`relative z-10 inline-block text-xs font-bold px-3 py-1 rounded-full mb-6 ${item.tagColor}`}
+            let sizeClass = "";
+
+            if (item.size === "large") {
+              sizeClass = "md:col-span-3 md:row-span-2";
+            }
+
+            if (item.size === "normal") {
+              sizeClass = "md:col-span-3";
+            }
+
+            if (item.size === "wide") {
+              sizeClass = "md:col-span-6";
+            }
+
+            return (
+              <motion.div
+                key={index}
+                variants={cardVariants}
+                whileHover={{
+                  y: -4,
+                  scale: 1.01,
+                }}
+                className={`
+                  ${sizeClass}
+                  group
+                  relative
+                  overflow-hidden
+                  rounded-[28px]
+                  border
+                  border-white/10
+                  bg-white/[0.04]
+                  backdrop-blur-sm
+                  p-7
+                  transform-gpu
+                  will-change-transform
+                `}
               >
-                {item.tag}
-              </span>
+                {/* Lightweight hover glow */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                  style={{
+                    background: `radial-gradient(circle at top left, ${item.color}14, transparent 65%)`,
+                  }}
+                />
 
-              <div
-                className={`relative z-10 w-14 h-14 rounded-2xl ${item.iconBg} flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition duration-300`}
-              >
-                <item.icon className={`w-7 h-7 ${item.iconColor}`} />
-              </div>
+                <div className="relative z-10 h-full flex flex-col">
+                  {/* Top Section */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center border"
+                      style={{
+                        backgroundColor: `${item.color}15`,
+                        borderColor: `${item.color}25`,
+                      }}
+                    >
+                      <Icon className="w-6 h-6" style={{ color: item.color }} />
+                    </div>
 
-              <h3 className="relative z-10 font-bold text-gray-900 mb-3 text-lg leading-snug">
-                {item.title}
-              </h3>
+                    <span
+                      className="text-3xl md:text-4xl font-black tabular-nums"
+                      style={{ color: item.color }}
+                    >
+                      {item.stat}
+                    </span>
+                  </div>
 
-              <p className="relative z-10 text-gray-600 text-sm leading-relaxed">
-                {item.description}
-              </p>
-            </motion.div>
-          ))}
+                  {/* Content */}
+                  <h3 className="text-xl md:text-2xl font-bold text-white mb-3 leading-tight">
+                    {item.title}
+                  </h3>
+
+                  <p className="text-white/50 text-sm leading-relaxed flex-1">
+                    {item.description}
+                  </p>
+
+                  {/* Progress bar */}
+                  <div className="mt-6 h-1.5 w-full rounded-full bg-white/5 overflow-hidden">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: item.stat,
+                        backgroundColor: item.color,
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Optimized corner glow */}
+                <div
+                  className="absolute -bottom-6 -right-6 w-24 h-24 opacity-10 blur-xl pointer-events-none"
+                  style={{
+                    backgroundColor: item.color,
+                  }}
+                />
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     </section>

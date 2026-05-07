@@ -1,6 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { supabase } from "@/lib/supabase";
 import { verifyRecaptcha } from "@/lib/recaptcha";
 
@@ -45,6 +46,9 @@ export async function submitKomitmen(data: {
     const { data: updatedSchool, error: updateError } = await matchQuery.select();
 
     if (updateError) throw updateError;
+
+    // Invalidate peta page cache so new komitmen marker appears immediately
+    revalidatePath("/peta");
 
     return { success: true, schoolId: updatedSchool?.[0]?.id || data.sekolahId };
   } catch (error: any) {

@@ -12,42 +12,57 @@ const benefits = [
 
 export function QuizSection() {
   return (
-    <section className="py-24 px-4 bg-[#FAFAFA] relative overflow-hidden">
+    <section className="relative py-28 px-4 overflow-hidden bg-[#050505]">
+      {/* ── Dynamic Glowing Mesh ── */}
+      <div className="absolute inset-0 bg-white/[0.01] mix-blend-overlay" />
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-[10%] -translate-y-1/2 w-[500px] h-[500px] bg-violet-500/10 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />
+      </div>
+
       <div className="max-w-4xl mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="clean-card rounded-3xl overflow-hidden bg-white"
+          className="relative rounded-[32px] overflow-hidden border border-white/10 bg-white/[0.02] backdrop-blur-xl"
         >
           <div className="grid md:grid-cols-2">
 
             {/* Left — Visual */}
-            <div className="relative p-10 flex flex-col justify-center overflow-hidden bg-gradient-to-br from-violet-50 via-purple-50 to-indigo-50 border-r border-gray-100">
+            <div className="relative p-10 lg:p-12 flex flex-col justify-center overflow-hidden border-b md:border-b-0 md:border-r border-white/10" style={{ background: "radial-gradient(circle at top left, rgba(139,92,246,0.15) 0%, transparent 100%)" }}>
               <div className="relative z-10">
                 <motion.div
                   initial={{ scale: 0, rotate: -15 }}
                   whileInView={{ scale: 1, rotate: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.3, type: "spring" }}
-                  className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mb-6 shadow-sm border border-violet-100"
+                  className="w-14 h-14 rounded-2xl bg-violet-500/20 flex items-center justify-center mb-6 shadow-sm border border-violet-500/30"
                 >
-                  <Brain className="w-7 h-7 text-violet-500" />
+                  <Brain className="w-7 h-7 text-violet-400" />
                 </motion.div>
 
-                <h3 className="text-gray-900 text-3xl font-extrabold mb-3 leading-tight tracking-tight">
+                <h3 className="text-white text-3xl md:text-4xl font-extrabold mb-4 leading-tight tracking-tight">
                   Seberapa Bijak Kamu Menggunakan{" "}
-                  <span className="text-violet-600">Gadget?</span>
+                  <span
+                    style={{
+                      background: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                    }}
+                  >
+                    Gadget?
+                  </span>
                 </h3>
-                <p className="text-gray-600 font-medium leading-relaxed text-sm">
+                <p className="text-white/50 font-medium leading-relaxed text-sm md:text-base">
                   5 pertanyaan refleksi singkat untuk mengetahui profil kebiasaan digital Anda. Tanpa penilaian, hanya untuk kesadaran diri.
                 </p>
               </div>
             </div>
 
             {/* Right — CTA */}
-            <div className="p-10 flex flex-col justify-center">
+            <div className="p-10 lg:p-12 flex flex-col justify-center bg-white/[0.01]">
               <div className="space-y-6 mb-8">
                 {benefits.map((b, i) => (
                   <motion.div
@@ -58,11 +73,11 @@ export function QuizSection() {
                     transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
                     className="flex items-start gap-4"
                   >
-                    <div className="w-9 h-9 rounded-xl bg-violet-100 flex items-center justify-center shrink-0">
-                      <b.icon className="w-4 h-4 text-violet-600" />
+                    <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center shrink-0">
+                      <b.icon className="w-4 h-4 text-violet-400" />
                     </div>
-                    <p className="text-gray-600 text-sm leading-relaxed pt-2">
-                      {b.text}<strong className="text-gray-900">{b.bold}</strong>{b.suffix}
+                    <p className="text-white/50 text-sm leading-relaxed pt-2">
+                      {b.text}<strong className="text-white font-semibold">{b.bold}</strong>{b.suffix}
                     </p>
                   </motion.div>
                 ))}
@@ -70,14 +85,14 @@ export function QuizSection() {
 
               <Link href="/kuis">
                 <button
-                  className="btn-pill-primary w-full shadow-violet-500/25 bg-violet-600 hover:bg-violet-700"
+                  className="group w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-base transition-all duration-300 shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40 hover:-translate-y-0.5"
                 >
                   Mulai Refleksi
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </Link>
 
-              <p className="text-gray-400 font-medium text-xs text-center mt-4">Anonim & Gratis · Tidak perlu daftar akun</p>
+              <p className="text-white/30 font-medium text-xs text-center mt-5 uppercase tracking-wider">Anonim & Gratis · Tidak perlu daftar</p>
             </div>
 
           </div>

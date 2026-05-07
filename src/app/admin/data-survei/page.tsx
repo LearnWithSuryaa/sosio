@@ -8,7 +8,8 @@ const PAGE_SIZE = 200;
 async function getSurveyData() {
   const { data, error } = await supabase
     .from("survey_results")
-    .select(`
+    .select(
+      `
       id,
       nama,
       jawaban,
@@ -17,7 +18,8 @@ async function getSurveyData() {
       schools (
         nama_sekolah
       )
-    `)
+    `,
+    )
     .order("created_at", { ascending: false })
     .limit(PAGE_SIZE);
 
@@ -75,9 +77,16 @@ export default async function DataSurveiPage() {
                 const source = row.source;
 
                 return (
-                  <tr key={row.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="p-4 text-sm text-gray-900 font-medium">{row.nama}</td>
-                    <td className="p-4 text-sm text-gray-600 font-medium">{schoolName}</td>
+                  <tr
+                    key={row.id}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="p-4 text-sm text-gray-900 font-medium">
+                      {row.nama}
+                    </td>
+                    <td className="p-4 text-sm text-gray-600 font-medium">
+                      {schoolName}
+                    </td>
                     <td className="p-4 text-sm">
                       <span className="inline-block px-2.5 py-1 bg-orange-50 text-orange-700 text-xs font-bold rounded-lg border border-orange-100">
                         {jawabanCount} Jawaban

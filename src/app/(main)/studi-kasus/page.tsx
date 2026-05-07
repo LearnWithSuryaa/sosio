@@ -108,33 +108,38 @@ export default function StudiKasusPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] pt-28 pb-20 relative overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-50 rounded-full blur-3xl opacity-60 pointer-events-none -z-10" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-rose-50 rounded-full blur-3xl opacity-40 pointer-events-none -z-10" />
+    <div className="min-h-screen bg-[#050505] pt-28 pb-20 relative overflow-hidden">
+      {/* Glowing Mesh */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-[5%] right-[5%] w-[600px] h-[600px] bg-orange-600/10 rounded-full blur-[160px] mix-blend-screen" />
+        <div className="absolute bottom-[5%] left-[5%] w-[500px] h-[500px] bg-rose-500/8 rounded-full blur-[140px] mix-blend-screen" />
+        <div className="absolute top-[35%] left-[40%] w-[400px] h-[400px] bg-amber-500/6 rounded-full blur-[120px] mix-blend-screen" />
+      </div>
 
-      <div className="max-w-6xl mx-auto px-4">
+      <div className="max-w-6xl mx-auto px-4 relative z-10">
         {/* Header Section */}
         <div className="text-center mb-16">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-orange-100 text-orange-500 mb-6"
+            className="inline-flex p-3 rounded-2xl mb-6"
+            style={{ background: "rgba(249,115,22,0.12)", border: "1px solid rgba(249,115,22,0.25)" }}
           >
-            <BookOpen className="w-8 h-8" />
+            <BookOpen className="w-8 h-8" style={{ color: "#fb923c" }} />
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 tracking-tight"
+            className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight"
           >
-            Studi Kasus & <span className="text-orange-500">Praktik Baik</span>
+            Studi Kasus &{" "}
+            <span style={{ background: "linear-gradient(120deg, #fb923c 0%, #f97316 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Praktik Baik</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed"
+            className="text-white/40 max-w-2xl mx-auto text-lg leading-relaxed"
           >
             Pelajari bagaimana sekolah-sekolah di seluruh Indonesia menghadapi
             tantangan digital dan mengimplementasikan solusi inovatif demi masa
@@ -145,13 +150,14 @@ export default function StudiKasusPage() {
         {/* Search & Filter Toolbar */}
         <div className="mb-12 space-y-8">
           <div className="max-w-xl mx-auto relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/25" />
             <input
               type="text"
               placeholder="Cari sekolah atau topik..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 rounded-2xl border border-gray-200 bg-white shadow-sm focus:border-orange-400 focus:ring-4 focus:ring-orange-50 outline-none transition-all font-medium"
+              className="w-full pl-12 pr-4 py-4 rounded-2xl outline-none transition-all font-medium text-white/80 placeholder:text-white/25"
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
             />
           </div>
 
@@ -162,11 +168,10 @@ export default function StudiKasusPage() {
                 <button
                   key={cat.id}
                   onClick={() => setActiveTab(cat.id)}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all ${
-                    activeTab === cat.id
-                      ? "bg-gray-900 text-white shadow-lg shadow-gray-900/10"
-                      : "bg-white border border-gray-200 text-gray-600 hover:border-orange-200 hover:text-orange-600"
-                  }`}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all"
+                  style={activeTab === cat.id
+                    ? { background: "linear-gradient(135deg,#ea580c,#f97316)", color: "white", boxShadow: "0 0 20px rgba(249,115,22,0.35)" }
+                    : { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.45)" }}
                 >
                   <Icon className="w-4 h-4" />
                   {cat.label}
@@ -240,41 +245,41 @@ export default function StudiKasusPage() {
                     transition={{ duration: 0.3, delay: i * 0.05 }}
                   >
                     <Link href={`/studi-kasus/${cs.id}`} className="block h-full">
-                      <div className="clean-card bg-white p-6 h-full flex flex-col group hover:shadow-xl border border-transparent hover:border-orange-200 transition-all duration-300">
+                      <div className="group rounded-2xl transition-all duration-300 p-6 h-full flex flex-col" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
                         <div className="flex items-start justify-between mb-6">
                           <div
                             className={`w-12 h-12 rounded-xl flex items-center justify-center ${cs.color}`}
                           >
                             <Icon className="w-6 h-6" />
                           </div>
-                          <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 bg-gray-50 px-2.5 py-1 rounded-lg border border-gray-100 group-hover:bg-white transition-colors">
+                          <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg" style={{ color: "rgba(255,255,255,0.35)", background: "rgba(255,255,255,0.06)" }}>
                             {cs.badge}
                           </span>
                         </div>
 
-                        <h3 className="text-xl font-extrabold text-gray-900 mb-3 leading-snug group-hover:text-orange-600 transition-colors">
+                        <h3 className="text-xl font-extrabold text-white mb-3 leading-snug group-hover:text-orange-400 transition-colors">
                           {cs.judul}
                         </h3>
                         
-                        <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-1 line-clamp-4 border-l-2 border-orange-100 pl-4 py-1 whitespace-pre-line group-hover:border-orange-400 transition-colors">
+                        <p className="text-white/35 text-sm leading-relaxed mb-6 flex-1 line-clamp-4 pl-4 py-1 whitespace-pre-line" style={{ borderLeft: "2px solid rgba(249,115,22,0.25)" }}>
                           {cs.isi}
                         </p>
 
-                        <div className="space-y-4 pt-4 border-t border-gray-100 group-hover:border-orange-100 transition-colors">
+                        <div className="space-y-4 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
                           <div className="flex items-center gap-2">
-                            <School className="w-4 h-4 text-gray-400 group-hover:text-orange-400 transition-colors" />
-                            <span className="text-xs font-bold text-gray-700">
+                            <School className="w-4 h-4 text-white/25" />
+                            <span className="text-xs font-bold text-white/55">
                               {cs.sekolah}
                             </span>
                           </div>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              <User className="w-4 h-4 text-gray-400 group-hover:text-orange-400 transition-colors" />
-                              <span className="text-[11px] font-medium text-gray-400">
+                              <User className="w-4 h-4 text-white/22" />
+                              <span className="text-[11px] font-medium text-white/30">
                                 {cs.penulis}
                               </span>
                             </div>
-                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-black group-hover:bg-emerald-100 transition-colors">
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black" style={{ background: "rgba(16,185,129,0.12)", color: "#10b981" }}>
                               <TrendingUp className="w-3.5 h-3.5" />
                               {cs.impact}
                             </div>
@@ -291,16 +296,16 @@ export default function StudiKasusPage() {
         {/* Empty State */}
         {filtered.length === 0 && (
           <div className="text-center py-20 px-4">
-            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-300">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.2)" }}>
               <BookOpen className="w-10 h-10" />
             </div>
             
             {cases.length === 0 ? (
               <>
-                <h3 className="text-2xl font-extrabold text-gray-900 mb-3">
+                <h3 className="text-2xl font-extrabold text-white mb-3">
                   Belum Ada Studi Kasus
                 </h3>
-                <p className="text-gray-500 max-w-md mx-auto mb-8">
+                <p className="text-white/40 max-w-md mx-auto mb-8">
                   Jadilah sekolah pertama yang membagikan praktik baik, inovasi, atau regulasi yang telah Anda terapkan!
                 </p>
                 <Link href="/hasil">
@@ -311,10 +316,10 @@ export default function StudiKasusPage() {
               </>
             ) : (
               <>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-xl font-bold text-white mb-2">
                   Studi kasus tidak ditemukan
                 </h3>
-                <p className="text-gray-500">
+                <p className="text-white/40">
                   Coba gunakan kategori lain atau kata kunci pencarian yang berbeda.
                 </p>
               </>

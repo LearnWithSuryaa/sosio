@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   BookOpen,
   Clock,
-  Tag,
   ArrowRight,
   Search,
   Sparkles,
@@ -12,9 +11,13 @@ import {
   Brain,
   Shield,
   GraduationCap,
+  X,
+  ImageIcon,
+  TrendingUp,
+  User,
 } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const CATEGORIES = [
   { label: "Semua", value: "all", icon: Sparkles },
@@ -24,6 +27,19 @@ const CATEGORIES = [
   { label: "Panduan Guru", value: "guru", icon: GraduationCap },
 ];
 
+/* Badge accent per kategori */
+const BADGE_STYLE: Record<string, { bg: string; border: string; color: string }> = {
+  literasi: { bg: "rgba(168,85,247,0.12)", border: "rgba(168,85,247,0.28)", color: "#c084fc" },
+  kebijakan: { bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.28)", color: "#34d399" },
+  kesehatan: { bg: "rgba(59,130,246,0.12)", border: "rgba(59,130,246,0.28)", color: "#60a5fa" },
+  guru: { bg: "rgba(249,115,22,0.12)", border: "rgba(249,115,22,0.28)", color: "#fb923c" },
+  default: { bg: "rgba(255,255,255,0.07)", border: "rgba(255,255,255,0.14)", color: "rgba(255,255,255,0.55)" },
+};
+
+function getBadge(category: string) {
+  return BADGE_STYLE[category] ?? BADGE_STYLE.default;
+}
+
 export default function ClientArticleList({
   initialArticles,
 }: {
@@ -31,235 +47,536 @@ export default function ClientArticleList({
 }) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const filtered = initialArticles.filter((a) => {
     const matchCat = activeCategory === "all" || a.category === activeCategory;
+    const q = searchQuery.toLowerCase();
     const matchSearch =
-      a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      a.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+      a.title.toLowerCase().includes(q) || a.excerpt.toLowerCase().includes(q);
     return matchCat && matchSearch;
   });
 
-  const featured = initialArticles.filter((a) => a.featured);
-  const showFeatured = activeCategory === "all" && searchQuery === "";
+  const hero = filtered[0];
+  const rest = filtered.slice(1);
+  const showHero = activeCategory === "all" && searchQuery === "";
 
   return (
-    <div className="min-h-[90vh] bg-[#FAFAFA] pt-28 pb-16 relative overflow-hidden">
-      {/* Decorative blurs */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-50 rounded-full blur-3xl opacity-60 pointer-events-none -z-10" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-50 rounded-full blur-3xl opacity-60 pointer-events-none -z-10" />
+    <div
+      className="min-h-screen pt-24 pb-20 relative overflow-hidden"
+      style={{ background: "#050505" }}
+    >
+      {/* ── Ambient Glowing Mesh ── */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {/* Top-right warm glow */}
+        <div
+          className="absolute -top-[8%] right-[-5%] w-[750px] h-[750px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(234,88,12,0.13) 0%, rgba(249,115,22,0.04) 50%, transparent 70%)",
+            mixBlendMode: "screen",
+          }}
+        />
+        {/* Center amber pulse */}
+        <div
+          className="absolute top-[30%] left-[30%] w-[500px] h-[500px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(245,158,11,0.05) 0%, transparent 60%)",
+            mixBlendMode: "screen",
+          }}
+        />
+        {/* Bottom-left cool accent */}
+        <div
+          className="absolute bottom-0 left-[-5%] w-[500px] h-[500px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 65%)",
+            mixBlendMode: "screen",
+          }}
+        />
+        {/* Subtle warm strip across header */}
+        <div
+          className="absolute top-0 left-0 right-0 h-[320px]"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(234,88,12,0.06) 0%, transparent 100%)",
+          }}
+        />
+      </div>
 
-      <div className="max-w-6xl mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-14">
-          <div className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-gray-100 text-orange-500 mb-5">
-            <BookOpen className="w-6 h-6" />
-          </div>
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
-            Artikel & Edukasi
-          </h1>
-          <p className="text-gray-500 max-w-xl mx-auto text-lg">
-            Wawasan, riset, dan panduan praktis seputar ekosistem pendidikan
-            digital yang sehat untuk komunitas sekolah Indonesia.
-          </p>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
-          {/* Search */}
-          <div className="mt-8 max-w-md mx-auto relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Cari artikel..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 bg-white shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all text-sm font-medium"
-            />
-          </div>
+        {/* ── Header ── */}
+        <div className="text-center mb-12">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="inline-flex p-3 rounded-2xl mb-5"
+            style={{
+              background: "rgba(249,115,22,0.12)",
+              border: "1px solid rgba(249,115,22,0.25)",
+            }}
+          >
+            <BookOpen className="w-6 h-6" style={{ color: "#fb923c" }} />
+          </motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight"
+          >
+            Artikel &amp;{" "}
+            <span
+              style={{
+                background: "linear-gradient(120deg, #fb923c 0%, #f97316 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Edukasi
+            </span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-lg max-w-xl mx-auto"
+            style={{ color: "rgba(255,255,255,0.38)" }}
+          >
+            Wawasan, riset, dan panduan praktis untuk ekosistem pendidikan
+            digital yang sehat.
+          </motion.p>
+
+          {/* ── Search Bar ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="mt-8 max-w-lg mx-auto"
+          >
+            <div
+              className="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all"
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.10)",
+              }}
+            >
+              <Search className="w-4 h-4 shrink-0" style={{ color: "rgba(255,255,255,0.25)" }} />
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder="Cari artikel..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 bg-transparent outline-none text-sm font-medium text-white placeholder:text-white/25"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="shrink-0 transition-colors hover:text-white"
+                  style={{ color: "rgba(255,255,255,0.30)" }}
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          </motion.div>
         </div>
 
-        {/* Category Filter */}
+        {/* ── Category Filters ── */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
-          {CATEGORIES.map((cat) => {
+          {CATEGORIES.map((cat, i) => {
             const Icon = cat.icon;
             const active = activeCategory === cat.value;
             return (
-              <button
+              <motion.button
                 key={cat.value}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 + i * 0.05 }}
                 onClick={() => setActiveCategory(cat.value)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all"
+                style={
                   active
-                    ? "bg-orange-500 text-white shadow-md shadow-orange-500/20"
-                    : "bg-white border border-gray-200 text-gray-600 hover:border-orange-200 hover:text-orange-600"
-                }`}
+                    ? {
+                        background: "linear-gradient(135deg, #ea580c, #f97316)",
+                        color: "white",
+                        boxShadow: "0 0 22px rgba(249,115,22,0.40)",
+                      }
+                    : {
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.09)",
+                        color: "rgba(255,255,255,0.40)",
+                      }
+                }
               >
                 <Icon className="w-3.5 h-3.5" />
                 {cat.label}
-              </button>
+              </motion.button>
             );
           })}
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="ml-2 text-xs font-bold uppercase tracking-widest"
+            style={{ color: "rgba(255,255,255,0.20)" }}
+          >
+            {filtered.length} artikel
+          </motion.span>
         </div>
 
-        {/* Featured Articles */}
-        {showFeatured && featured.length > 0 && (
-          <div className="mb-14">
-            <div className="flex items-center gap-2 mb-6">
-              <Sparkles className="w-4 h-4 text-orange-500" />
-              <h2 className="text-sm font-black uppercase tracking-widest text-orange-500">
-                Artikel Pilihan
-              </h2>
-            </div>
-            <div className="grid md:grid-cols-2 gap-6">
-              {featured.map((article, i) => (
-                <motion.div
-                  key={article.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: i * 0.1 }}
-                >
-                  <Link href={`/artikel/${article.slug}`}>
-                    <div className="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-orange-100 transition-all duration-300 p-7 h-full flex flex-col cursor-pointer overflow-hidden relative">
-                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-400 to-rose-400" />
-                      <span
-                        className={`inline-block self-start px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border mb-4 ${article.badgeColor}`}
-                      >
-                        {article.badge}
-                      </span>
-                      <h2 className="text-xl font-extrabold text-gray-900 mb-3 leading-snug group-hover:text-orange-600 transition-colors line-clamp-2">
-                        {article.title}
-                      </h2>
-                      <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-1 line-clamp-3">
-                        {article.excerpt}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-xs font-bold text-gray-800">
-                            {article.author}
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            {article.authorRole}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-3 text-xs text-gray-400">
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3" /> {article.readTime}
-                          </span>
-                          <ArrowRight className="w-4 h-4 text-orange-400 group-hover:translate-x-1 transition-transform" />
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* All Articles Grid */}
-        <div>
-          {!showFeatured && (
-            <div className="flex items-center gap-2 mb-6">
-              <h2 className="text-sm font-black uppercase tracking-widest text-gray-400">
-                {filtered.length} Artikel Ditemukan
-              </h2>
-            </div>
-          )}
-          {showFeatured && (
-            <div className="flex items-center gap-2 mb-6">
-              <h2 className="text-sm font-black uppercase tracking-widest text-gray-400">
-                Semua Artikel
-              </h2>
-            </div>
-          )}
-
-          {filtered.length === 0 ? (
-            <div className="text-center py-20 text-gray-400">
-              <Search className="w-12 h-12 mx-auto mb-4 opacity-30" />
-              <p className="font-semibold">Artikel tidak ditemukan.</p>
-              <p className="text-sm mt-1">Coba kata kunci lain.</p>
-            </div>
-          ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filtered.map((article, i) => (
-                <motion.div
-                  key={article.id}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, delay: i * 0.07 }}
-                >
-                  <Link href={`/artikel/${article.slug}`}>
-                    <div className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-orange-100 transition-all duration-300 p-6 h-full flex flex-col cursor-pointer">
-                      <div className="flex items-center justify-between mb-4">
-                        <span
-                          className={`inline-block px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${article.badgeColor}`}
-                        >
-                          {article.badge}
-                        </span>
-                        <span className="flex items-center gap-1 text-xs text-gray-400">
-                          <Clock className="w-3 h-3" /> {article.readTime}
-                        </span>
-                      </div>
-
-                      <h3 className="font-extrabold text-gray-900 mb-2 leading-snug group-hover:text-orange-600 transition-colors line-clamp-2">
-                        {article.title}
-                      </h3>
-                      <p className="text-gray-500 text-sm leading-relaxed mb-5 flex-1 line-clamp-3">
-                        {article.excerpt}
-                      </p>
-
-                      <div className="border-t border-gray-100 pt-4 flex items-center justify-between">
-                        <div>
-                          <p className="text-xs font-bold text-gray-700">
-                            {article.author}
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            {article.date}
-                          </p>
-                        </div>
-                        <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-orange-400 group-hover:translate-x-1 transition-all" />
-                      </div>
-
-                      {/* Tags */}
-                      <div className="flex flex-wrap gap-1 mt-3">
-                        {article.tags.slice(0, 2).map((tag: string) => (
-                          <span
-                            key={tag}
-                            className="flex items-center gap-1 text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full"
-                          >
-                            <Tag className="w-2.5 h-2.5" />
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Newsletter CTA */}
-        <div className="mt-20 p-8 bg-gradient-to-r from-orange-50 to-amber-50 rounded-3xl border border-orange-100 text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-white/40 rounded-3xl pointer-events-none" />
-          <div className="relative z-10">
-            <div className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-orange-100 text-orange-500 mb-4">
-              <Sparkles className="w-5 h-5" />
-            </div>
-            <h3 className="text-2xl font-extrabold text-gray-900 mb-2">
-              Dapatkan Wawasan Terbaru
-            </h3>
-            <p className="text-gray-500 mb-6 max-w-sm mx-auto text-sm">
-              Ikuti program GESAMEGA dan jadilah bagian dari gerakan ekosistem
-              digital pendidikan yang sehat.
-            </p>
-            <Link
-              href="/peta"
-              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-2xl transition-colors shadow-lg shadow-orange-500/20"
+        {/* ── Hero Featured Article ── */}
+        <AnimatePresence mode="wait">
+          {showHero && hero && (
+            <motion.div
+              key="hero"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.4 }}
+              className="mb-10"
             >
-              Lihat Dampak Nasional <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
+              <div className="flex items-center gap-2 mb-5">
+                <TrendingUp className="w-4 h-4" style={{ color: "#fb923c" }} />
+                <span
+                  className="text-xs font-black uppercase tracking-widest"
+                  style={{ color: "#fb923c" }}
+                >
+                  Terbaru
+                </span>
+              </div>
+              <Link href={`/artikel/${hero.slug}`} className="group block">
+                <div
+                  className="relative rounded-3xl overflow-hidden transition-all duration-500 group-hover:shadow-[0_0_50px_rgba(249,115,22,0.12)]"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.09)",
+                  }}
+                >
+                  {/* top glow strip */}
+                  <div
+                    className="absolute top-0 left-0 right-0 h-[1px]"
+                    style={{
+                      background:
+                        "linear-gradient(90deg, transparent, rgba(249,115,22,0.6), transparent)",
+                    }}
+                  />
+                  <div className="grid md:grid-cols-[1fr_380px]">
+                    {/* Text */}
+                    <div className="p-8 md:p-10 flex flex-col justify-between">
+                      <div>
+                        <HeroBadge category={hero.category} badge={hero.badge} />
+                        <h2
+                          className="text-2xl md:text-3xl font-extrabold text-white mt-4 mb-4 leading-snug group-hover:text-orange-300 transition-colors"
+                          style={{ letterSpacing: "-0.02em" }}
+                        >
+                          {hero.title}
+                        </h2>
+                        <p
+                          className="text-[15px] leading-relaxed line-clamp-3"
+                          style={{ color: "rgba(255,255,255,0.38)" }}
+                        >
+                          {hero.excerpt}
+                        </p>
+                      </div>
+                      <div className="mt-8 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold"
+                            style={{
+                              background: "linear-gradient(135deg,#ea580c,#f97316)",
+                              color: "white",
+                            }}
+                          >
+                            {(hero.author || "A")[0].toUpperCase()}
+                          </div>
+                          <div>
+                            <p
+                              className="text-[12px] font-semibold"
+                              style={{ color: "rgba(255,255,255,0.60)" }}
+                            >
+                              {hero.author}
+                            </p>
+                            <p
+                              className="text-[10px]"
+                              style={{ color: "rgba(255,255,255,0.25)" }}
+                            >
+                              {hero.date} · {hero.readTime}
+                            </p>
+                          </div>
+                        </div>
+                        <div
+                          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-semibold transition-all group-hover:shadow-[0_0_16px_rgba(249,115,22,0.3)]"
+                          style={{
+                            background: "linear-gradient(135deg,#ea580c,#f97316)",
+                            color: "white",
+                          }}
+                        >
+                          Baca <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                        </div>
+                      </div>
+                    </div>
+                    {/* Image */}
+                    <div className="relative h-56 md:h-auto overflow-hidden">
+                      <img
+                        src={hero.thumbnail}
+                        alt={hero.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                      />
+                      <div
+                        className="absolute inset-0"
+                        style={{
+                          background:
+                            "linear-gradient(to right, rgba(5,5,5,0.5) 0%, transparent 50%)",
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ── Article Grid ── */}
+        <AnimatePresence mode="wait">
+          {filtered.length === 0 ? (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-24"
+            >
+              <Search
+                className="w-12 h-12 mx-auto mb-4"
+                style={{ color: "rgba(255,255,255,0.12)" }}
+              />
+              <p
+                className="font-semibold text-lg"
+                style={{ color: "rgba(255,255,255,0.30)" }}
+              >
+                Artikel tidak ditemukan.
+              </p>
+              <p
+                className="text-sm mt-1"
+                style={{ color: "rgba(255,255,255,0.18)" }}
+              >
+                Coba kata kunci lain atau pilih kategori berbeda.
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="grid"
+              className="grid md:grid-cols-2 lg:grid-cols-3 gap-5"
+            >
+              {(showHero ? rest : filtered).map((article, i) => (
+                <ArticleCard key={article.id} article={article} index={i} />
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ── Bottom CTA ── */}
+        {filtered.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="mt-20 rounded-3xl p-10 text-center relative overflow-hidden"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(234,88,12,0.09) 0%, rgba(249,115,22,0.05) 100%)",
+              border: "1px solid rgba(249,115,22,0.18)",
+            }}
+          >
+            <div
+              className="absolute inset-0 rounded-3xl pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(ellipse at 50% 0%, rgba(249,115,22,0.12), transparent 60%)",
+              }}
+            />
+            <div className="relative z-10">
+              <div
+                className="inline-flex p-3 rounded-2xl mb-4"
+                style={{
+                  background: "rgba(249,115,22,0.15)",
+                  border: "1px solid rgba(249,115,22,0.30)",
+                }}
+              >
+                <Sparkles className="w-5 h-5" style={{ color: "#fb923c" }} />
+              </div>
+              <h3 className="text-2xl font-extrabold text-white mb-2">
+                Ikuti Dampak Nyata
+              </h3>
+              <p
+                className="mb-6 max-w-sm mx-auto text-sm"
+                style={{ color: "rgba(255,255,255,0.40)" }}
+              >
+                Lihat bagaimana sekolah-sekolah di seluruh Indonesia
+                berpartisipasi dalam gerakan GESAMEGA.
+              </p>
+              <Link
+                href="/peta"
+                className="inline-flex items-center gap-2 font-bold px-6 py-3 rounded-2xl transition-all"
+                style={{
+                  background: "linear-gradient(135deg, #ea580c, #f97316)",
+                  color: "white",
+                  boxShadow: "0 0 28px rgba(249,115,22,0.35)",
+                }}
+              >
+                Lihat Peta Partisipasi <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
+  );
+}
+
+/* ── Sub-components ── */
+
+function HeroBadge({ category, badge }: { category: string; badge: string }) {
+  const s = getBadge(category);
+  return (
+    <span
+      className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-widest"
+      style={{ background: s.bg, border: `1px solid ${s.border}`, color: s.color }}
+    >
+      {badge}
+    </span>
+  );
+}
+
+function ArticleCard({ article, index }: { article: any; index: number }) {
+  const badge = getBadge(article.category);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: index * 0.06 }}
+    >
+      <Link href={`/artikel/${article.slug}`} className="group block h-full">
+        <div
+          className="rounded-2xl overflow-hidden h-full flex flex-col transition-all duration-300 group-hover:shadow-[0_0_32px_rgba(249,115,22,0.10)] group-hover:translate-y-[-3px]"
+          style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.07)",
+          }}
+        >
+          {/* Thumbnail */}
+          <div className="relative aspect-[16/9] overflow-hidden">
+            {article.thumbnail ? (
+              <img
+                src={article.thumbnail}
+                alt={article.title}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.06]"
+              />
+            ) : (
+              <div
+                className="w-full h-full flex items-center justify-center"
+                style={{ background: "rgba(255,255,255,0.05)" }}
+              >
+                <ImageIcon
+                  className="w-8 h-8"
+                  style={{ color: "rgba(255,255,255,0.15)" }}
+                />
+              </div>
+            )}
+            {/* Overlay gradient */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background: "linear-gradient(to top, rgba(5,5,5,0.7) 0%, rgba(5,5,5,0.1) 60%, transparent 100%)",
+              }}
+            />
+            {/* Badge over image */}
+            <div className="absolute bottom-3 left-3">
+              <span
+                className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-sm"
+                style={{
+                  background: badge.bg,
+                  border: `1px solid ${badge.border}`,
+                  color: badge.color,
+                }}
+              >
+                {article.badge}
+              </span>
+            </div>
+            {/* Read time */}
+            <div className="absolute bottom-3 right-3">
+              <span
+                className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-medium backdrop-blur-sm"
+                style={{
+                  background: "rgba(5,5,5,0.55)",
+                  border: "1px solid rgba(255,255,255,0.10)",
+                  color: "rgba(255,255,255,0.55)",
+                }}
+              >
+                <Clock className="w-2.5 h-2.5" />
+                {article.readTime}
+              </span>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-5 flex flex-col flex-1">
+            <h3
+              className="font-extrabold text-white mb-2 leading-snug line-clamp-2 transition-colors group-hover:text-orange-400"
+              style={{ fontSize: "15px" }}
+            >
+              {article.title}
+            </h3>
+            <p
+              className="text-[13px] leading-relaxed line-clamp-2 flex-1 mb-4"
+              style={{ color: "rgba(255,255,255,0.32)" }}
+            >
+              {article.excerpt}
+            </p>
+
+            {/* Footer */}
+            <div
+              className="flex items-center justify-between pt-4"
+              style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+            >
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0"
+                  style={{
+                    background: "linear-gradient(135deg,#ea580c,#f97316)",
+                    color: "white",
+                  }}
+                >
+                  {(article.author || "A")[0].toUpperCase()}
+                </div>
+                <div>
+                  <p
+                    className="text-[11px] font-semibold leading-none"
+                    style={{ color: "rgba(255,255,255,0.55)" }}
+                  >
+                    {article.author}
+                  </p>
+                  <p
+                    className="text-[10px] leading-none mt-0.5"
+                    style={{ color: "rgba(255,255,255,0.22)" }}
+                  >
+                    {article.date}
+                  </p>
+                </div>
+              </div>
+              <ArrowRight
+                className="w-4 h-4 transition-all group-hover:text-orange-400 group-hover:translate-x-0.5"
+                style={{ color: "rgba(255,255,255,0.15)" }}
+              />
+            </div>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
   );
 }

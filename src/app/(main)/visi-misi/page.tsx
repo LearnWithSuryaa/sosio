@@ -36,55 +36,81 @@ const missions = [
 
 export default function VisiMisiPage() {
   return (
-    <div className="bg-[#FAFAFA] min-h-screen overflow-hidden">
-      {/* ── HERO (SMOOTH, NOT FULLSCREEN) ───────────────── */}
+    <div className="bg-[#050505] min-h-screen overflow-hidden">
+      {/* ── HERO ── */}
       <section className="relative pt-40 pb-36 px-4 text-center overflow-hidden">
-        {/* ambient */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[32rem] h-[32rem] bg-orange-100/70 blur-[100px] rounded-full pointer-events-none" />
+        {/* Glow blobs */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[15%] left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-orange-600/10 rounded-full blur-[160px] mix-blend-screen" />
+          <div className="absolute bottom-0 right-[10%] w-[400px] h-[400px] bg-rose-500/8 rounded-full blur-[120px] mix-blend-screen" />
+        </div>
 
-        {/* smooth fade bottom */}
-        <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-b from-transparent to-[#FAFAFA] pointer-events-none z-10" />
+        {/* Smooth fade bottom */}
+        <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-b from-transparent to-[#050505] pointer-events-none z-10" />
 
         <motion.div {...fadeUp(0)} className="max-w-4xl mx-auto relative z-20">
-          <span className="section-label-light mb-6 inline-block">
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-[0.15em] mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
             Filosofi Kami
           </span>
 
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-gray-900 leading-[1.15] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-white leading-[1.15] tracking-tight mt-4">
             Membangun{" "}
-            <span className="gradient-text-warm">Generasi Digital</span> yang
-            Cerdas & Berkarakter
+            <span
+              style={{
+                background: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Generasi Digital
+            </span>{" "}
+            yang Cerdas &amp; Berkarakter
           </h1>
 
-          <p className="mt-8 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-8 text-lg md:text-xl text-white/50 max-w-2xl mx-auto leading-relaxed">
             Gerakan kolaboratif untuk menciptakan ekosistem digital pendidikan
             yang sehat, bijak, dan berkelanjutan.
           </p>
         </motion.div>
       </section>
 
-      {/* ── VISI (OVERLAP PREMIUM CARD) ───────────────── */}
-      <section className="relative -mt-24 pt-24 pb-32 px-4 bg-white rounded-t-[3rem] border-t border-gray-100 z-20">
+      {/* ── VISI CARD ── */}
+      <section className="relative px-4 pb-24 z-20">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             {...fadeUp(0)}
-            className="clean-card p-6 sm:p-10 md:p-16 border border-orange-100 relative overflow-hidden"
+            className="relative rounded-3xl p-8 sm:p-12 md:p-16 overflow-hidden"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
           >
-            {/* subtle glow */}
-            <div className="absolute -top-20 -right-20 w-72 h-72 bg-orange-100 blur-[80px] rounded-full pointer-events-none" />
+            {/* Corner glow */}
+            <div className="absolute -top-20 -right-20 w-72 h-72 bg-orange-500/15 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute -bottom-16 -left-16 w-56 h-56 bg-orange-500/8 blur-[80px] rounded-full pointer-events-none" />
 
-            <p className="text-orange-500 font-semibold mb-4 tracking-wide">
+            <p className="text-orange-400 font-bold mb-5 tracking-[0.2em] uppercase text-sm relative z-10">
               VISI
             </p>
 
-            <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 leading-[1.4]">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white leading-[1.35] relative z-10">
               Terwujudnya{" "}
-              <span className="gradient-text-warm">
+              <span
+                style={{
+                  background:
+                    "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
                 Generasi Digital Cerdas, Bijak, dan Berkarakter
               </span>
             </h2>
 
-            <p className="mt-6 text-gray-600 text-lg max-w-2xl mx-auto">
+            <p className="mt-6 text-white/50 text-lg max-w-2xl mx-auto relative z-10">
               yang mampu mengoptimalkan teknologi untuk masa depan pendidikan
               yang lebih bermartabat.
             </p>
@@ -92,65 +118,82 @@ export default function VisiMisiPage() {
         </div>
       </section>
 
-      {/* ── MISI TIMELINE ───────────────── */}
-      <section className="py-32 px-4 bg-[#FAFAFA] relative">
-        {/* smooth top fade */}
-        <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-white to-transparent pointer-events-none" />
+      {/* ── MISI TIMELINE ── */}
+      <section className="py-24 px-4 relative">
+        {/* Top separator */}
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
 
         <div className="max-w-5xl mx-auto">
-          <motion.div {...fadeUp(0)} className="text-center mb-24">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+          <motion.div {...fadeUp(0)} className="text-center mb-20">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-[0.15em] mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+              Misi
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mt-4">
               Strategi Utama
             </h2>
-            <p className="text-gray-600 mt-3">
+            <p className="text-white/40 mt-3 text-lg">
               Empat langkah untuk mewujudkan visi
             </p>
           </motion.div>
 
           <div className="relative">
-            {/* LINE */}
-            <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-[2px] bg-orange-200 -translate-x-1/2"></div>
+            {/* Timeline line */}
+            <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-orange-500/30 via-orange-500/30 to-transparent -translate-x-1/2" />
 
-            <div className="space-y-16 md:space-y-24">
+            <div className="space-y-16 md:space-y-20">
               {missions.map((m, i) => {
                 const isLeft = i % 2 === 0;
-
                 return (
                   <motion.div
                     key={m.title}
                     {...fadeUp(0.1 * i)}
                     className="relative flex items-center justify-center"
                   >
-                    {/* DOT PERFECT CENTER OR LEFT ON MOBILE */}
-                    <div className="absolute left-6 md:left-1/2 -translate-x-1/2 w-3 h-3 bg-orange-500 rounded-full ring-4 ring-[#FAFAFA] z-10"></div>
+                    {/* Dot */}
+                    <div className="absolute left-6 md:left-1/2 -translate-x-1/2 w-3.5 h-3.5 bg-orange-500 rounded-full ring-4 ring-[#050505] z-10 shadow-lg shadow-orange-500/30" />
 
-                    {/* CARD */}
+                    {/* Card */}
                     <div
-                      className={`w-full md:w-1/2 pl-14 pr-0 md:px-0 ${
-                        isLeft
-                          ? "md:pr-16 md:mr-auto text-left md:text-right"
-                          : "md:pl-16 md:ml-auto text-left"
-                      }`}
+                      className={`w-full md:w-1/2 pl-14 pr-0 md:px-0 ${isLeft ? "md:pr-16 md:mr-auto text-left md:text-right" : "md:pl-16 md:ml-auto text-left"}`}
                     >
-                      <div className="clean-card p-6 md:p-8 group hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
+                      <motion.div
+                        whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                        className="group rounded-2xl p-6 md:p-8 relative overflow-hidden transition-all duration-300"
+                        style={{
+                          background: "rgba(255,255,255,0.03)",
+                          border: "1px solid rgba(255,255,255,0.08)",
+                        }}
+                      >
+                        {/* Hover glow */}
                         <div
-                          className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4 ${
-                            isLeft ? "md:justify-end justify-start" : "justify-start"
-                          }`}
-                        >
-                          <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">
-                            <m.icon className="w-5 h-5 text-orange-500" />
-                          </div>
+                          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                          style={{
+                            background: `radial-gradient(circle at ${isLeft ? "top right" : "top left"}, rgba(249,115,22,0.08) 0%, transparent 70%)`,
+                          }}
+                        />
 
-                          <h3 className="text-lg font-bold text-gray-900">
+                        <div
+                          className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4 relative z-10 ${isLeft ? "md:justify-end justify-start" : "justify-start"}`}
+                        >
+                          <div
+                            className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                            style={{
+                              background: "rgba(249,115,22,0.12)",
+                              border: "1px solid rgba(249,115,22,0.25)",
+                            }}
+                          >
+                            <m.icon className="w-5 h-5 text-orange-400" />
+                          </div>
+                          <h3 className="text-lg font-bold text-white">
                             {m.title}
                           </h3>
                         </div>
 
-                        <p className="text-gray-600 leading-relaxed">
+                        <p className="text-white/50 leading-relaxed relative z-10">
                           {m.desc}
                         </p>
-                      </div>
+                      </motion.div>
                     </div>
                   </motion.div>
                 );
@@ -160,25 +203,34 @@ export default function VisiMisiPage() {
         </div>
       </section>
 
-      {/* ── CTA ───────────────── */}
-      <section className="py-24 px-4 bg-white border-t border-gray-100">
+      {/* ── CTA ── */}
+      <section className="py-24 px-4 relative">
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+
         <motion.div {...fadeUp(0)} className="max-w-3xl mx-auto text-center">
-          <div className="w-16 h-16 mx-auto bg-orange-50 rounded-full flex items-center justify-center mb-6">
-            <Sparkles className="w-8 h-8 text-orange-500" />
+          <div
+            className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6"
+            style={{
+              background: "rgba(249,115,22,0.12)",
+              border: "1px solid rgba(249,115,22,0.25)",
+            }}
+          >
+            <Sparkles className="w-8 h-8 text-orange-400" />
           </div>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
             Saatnya Mengambil Bagian
           </h2>
 
-          <p className="text-gray-600 text-lg mb-10">
+          <p className="text-white/50 text-lg mb-10">
             Bergabunglah dalam gerakan untuk menciptakan ekosistem digital
             pendidikan yang lebih baik.
           </p>
 
           <Link href="/peta">
             <button className="btn-pill-primary px-10 py-4">
-              Lihat Peta Partisipasi <ArrowRight className="ml-2 inline w-5 h-5" />
+              Lihat Peta Partisipasi{" "}
+              <ArrowRight className="ml-2 inline w-5 h-5" />
             </button>
           </Link>
         </motion.div>
