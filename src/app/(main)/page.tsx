@@ -6,9 +6,7 @@ import { ParticipationFlow } from "@/components/landing/ParticipationFlow";
 import { MapPreview } from "@/components/landing/MapPreview";
 import { LiveStatsSection } from "@/components/landing/LiveStatsSection";
 import { CaseStudySection } from "@/components/landing/CaseStudySection";
-import { ArticleSection } from "@/components/landing/ArticleSection"; // IDE Refresh
-import { QuizSection } from "@/components/landing/QuizSection";
-import { FinalCTA } from "@/components/landing/FinalCTA";
+import { ArticleSection } from "@/components/landing/ArticleSection"; 
 
 // Fallback numbers to provide immediate context & social proof
 const BASE_SCHOOLS = 500;

@@ -228,9 +228,9 @@ export function HeroSection() {
             transition={{ duration: 0.7, delay: 0.55 }}
             className="flex flex-col sm:flex-row gap-4"
           >
-            <Link href="/panduan" className="w-full sm:w-auto">
+            <Link href="/visi-misi" className="w-full sm:w-auto">
               <button className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-orange-500 hover:bg-orange-400 text-white font-bold text-base transition-all duration-300 shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:scale-[1.02]">
-                Pelajari Panduan
+                Lihat Visi & Misi Kami
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
             </Link>
@@ -351,21 +351,6 @@ export function HeroSection() {
               </svg>
             </motion.div>
           ))}
-
-          {/* Small tagline card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9 }}
-            className="rounded-2xl border border-orange-500/20 bg-orange-500/5 backdrop-blur-md px-6 py-4 flex items-center gap-3"
-          >
-            <div className="w-2 h-2 rounded-full bg-orange-400 animate-pulse shrink-0" />
-            <p className="text-sm text-white/60 leading-snug">
-              Program aktif berjalan di{" "}
-              <span className="text-orange-400 font-semibold">34 provinsi</span>{" "}
-              seluruh Indonesia
-            </p>
-          </motion.div>
         </div>
       </div>
     </section>
