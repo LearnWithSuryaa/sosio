@@ -53,10 +53,18 @@ export default async function DataSurveiPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="p-4 text-sm font-bold text-gray-600">Nama Pengisi</th>
-                <th className="p-4 text-sm font-bold text-gray-600">Asal Sekolah</th>
-                <th className="p-4 text-sm font-bold text-gray-600">Jumlah Jawaban</th>
-                <th className="p-4 text-sm font-bold text-gray-600">Source (QR)</th>
+                <th className="p-4 text-sm font-bold text-gray-600">
+                  Nama Pengisi
+                </th>
+                <th className="p-4 text-sm font-bold text-gray-600">
+                  Asal Sekolah
+                </th>
+                <th className="p-4 text-sm font-bold text-gray-600">
+                  Jumlah Jawaban
+                </th>
+                <th className="p-4 text-sm font-bold text-gray-600">
+                  Source (QR)
+                </th>
                 <th className="p-4 text-sm font-bold text-gray-600">Waktu</th>
               </tr>
             </thead>
