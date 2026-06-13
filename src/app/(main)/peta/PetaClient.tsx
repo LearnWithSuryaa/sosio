@@ -23,6 +23,7 @@ import { JourneyBar } from "@/components/JourneyBar";
 import { TourGuide } from "@/components/TourGuide";
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 const PetaMap = nextDynamic(() => import("@/components/PetaMap"), {
   ssr: false,
@@ -161,9 +162,12 @@ export function PetaClient({ schools, counts }: PetaClientProps) {
         )}
 
         {/* ── Header ── */}
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           id="tour-header"
-          className="mb-0 relative rounded-3xl overflow-hidden bg-linear-to-r from-blue-50 to-blue-100/50 border border-blue-100/50 pt-10 pb-28 px-8 md:px-12 flex flex-col md:flex-row items-center justify-between"
+          className="mb-0 relative rounded-3xl overflow-hidden bg-linear-to-r from-blue-50 to-blue-100/50 border border-blue-100/50 pt-10 pb-28 px-8 md:px-12 flex flex-col md:flex-row items-center justify-between transform-gpu will-change-transform"
         >
           {/* Background Illustration / Image */}
           <div className="absolute inset-0 z-0">
@@ -187,7 +191,7 @@ export function PetaClient({ schools, counts }: PetaClientProps) {
               seluruh Kota Sidoarjo.
             </p>
           </div>
-        </div>
+        </motion.div>
 
         {/* ── Stat Cards ── */}
         <div

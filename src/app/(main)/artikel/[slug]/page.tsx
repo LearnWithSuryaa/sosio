@@ -76,30 +76,18 @@ export default async function ArtikelDetail({ params }: Props) {
     .filter((p: string) => p.trim() !== "");
 
   return (
-    <div style={{ background: "#050505" }} className="min-h-screen relative">
+    <div className="min-h-screen relative bg-surface">
       {/* Sticky Reading Progress */}
       <ReadingProgressBar />
 
       {/* ── Glowing Mesh ── */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div
-          className="absolute -top-[10%] right-[5%] w-[700px] h-[700px] rounded-full"
-          style={{
-            background: "radial-gradient(circle, rgba(46, 125, 50,0.09) 0%, transparent 70%)",
-            mixBlendMode: "screen",
-          }}
-        />
-        <div
-          className="absolute bottom-[10%] -left-[5%] w-[500px] h-[500px] rounded-full"
-          style={{
-            background: "radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 70%)",
-            mixBlendMode: "screen",
-          }}
-        />
+        <div className="absolute top-[-10%] right-[-5%] w-175 h-175 bg-primary-soft/40 rounded-full blur-[140px] mix-blend-multiply pointer-events-none transform-gpu" />
+        <div className="absolute bottom-[10%] left-[-5%] w-125 h-125 bg-emerald-100/40 rounded-full blur-[130px] mix-blend-multiply pointer-events-none transform-gpu" />
       </div>
 
       {/* ── Hero ── */}
-      <div className="relative w-full h-[55vh] min-h-[380px] max-h-[600px] overflow-hidden">
+      <div className="relative w-full h-[55vh] min-h-95 max-h-150 overflow-hidden">
         {/* Image */}
         <img
           src={
@@ -110,32 +98,19 @@ export default async function ArtikelDetail({ params }: Props) {
           className="w-full h-full object-cover"
         />
         {/* Multi-layer overlay */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, rgba(5,5,5,0.25) 0%, rgba(5,5,5,0.55) 60%, rgba(5,5,5,0.98) 100%)",
-          }}
-        />
+        <div className="absolute inset-0 bg-linear-to-b from-transparent via-surface/60 to-surface" />
         {/* Category badge over image */}
-        <div className="absolute top-28 left-0 right-0 z-10 max-w-[780px] mx-auto px-6">
-          <span
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-widest"
-            style={{
-              background: "rgba(46, 125, 50,0.18)",
-              border: "1px solid rgba(46, 125, 50,0.35)",
-              color: "#64B5F6",
-            }}
-          >
+        <div className="absolute top-28 left-0 right-0 z-10 max-w-195 mx-auto px-6">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-widest bg-surface-alt border border-primary-soft text-primary shadow-sm">
             <Tag className="w-3 h-3" />
             {article.kategori || "Umum"}
           </span>
         </div>
         {/* Title over image */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 max-w-[780px] mx-auto px-6 pb-10">
+        <div className="absolute bottom-0 left-0 right-0 z-10 max-w-195 mx-auto px-6 pb-10">
           <h1
-            className="text-3xl md:text-[42px] lg:text-[48px] font-bold leading-[1.1] tracking-tight text-white"
-            style={{ fontFamily: "'Georgia', serif", textShadow: "0 2px 20px rgba(0,0,0,0.5)" }}
+            className="text-3xl md:text-[42px] lg:text-[48px] font-bold leading-[1.1] tracking-tight text-text-dark"
+            style={{ fontFamily: "'Georgia', serif" }}
           >
             {article.judul}
           </h1>
@@ -143,56 +118,37 @@ export default async function ArtikelDetail({ params }: Props) {
       </div>
 
       {/* ── Main layout ── */}
-      <div className="relative z-10 max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-24">
+      <div className="relative z-10 max-w-275 mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-24">
 
         {/* ── Meta bar ── */}
-        <div
-          className="flex flex-wrap items-center justify-between gap-4 mb-10 pb-8"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}
-        >
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-10 pb-8 border-b border-slate-200">
           {/* Back + author */}
           <div className="flex items-center gap-4 flex-wrap">
             <Link
               href="/artikel"
-              className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-widest transition-colors text-white/30 hover:text-info"
+              className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-widest transition-colors text-slate-500 hover:text-info"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Artikel
             </Link>
-            <div className="w-px h-4" style={{ background: "rgba(255,255,255,0.1)" }} />
+            <div className="w-px h-4 bg-slate-200" />
             <div className="flex items-center gap-2">
               {/* Author avatar placeholder */}
-              <div
-                className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold"
-                style={{
-                  background: "linear-gradient(135deg, #1E88E5, #2E7D32)",
-                  color: "white",
-                }}
-              >
+              <div className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold bg-linear-to-br from-info to-primary text-white">
                 {(article.penulis || "A")[0].toUpperCase()}
               </div>
-              <span className="text-[12px] font-medium" style={{ color: "rgba(255,255,255,0.60)" }}>
+              <span className="text-[12px] font-medium text-slate-600">
                 {article.penulis}
               </span>
             </div>
           </div>
           {/* Date + readtime */}
           <div className="flex items-center gap-4">
-            <span
-              className="flex items-center gap-1.5 text-[11px]"
-              style={{ color: "rgba(255,255,255,0.30)" }}
-            >
+            <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
               <Calendar className="w-3 h-3" />
               {dateStr}
             </span>
-            <span
-              className="flex items-center gap-1.5 text-[11px] px-3 py-1 rounded-full"
-              style={{
-                background: "rgba(46, 125, 50,0.10)",
-                border: "1px solid rgba(46, 125, 50,0.20)",
-                color: "#64B5F6",
-              }}
-            >
+            <span className="flex items-center gap-1.5 text-[11px] px-3 py-1 rounded-full bg-surface-alt border border-primary-soft text-primary font-medium">
               <Clock className="w-3 h-3" />
               {readTime}
             </span>
@@ -207,13 +163,11 @@ export default async function ArtikelDetail({ params }: Props) {
             {/* Lead paragraph */}
             {paragraphs.length > 0 && (
               <p
-                className="text-[18px] md:text-[19px] leading-[1.80] mb-8 pl-5"
+                className="text-[18px] md:text-[19px] leading-[1.80] mb-8 pl-5 text-slate-600 border-l-2 border-primary"
                 style={{
-                  color: "rgba(255,255,255,0.58)",
                   fontFamily: "'Georgia', serif",
                   fontWeight: 300,
                   fontStyle: "italic",
-                  borderLeft: "2px solid #2E7D32",
                 }}
               >
                 {paragraphs[0]}
@@ -229,9 +183,8 @@ export default async function ArtikelDetail({ params }: Props) {
                   return (
                     <h2
                       key={idx}
-                      className="text-[22px] md:text-[24px] font-semibold mt-12 mb-5 leading-snug"
+                      className="text-[22px] md:text-[24px] font-semibold mt-12 mb-5 leading-snug text-text-dark"
                       style={{
-                        color: "#ffffff",
                         fontFamily: "'Georgia', serif",
                         letterSpacing: "-0.015em",
                       }}
@@ -244,8 +197,7 @@ export default async function ArtikelDetail({ params }: Props) {
                 return (
                   <p
                     key={idx}
-                    className="text-[16px] md:text-[17px] leading-[1.85] mb-6"
-                    style={{ color: "rgba(255,255,255,0.42)" }}
+                    className="text-[16px] md:text-[17px] leading-[1.85] mb-6 text-slate-700"
                   >
                     {p}
                   </p>
@@ -254,24 +206,16 @@ export default async function ArtikelDetail({ params }: Props) {
             </div>
 
             {/* ── Article Footer ── */}
-            <div
-              className="mt-14 pt-10"
-              style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
-            >
+            <div className="mt-14 pt-10 border-t border-slate-200">
               {/* Tags row */}
               <div className="flex flex-wrap items-center gap-2 mb-8">
-                <span className="text-[10px] font-bold uppercase tracking-widest mr-2" style={{ color: "rgba(255,255,255,0.22)" }}>
+                <span className="text-[10px] font-bold uppercase tracking-widest mr-2 text-slate-400">
                   Tag
                 </span>
                 {[article.kategori || "Umum"].map((tag: string) => (
                   <span
                     key={tag}
-                    className="px-3 py-1 rounded-full text-[11px] font-semibold capitalize"
-                    style={{
-                      background: "rgba(255,255,255,0.05)",
-                      border: "0.5px solid rgba(255,255,255,0.10)",
-                      color: "rgba(255,255,255,0.50)",
-                    }}
+                    className="px-3 py-1 rounded-full text-[11px] font-semibold capitalize bg-white border border-slate-200 text-slate-600"
                   >
                     {tag}
                   </span>
@@ -279,27 +223,15 @@ export default async function ArtikelDetail({ params }: Props) {
               </div>
 
               {/* Author card */}
-              <div
-                className="flex items-start gap-4 p-6 rounded-2xl"
-                style={{
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.07)",
-                }}
-              >
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center text-base font-bold shrink-0"
-                  style={{
-                    background: "linear-gradient(135deg, #1E88E5, #2E7D32)",
-                    color: "white",
-                  }}
-                >
+              <div className="flex items-start gap-4 p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center text-base font-bold shrink-0 bg-linear-to-br from-info to-primary text-white">
                   {(article.penulis || "A")[0].toUpperCase()}
                 </div>
                 <div>
-                  <p className="text-[13px] font-bold mb-1" style={{ color: "rgba(255,255,255,0.80)" }}>
+                  <p className="text-[13px] font-bold mb-1 text-text-dark">
                     {article.penulis}
                   </p>
-                  <p className="text-[12px] leading-relaxed" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  <p className="text-[12px] leading-relaxed text-slate-500">
                     Kontributor di GESAMEGA — platform riset ekosistem pendidikan digital nasional.
                   </p>
                 </div>
@@ -313,42 +245,29 @@ export default async function ArtikelDetail({ params }: Props) {
             <ShareButtons title={article.judul} />
 
             {/* Divider */}
-            <div className="h-px" style={{ background: "rgba(255,255,255,0.07)" }} />
+            <div className="h-px bg-slate-200" />
 
             {/* Stats card */}
-            <div
-              className="rounded-2xl p-5 space-y-4"
-              style={{
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.07)",
-              }}
-            >
-              <p className="text-[10px] font-bold uppercase tracking-[0.12em]" style={{ color: "rgba(255,255,255,0.22)" }}>
+            <div className="rounded-2xl p-5 space-y-4 bg-white border border-slate-200 shadow-sm">
+              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
                 Info Artikel
               </p>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.35)" }}>Penulis</span>
-                  <span className="text-[12px] font-semibold" style={{ color: "rgba(255,255,255,0.65)" }}>{article.penulis}</span>
+                  <span className="text-[12px] text-slate-500">Penulis</span>
+                  <span className="text-[12px] font-semibold text-slate-700">{article.penulis}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.35)" }}>Diterbitkan</span>
-                  <span className="text-[12px] font-semibold" style={{ color: "rgba(255,255,255,0.65)" }}>{dateStr}</span>
+                  <span className="text-[12px] text-slate-500">Diterbitkan</span>
+                  <span className="text-[12px] font-semibold text-slate-700">{dateStr}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.35)" }}>Estimasi baca</span>
-                  <span className="text-[12px] font-semibold" style={{ color: "#64B5F6" }}>{readTime}</span>
+                  <span className="text-[12px] text-slate-500">Estimasi baca</span>
+                  <span className="text-[12px] font-semibold text-info">{readTime}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.35)" }}>Kategori</span>
-                  <span
-                    className="text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full"
-                    style={{
-                      background: "rgba(46, 125, 50,0.12)",
-                      border: "1px solid rgba(46, 125, 50,0.25)",
-                      color: "#64B5F6",
-                    }}
-                  >
+                  <span className="text-[12px] text-slate-500">Kategori</span>
+                  <span className="text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-surface-alt border border-primary-soft text-primary">
                     {article.kategori || "Umum"}
                   </span>
                 </div>
@@ -356,12 +275,12 @@ export default async function ArtikelDetail({ params }: Props) {
             </div>
 
             {/* Divider */}
-            <div className="h-px" style={{ background: "rgba(255,255,255,0.07)" }} />
+            <div className="h-px bg-slate-200" />
 
             {/* Related articles */}
             {relatedBlogs.length > 0 && (
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.12em] mb-4" style={{ color: "rgba(255,255,255,0.22)" }}>
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] mb-4 text-slate-400">
                   Artikel Terkait
                 </p>
                 <div className="flex flex-col gap-1">
@@ -369,13 +288,10 @@ export default async function ArtikelDetail({ params }: Props) {
                     <Link
                       href={`/artikel/${blog.id}`}
                       key={i}
-                      className="flex gap-3 items-start p-2.5 rounded-xl transition-all group hover:bg-white/[0.04]"
+                      className="flex gap-3 items-start p-2.5 rounded-xl transition-all group hover:bg-slate-50"
                     >
                       {/* Thumbnail */}
-                      <div
-                        className="w-[68px] h-[50px] rounded-lg overflow-hidden flex-shrink-0"
-                        style={{ border: "0.5px solid rgba(255,255,255,0.08)" }}
-                      >
+                      <div className="w-17 h-12.5 rounded-lg overflow-hidden shrink-0 border border-slate-200">
                         {blog.thumbnail_url ? (
                           <img
                             src={blog.thumbnail_url}
@@ -383,26 +299,17 @@ export default async function ArtikelDetail({ params }: Props) {
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                           />
                         ) : (
-                          <div
-                            className="w-full h-full flex items-center justify-center"
-                            style={{ background: "rgba(255,255,255,0.06)" }}
-                          >
-                            <ImageIcon className="w-4 h-4" style={{ color: "rgba(255,255,255,0.20)" }} />
+                          <div className="w-full h-full flex items-center justify-center bg-slate-100">
+                            <ImageIcon className="w-4 h-4 text-slate-400" />
                           </div>
                         )}
                       </div>
                       {/* Text */}
                       <div className="flex-1 min-w-0">
-                        <p
-                          className="text-[11px] mb-0.5"
-                          style={{ color: "rgba(255,255,255,0.22)" }}
-                        >
+                        <p className="text-[11px] mb-0.5 text-slate-500">
                           {blog.kategori || "Umum"}
                         </p>
-                        <h4
-                          className="text-[12px] font-normal leading-snug line-clamp-2 transition-colors group-hover:text-info"
-                          style={{ color: "rgba(255,255,255,0.60)" }}
-                        >
+                        <h4 className="text-[12px] font-normal leading-snug line-clamp-2 transition-colors group-hover:text-info text-slate-700">
                           {blog.judul}
                         </h4>
                       </div>
@@ -415,12 +322,7 @@ export default async function ArtikelDetail({ params }: Props) {
             {/* CTA back to all */}
             <Link
               href="/artikel"
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-[12px] font-semibold transition-all hover:bg-white/[0.08]"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                color: "rgba(255,255,255,0.45)",
-              }}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-[12px] font-semibold transition-all hover:bg-slate-50 bg-white border border-slate-200 text-slate-600"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Semua Artikel
@@ -430,27 +332,18 @@ export default async function ArtikelDetail({ params }: Props) {
 
         {/* ── More Articles (bottom) ── */}
         {relatedBlogs.length > 0 && (
-          <div
-            className="mt-20 pt-12"
-            style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
-          >
+          <div className="mt-20 pt-12 border-t border-slate-200">
             <div className="flex items-center gap-3 mb-8">
-              <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.06)" }} />
-              <p className="text-[10px] font-black uppercase tracking-[0.15em]" style={{ color: "rgba(255,255,255,0.22)" }}>
+              <div className="h-px flex-1 bg-slate-200" />
+              <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">
                 Baca Juga
               </p>
-              <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.06)" }} />
+              <div className="h-px flex-1 bg-slate-200" />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {relatedBlogs.map((blog, i) => (
                 <Link href={`/artikel/${blog.id}`} key={i} className="group">
-                  <div
-                    className="rounded-2xl overflow-hidden transition-all duration-300 group-hover:translate-y-[-4px]"
-                    style={{
-                      background: "rgba(255,255,255,0.03)",
-                      border: "1px solid rgba(255,255,255,0.07)",
-                    }}
-                  >
+                  <div className="rounded-2xl overflow-hidden transition-all duration-300 group-hover:-translate-y-1 bg-white border border-slate-200 shadow-sm hover:shadow-md">
                     <div className="aspect-video relative overflow-hidden">
                       {blog.thumbnail_url ? (
                         <img
@@ -459,29 +352,20 @@ export default async function ArtikelDetail({ params }: Props) {
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       ) : (
-                        <div
-                          className="w-full h-full flex items-center justify-center"
-                          style={{ background: "rgba(255,255,255,0.06)" }}
-                        >
-                          <ImageIcon className="w-8 h-8" style={{ color: "rgba(255,255,255,0.15)" }} />
+                        <div className="w-full h-full flex items-center justify-center bg-slate-100">
+                          <ImageIcon className="w-8 h-8 text-slate-400" />
                         </div>
                       )}
-                      <div
-                        className="absolute inset-0"
-                        style={{ background: "linear-gradient(to top, rgba(5,5,5,0.6), transparent)" }}
-                      />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
                     </div>
                     <div className="p-4">
-                      <p className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: "#64B5F6" }}>
+                      <p className="text-[10px] font-black uppercase tracking-widest mb-2 text-info">
                         {blog.kategori || "Umum"}
                       </p>
-                      <h3
-                        className="text-[13px] font-medium leading-snug line-clamp-2 transition-colors group-hover:text-white"
-                        style={{ color: "rgba(255,255,255,0.55)" }}
-                      >
+                      <h3 className="text-[13px] font-medium leading-snug line-clamp-2 transition-colors group-hover:text-primary text-text-dark">
                         {blog.judul}
                       </h3>
-                      <p className="text-[11px] mt-2" style={{ color: "rgba(255,255,255,0.22)" }}>
+                      <p className="text-[11px] mt-2 text-slate-500">
                         {new Date(blog.created_at).toLocaleDateString("id-ID", {
                           day: "numeric",
                           month: "short",

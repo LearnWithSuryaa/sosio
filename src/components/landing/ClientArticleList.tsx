@@ -14,7 +14,6 @@ import {
   X,
   ImageIcon,
   TrendingUp,
-  User,
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -93,7 +92,7 @@ export default function ClientArticleList({
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         {/* Top-right warm glow */}
         <div
-          className="absolute -top-[8%] right-[-5%] w-[750px] h-[750px] rounded-full"
+          className="absolute -top-[8%] right-[-5%] w-187.5 h-187.5 rounded-full"
           style={{
             background:
               "radial-gradient(circle, rgba(46, 125, 50,0.13) 0%, rgba(46, 125, 50,0.04) 50%, transparent 70%)",
@@ -102,7 +101,7 @@ export default function ClientArticleList({
         />
         {/* Center amber pulse */}
         <div
-          className="absolute top-[30%] left-[30%] w-[500px] h-[500px] rounded-full"
+          className="absolute top-[30%] left-[30%] w-125 h-125 rounded-full"
           style={{
             background:
               "radial-gradient(circle, rgba(245,158,11,0.05) 0%, transparent 60%)",
@@ -111,7 +110,7 @@ export default function ClientArticleList({
         />
         {/* Bottom-left cool accent */}
         <div
-          className="absolute bottom-0 left-[-5%] w-[500px] h-[500px] rounded-full"
+          className="absolute bottom-0 left-[-5%] w-125 h-125 rounded-full"
           style={{
             background:
               "radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 65%)",
@@ -120,7 +119,7 @@ export default function ClientArticleList({
         />
         {/* Subtle warm strip across header */}
         <div
-          className="absolute top-0 left-0 right-0 h-[320px]"
+          className="absolute top-0 left-0 right-0 h-80"
           style={{
             background:
               "linear-gradient(180deg, rgba(46, 125, 50,0.06) 0%, transparent 100%)",
@@ -128,126 +127,127 @@ export default function ClientArticleList({
         />
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-6xl mx-auto px-3 sm:px-5 lg:px-7 relative z-10">
         {/* ── Header ── */}
-        <div className="text-center mb-12">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex p-3 rounded-2xl mb-5"
-            style={{
-              background: "rgba(46, 125, 50,0.12)",
-              border: "1px solid rgba(46, 125, 50,0.25)",
-            }}
-          >
-            <BookOpen className="w-6 h-6" style={{ color: "#64B5F6" }} />
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 }}
-            className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight"
-            style={{ color: "var(--color-text-dark)" }}
-          >
-            Artikel &amp;{" "}
-            <span
-              style={{
-                background: "linear-gradient(120deg, #64B5F6 0%, #2E7D32 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Edukasi
-            </span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-lg max-w-xl mx-auto"
-            style={{ color: "var(--color-text-light)" }}
-          >
-            Wawasan, riset, dan panduan praktis untuk ekosistem pendidikan
-            digital yang sehat.
-          </motion.p>
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="relative rounded-4xl overflow-hidden bg-[#90D2ED] px-6 md:px-12 flex flex-col items-center justify-center transform-gpu will-change-transform"
+          style={{ paddingTop: "64px", paddingBottom: "120px" }}
+        >
+          {/* Background Illustration / Image */}
+          <div className="absolute inset-0 z-0">
+            <img
+              src="/images/artikel/9.svg"
+              alt="Background Header"
+              className="w-full h-full object-cover"
+              style={{ objectPosition: "100% 8%" }}
+            />
+          </div>
 
-          {/* ── Search Bar ── */}
+          <div className="relative z-10 max-w-xl mx-auto text-center w-full">
+            <motion.h1
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight"
+              style={{ color: "var(--color-text-dark)" }}
+            >
+              Artikel &amp;{" "}
+              <span
+                style={{
+                  background:
+                    "linear-gradient(120deg, #64B5F6 0%, #2E7D32 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                Edukasi
+              </span>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-lg font-medium leading-relaxed"
+              style={{ color: "var(--color-text-light)" }}
+            >
+              Wawasan, riset, dan panduan praktis untuk ekosistem pendidikan
+              digital yang sehat.
+            </motion.p>
+          </div>
+        </motion.div>
+
+        {/* ── Overlapping Search & Category Filters ── */}
+        <div
+          className="relative z-20 max-w-4xl mx-auto px-4 mb-16"
+          style={{ marginTop: "-112px" }}
+        >
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="mt-8 max-w-lg mx-auto"
+            className="bg-white/40 backdrop-blur-lg border border-white/40 p-4 md:p-5 rounded-[28px] shadow-[0_12px_40px_rgba(0,0,0,0.06)]"
           >
-            <div
-              className="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all"
-              style={{
-                background: "#ffffff",
-                border: "1px solid var(--color-border)",
-              }}
-            >
-              <Search className="w-4 h-4 shrink-0 text-gray-400" />
+            {/* ── Search Bar ── */}
+            <div className="flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-white border border-gray-200 transition-all focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-50 mb-4">
+              <Search className="w-5 h-5 shrink-0 text-gray-400" />
               <input
                 ref={inputRef}
                 type="text"
                 placeholder="Cari artikel..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 bg-transparent outline-none text-sm font-medium placeholder-gray-400"
+                className="flex-1 bg-transparent outline-none text-[15px] font-medium placeholder-gray-400"
                 style={{ color: "var(--color-text-dark)" }}
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="shrink-0 transition-colors text-gray-400 hover:text-gray-600"
+                  className="shrink-0 transition-colors text-gray-400 hover:text-gray-700 p-1 bg-gray-100 hover:bg-gray-200 rounded-full"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  <X className="w-4 h-4" />
                 </button>
               )}
             </div>
-          </motion.div>
-        </div>
 
-        {/* ── Category Filters ── */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
-          {CATEGORIES.map((cat, i) => {
-            const Icon = cat.icon;
-            const active = activeCategory === cat.value;
-            return (
-              <motion.button
-                key={cat.value}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 + i * 0.05 }}
-                onClick={() => setActiveCategory(cat.value)}
-                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all"
-                style={
-                  active
-                    ? {
-                        background: "linear-gradient(135deg, #1E88E5, #2E7D32)",
-                        color: "white",
-                        boxShadow: "0 0 22px rgba(46, 125, 50,0.40)",
-                      }
-                    : {
-                        background: "#ffffff",
-                        border: "1px solid var(--color-border)",
-                        color: "var(--color-text-light)",
-                      }
-                }
-              >
-                <Icon className="w-3.5 h-3.5" />
-                {cat.label}
-              </motion.button>
-            );
-          })}
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="ml-2 text-xs font-bold uppercase tracking-widest text-gray-400"
-          >
-            {filtered.length} artikel
-          </motion.span>
+            {/* ── Category Filters ── */}
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              {CATEGORIES.map((cat, i) => {
+                const Icon = cat.icon;
+                const active = activeCategory === cat.value;
+                return (
+                  <button
+                    key={cat.value}
+                    onClick={() => setActiveCategory(cat.value)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold transition-all"
+                    style={
+                      active
+                        ? {
+                            background:
+                              "linear-gradient(135deg, #1E88E5, #2E7D32)",
+                            color: "white",
+                            boxShadow: "0 4px 15px rgba(46, 125, 50,0.25)",
+                          }
+                        : {
+                            background: "#ffffff",
+                            border: "1px solid var(--color-border)",
+                            color: "var(--color-text-light)",
+                          }
+                    }
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {cat.label}
+                  </button>
+                );
+              })}
+              <span className="ml-2 text-xs font-bold uppercase tracking-widest text-gray-400 hidden md:inline-block">
+                {filtered.length} artikel
+              </span>
+            </div>
+          </motion.div>
         </div>
 
         {/* ── Hero Featured Article ── */}
@@ -280,7 +280,7 @@ export default function ClientArticleList({
                 >
                   {/* top glow strip */}
                   <div
-                    className="absolute top-0 left-0 right-0 h-[1px]"
+                    className="absolute top-0 left-0 right-0 h-px"
                     style={{
                       background:
                         "linear-gradient(90deg, transparent, rgba(46, 125, 50,0.6), transparent)",
@@ -400,60 +400,52 @@ export default function ClientArticleList({
 
         {/* ── Bottom CTA ── */}
         {filtered.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="mt-20 rounded-3xl p-10 text-center relative overflow-hidden"
-            style={{
-              background:
-                "linear-gradient(135deg, rgba(46, 125, 50,0.09) 0%, rgba(46, 125, 50,0.05) 100%)",
-              border: "1px solid rgba(46, 125, 50,0.18)",
-            }}
-          >
-            <div
-              className="absolute inset-0 rounded-3xl pointer-events-none"
-              style={{
-                background:
-                  "radial-gradient(ellipse at 50% 0%, rgba(46, 125, 50,0.12), transparent 60%)",
-              }}
-            />
-            <div className="relative z-10">
-              <div
-                className="inline-flex p-3 rounded-2xl mb-4"
-                style={{
-                  background: "rgba(46, 125, 50,0.15)",
-                  border: "1px solid rgba(46, 125, 50,0.30)",
-                }}
-              >
-                <Sparkles className="w-5 h-5" style={{ color: "#64B5F6" }} />
+          <>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="mt-20 relative rounded-4xl overflow-hidden bg-[#90D2ED] px-6 md:px-12 flex flex-col items-center justify-center transform-gpu will-change-transform text-center"
+              style={{ paddingTop: "50px", paddingBottom: "20px" }}
+            >
+              {/* CTA Background Illustration */}
+              <div className="absolute inset-0 z-0 pointer-events-none">
+                <img
+                  src="/images/artikel/10.svg"
+                  alt="CTA Background"
+                  className="w-full h-full object-cover opacity-90"
+                  style={{ objectPosition: "100% 100%" }}
+                />
               </div>
-              <h3
-                className="text-2xl font-extrabold mb-2"
-                style={{ color: "var(--color-text-dark)" }}
-              >
-                Ikuti Dampak Nyata
-              </h3>
-              <p
-                className="mb-6 max-w-sm mx-auto text-sm"
-                style={{ color: "var(--color-text-light)" }}
-              >
-                Lihat bagaimana sekolah-sekolah di seluruh Kota Sidoarjo
-                berpartisipasi dalam gerakan GESAMEGA.
-              </p>
-              <Link
-                href="/peta"
-                className="inline-flex items-center gap-2 font-bold px-6 py-3 rounded-2xl transition-all"
-                style={{
-                  background: "linear-gradient(135deg, #1E88E5, #2E7D32)",
-                  color: "white",
-                  boxShadow: "0 0 28px rgba(46, 125, 50,0.35)",
-                }}
-              >
-                Lihat Peta Partisipasi <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </motion.div>
+
+              <div className="relative z-10 max-w-xl mx-auto w-full">
+                <h3
+                  className="text-2xl md:text-3xl font-extrabold mb-2"
+                  style={{ color: "var(--color-text-dark)" }}
+                >
+                  Ikuti Dampak Nyata
+                </h3>
+                <p
+                  className="mb-8 max-w-sm mx-auto text-sm md:text-base font-medium"
+                  style={{ color: "var(--color-text-dark)" }}
+                >
+                  Lihat bagaimana literasi digital membentuk generasi sehat dan
+                  cerdas bersama GESAMEGA.
+                </p>
+                <Link
+                  href="/peta"
+                  className="inline-flex items-center gap-2 font-bold px-6 py-3 rounded-2xl transition-all hover:scale-105"
+                  style={{
+                    background: "#2E7D32",
+                    color: "white",
+                    boxShadow: "0 8px 25px rgba(46, 125, 50,0.30)",
+                  }}
+                >
+                  Lihat Peta Partisipasi <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </motion.div>
+          </>
         )}
       </div>
     </div>
@@ -489,14 +481,14 @@ function ArticleCard({ article, index }: { article: any; index: number }) {
     >
       <Link href={`/artikel/${article.slug}`} className="group block h-full">
         <div
-          className="rounded-2xl overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-md group-hover:translate-y-[-3px]"
+          className="rounded-2xl overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-md group-hover:-translate-y-0.75"
           style={{
             background: "#ffffff",
             border: "1px solid var(--color-border)",
           }}
         >
           {/* Thumbnail */}
-          <div className="relative aspect-[16/9] overflow-hidden">
+          <div className="relative aspect-video overflow-hidden">
             {article.thumbnail ? (
               <img
                 src={article.thumbnail}
