@@ -34,26 +34,22 @@ const features = [
     accentBorder: "rgba(139,92,246,0.25)",
     number: "03",
   },
-  {
-    icon: BookOpen,
-    title: "Studi Kasus",
-    description:
-      "Kumpulan praktik terbaik dari sekolah yang berhasil mengelola ekosistem digital secara efektif.",
-    accent: "#f43f5e",
-    accentLight: "rgba(244,63,94,0.12)",
-    accentBorder: "rgba(244,63,94,0.25)",
-    number: "04",
-  },
 ];
 
 export function SolutionSection() {
   return (
     <section className="relative py-28 px-4 overflow-hidden bg-white">
-      {/* ── Dynamic Glowing Mesh ── */}
-      <div className="absolute inset-0 bg-surface/50 mix-blend-overlay" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-surface-alt/50 blur-[150px] rounded-full pointer-events-none mix-blend-multiply transform-gpu" />
-      <div className="absolute top-[20%] right-[10%] w-100 h-100 bg-emerald-100/50 blur-[130px] rounded-full pointer-events-none mix-blend-multiply transform-gpu" />
-      <div className="absolute bottom-[20%] left-[10%] w-125 h-125 bg-purple-100/50 blur-[140px] rounded-full pointer-events-none mix-blend-multiply transform-gpu" />
+      {/* ── Optimized Background Mesh ── */}
+      {/* Menggunakan radial-gradient alih-alih blur() dan mix-blend-mode untuk performa maksimal tanpa lag */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(circle at 80% 20%, rgba(16,185,129,0.04) 0%, transparent 40%),
+            radial-gradient(circle at 20% 80%, rgba(139,92,246,0.04) 0%, transparent 40%)
+          `,
+        }}
+      />
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* ── Header ── */}
@@ -86,13 +82,13 @@ export function SolutionSection() {
           </h2>
 
           <p className="text-text-dark max-w-2xl mx-auto text-lg font-medium">
-            Empat layanan utama yang menjadi fondasi platform ini dalam
+            Tiga layanan utama yang menjadi fondasi platform ini dalam
             mendampingi sekolah membangun ekosistem digital yang sehat.
           </p>
         </motion.div>
 
         {/* ── Cards ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {features.map((feature, i) => (
             <motion.div
               key={feature.title}
@@ -104,7 +100,7 @@ export function SolutionSection() {
                 delay: i * 0.1,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="relative rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm flex flex-col p-6 group transition-all duration-300 hover:shadow-md hover:-translate-y-1.5"
+              className="relative rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm flex flex-col p-6 group transition-all duration-300 hover:shadow-md hover:-translate-y-1.5 transform-gpu will-change-transform"
             >
               {/* Hover glow */}
               <div

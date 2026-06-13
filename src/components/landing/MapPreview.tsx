@@ -70,8 +70,8 @@ function StatCard({ stat, index }: { stat: (typeof stats)[0]; index: number }) {
       className="relative flex-1 min-w-25 rounded-2xl p-4 overflow-hidden group border border-slate-200 bg-white shadow-sm"
     >
       <div
-        className="absolute -top-4 -right-4 w-16 h-16 rounded-full blur-xl opacity-25 group-hover:opacity-45 transition-opacity duration-500"
-        style={{ background: stat.color }}
+        className="absolute -top-4 -right-4 w-16 h-16 opacity-30 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none"
+        style={{ background: `radial-gradient(circle, ${stat.color} 0%, transparent 70%)` }}
       />
       <stat.icon
         className="w-4 h-4 mb-3 relative z-10"
@@ -90,13 +90,17 @@ function StatCard({ stat, index }: { stat: (typeof stats)[0]; index: number }) {
 export function MapPreview() {
   return (
     <section className="relative py-24 px-4 overflow-hidden bg-white">
-      {/* ── Dynamic Glowing Mesh ── */}
-      <div className="absolute inset-0 bg-surface/50 mix-blend-overlay" />
-
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[20%] w-150 h-150 bg-emerald-100/50 blur-[150px] rounded-full mix-blend-multiply pointer-events-none transform-gpu" />
-        <div className="absolute bottom-[-5%] right-[10%] w-125 h-125 bg-surface-alt/50 blur-[130px] rounded-full mix-blend-multiply pointer-events-none transform-gpu" />
-      </div>
+      {/* ── Optimized Background Mesh ── */}
+      {/* Menggunakan radial-gradient alih-alih blur() dan mix-blend-mode untuk performa maksimal tanpa lag */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(circle at 20% 0%, rgba(16,185,129,0.04) 0%, transparent 40%),
+            radial-gradient(circle at 90% 100%, rgba(59,130,246,0.04) 0%, transparent 40%)
+          `
+        }}
+      />
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Header row */}

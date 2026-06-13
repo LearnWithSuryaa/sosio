@@ -69,12 +69,17 @@ const cardVariants = {
 export function ProblemSection() {
   return (
     <section className="relative overflow-hidden py-28 px-6 bg-surface">
-      {/* Lightweight texture */}
-      <div className="absolute inset-0 bg-surface/50 mix-blend-overlay" />
-
-      {/* Optimized blur orbs for Vite-style mesh */}
-      <div className="absolute top-[10%] left-[10%] w-100 h-100 rounded-full bg-primary-soft/50 blur-[120px] pointer-events-none mix-blend-multiply transform-gpu" />
-      <div className="absolute bottom-[10%] right-[10%] w-125 h-125 rounded-full bg-surface-alt/50 blur-[130px] pointer-events-none mix-blend-multiply transform-gpu" />
+      {/* ── Optimized Background Mesh ── */}
+      {/* Menggunakan radial-gradient alih-alih blur() dan mix-blend-mode untuk performa maksimal tanpa lag */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(circle at 10% 10%, rgba(134, 239, 172, 0.05) 0%, transparent 40%),
+            radial-gradient(circle at 90% 90%, rgba(203, 213, 225, 0.05) 0%, transparent 40%)
+          `
+        }}
+      />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Header */}
@@ -204,9 +209,9 @@ export function ProblemSection() {
 
                 {/* Optimized corner glow */}
                 <div
-                  className="absolute -bottom-6 -right-6 w-24 h-24 opacity-10 blur-xl pointer-events-none"
+                  className="absolute -bottom-6 -right-6 w-24 h-24 opacity-20 pointer-events-none"
                   style={{
-                    backgroundColor: item.color,
+                    background: `radial-gradient(circle, ${item.color} 0%, transparent 70%)`,
                   }}
                 />
               </motion.div>
