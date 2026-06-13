@@ -9,9 +9,9 @@ const features = [
     title: "Survei Diagnostik",
     description:
       "Evaluasi penggunaan gadget di lingkungan sekolah untuk memetakan tingkat kesiapan digital.",
-    accent: "#f97316",
-    accentLight: "rgba(249,115,22,0.12)",
-    accentBorder: "rgba(249,115,22,0.25)",
+    accent: "#2E7D32",
+    accentLight: "rgba(46, 125, 50,0.12)",
+    accentBorder: "rgba(46, 125, 50,0.25)",
     number: "01",
   },
   {
@@ -48,12 +48,12 @@ const features = [
 
 export function SolutionSection() {
   return (
-    <section className="relative py-28 px-4 overflow-hidden bg-[#050505]">
+    <section className="relative py-28 px-4 overflow-hidden bg-white">
       {/* ── Dynamic Glowing Mesh ── */}
-      <div className="absolute inset-0 bg-white/[0.01] mix-blend-overlay" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-600/10 blur-[150px] rounded-full pointer-events-none mix-blend-screen" />
-      <div className="absolute top-[20%] right-[10%] w-[400px] h-[400px] bg-emerald-500/10 blur-[130px] rounded-full pointer-events-none mix-blend-screen" />
-      <div className="absolute bottom-[20%] left-[10%] w-[500px] h-[500px] bg-purple-500/10 blur-[140px] rounded-full pointer-events-none mix-blend-screen" />
+      <div className="absolute inset-0 bg-surface/50 mix-blend-overlay" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-surface-alt/50 blur-[150px] rounded-full pointer-events-none mix-blend-multiply transform-gpu" />
+      <div className="absolute top-[20%] right-[10%] w-100 h-100 bg-emerald-100/50 blur-[130px] rounded-full pointer-events-none mix-blend-multiply transform-gpu" />
+      <div className="absolute bottom-[20%] left-[10%] w-125 h-125 bg-purple-100/50 blur-[140px] rounded-full pointer-events-none mix-blend-multiply transform-gpu" />
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* ── Header ── */}
@@ -64,16 +64,16 @@ export function SolutionSection() {
           transition={{ duration: 0.65 }}
           className="text-center mb-16"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-[0.15em] mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary-soft bg-surface-alt text-primary text-xs font-bold uppercase tracking-[0.15em] mb-6 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             Solusi Utama
           </span>
 
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white mt-2 mb-4 leading-tight tracking-tight">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-text-dark mt-2 mb-4 leading-tight tracking-tight">
             Langkah Nyata{" "}
             <span
               style={{
-                background: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+                background: "linear-gradient(135deg, #64B5F6 0%, #2E7D32 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -85,7 +85,7 @@ export function SolutionSection() {
             Berbasis Partisipasi
           </h2>
 
-          <p className="text-white/50 max-w-2xl mx-auto text-lg font-medium">
+          <p className="text-text-dark max-w-2xl mx-auto text-lg font-medium">
             Empat layanan utama yang menjadi fondasi platform ini dalam
             mendampingi sekolah membangun ekosistem digital yang sehat.
           </p>
@@ -104,12 +104,7 @@ export function SolutionSection() {
                 delay: i * 0.1,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="relative rounded-2xl overflow-hidden border backdrop-blur-sm flex flex-col p-6 group transition-all duration-300"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.03)",
-                borderColor: "rgba(255,255,255,0.08)",
-              }}
+              className="relative rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm flex flex-col p-6 group transition-all duration-300 hover:shadow-md hover:-translate-y-1.5"
             >
               {/* Hover glow */}
               <div
@@ -142,16 +137,16 @@ export function SolutionSection() {
               </div>
 
               {/* Text */}
-              <h3 className="relative z-10 font-bold text-white mb-3 text-base leading-snug">
+              <h3 className="relative z-10 font-bold text-text-dark mb-3 text-base leading-snug">
                 {feature.title}
               </h3>
-              <p className="relative z-10 text-white/40 text-sm leading-relaxed flex-1">
+              <p className="relative z-10 text-text-dark text-sm leading-relaxed flex-1">
                 {feature.description}
               </p>
 
               {/* Bottom accent bar */}
               <div
-                className="relative z-10 mt-6 h-[2px] w-8 rounded-full opacity-40 group-hover:opacity-100 group-hover:w-full transition-all duration-500"
+                className="relative z-10 mt-6 h-0.5 w-8 rounded-full opacity-40 group-hover:opacity-100 group-hover:w-full transition-all duration-500"
                 style={{ backgroundColor: feature.accent }}
               />
 

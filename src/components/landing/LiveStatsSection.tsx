@@ -45,12 +45,12 @@ export function LiveStatsSection({ schools, commitments }: LiveStatsSectionProps
   ];
 
   return (
-    <section className="relative overflow-hidden py-24 px-4 bg-[#050505]">
+    <section className="relative overflow-hidden py-24 px-4 bg-white">
       {/* ── Dynamic Glowing Mesh ── */}
-      <div className="absolute inset-0 bg-white/[0.01] mix-blend-overlay" />
+      <div className="absolute inset-0 bg-surface/50 mix-blend-overlay" />
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-sky-500/10 blur-[130px] rounded-[100%] mix-blend-screen pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[10%] w-[400px] h-[400px] bg-emerald-500/10 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-surface-alt/50 blur-[130px] rounded-[100%] mix-blend-multiply pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[10%] w-[400px] h-[400px] bg-emerald-100/50 blur-[120px] rounded-full mix-blend-multiply pointer-events-none" />
       </div>
       <div className="max-w-5xl mx-auto relative z-10">
         <motion.div
@@ -60,15 +60,15 @@ export function LiveStatsSection({ schools, commitments }: LiveStatsSectionProps
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-400 text-xs font-bold uppercase tracking-[0.15em] mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary-soft bg-surface-alt text-primary text-xs font-bold uppercase tracking-[0.15em] mb-6 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             Data Real-Time
           </span>
-          <h2 className="text-4xl md:text-6xl font-black text-white mt-2 mb-4 leading-[1.05] tracking-tight">
+          <h2 className="text-4xl md:text-6xl font-black text-text-dark mt-2 mb-4 leading-[1.05] tracking-tight">
             Statistik{" "}
             <span
               style={{
-                background: "linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)",
+                background: "linear-gradient(135deg, #2E7D32 0%, #1E88E5 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -78,7 +78,7 @@ export function LiveStatsSection({ schools, commitments }: LiveStatsSectionProps
             </span>{" "}
             Terkini
           </h2>
-          <p className="text-white/50 font-medium max-w-xl mx-auto text-lg leading-relaxed">
+          <p className="text-text-dark font-medium max-w-xl mx-auto text-lg leading-relaxed">
             Data langsung dari sistem kami, diperbarui secara otomatis setiap kali sekolah baru berpartisipasi.
           </p>
         </motion.div>
@@ -92,11 +92,7 @@ export function LiveStatsSection({ schools, commitments }: LiveStatsSectionProps
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="relative rounded-[32px] p-8 text-center flex flex-col items-center group overflow-hidden border"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.03)",
-                borderColor: "rgba(255,255,255,0.08)",
-              }}
+              className="relative rounded-[32px] p-8 text-center flex flex-col items-center group overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md"
             >
               {/* Hover glow */}
               <div
@@ -113,10 +109,10 @@ export function LiveStatsSection({ schools, commitments }: LiveStatsSectionProps
                 <stat.icon className="w-8 h-8" style={{ color: stat.color }} />
               </div>
 
-              <h3 className="relative z-10 text-5xl font-black text-white mb-2 tracking-tight">
+              <h3 className="relative z-10 text-5xl font-black text-text-dark mb-2 tracking-tight">
                 <AnimatedNumber value={stat.value} suffix={stat.suffix} />
               </h3>
-              <p className="relative z-10 text-white/40 font-semibold uppercase text-xs tracking-widest">{stat.label}</p>
+              <p className="relative z-10 text-slate-500 font-semibold uppercase text-xs tracking-widest">{stat.label}</p>
             </motion.div>
           ))}
         </div>

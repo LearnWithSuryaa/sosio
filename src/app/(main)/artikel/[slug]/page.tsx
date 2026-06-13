@@ -85,7 +85,7 @@ export default async function ArtikelDetail({ params }: Props) {
         <div
           className="absolute -top-[10%] right-[5%] w-[700px] h-[700px] rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(234,88,12,0.09) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(46, 125, 50,0.09) 0%, transparent 70%)",
             mixBlendMode: "screen",
           }}
         />
@@ -122,9 +122,9 @@ export default async function ArtikelDetail({ params }: Props) {
           <span
             className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-widest"
             style={{
-              background: "rgba(249,115,22,0.18)",
-              border: "1px solid rgba(249,115,22,0.35)",
-              color: "#fb923c",
+              background: "rgba(46, 125, 50,0.18)",
+              border: "1px solid rgba(46, 125, 50,0.35)",
+              color: "#64B5F6",
             }}
           >
             <Tag className="w-3 h-3" />
@@ -154,7 +154,7 @@ export default async function ArtikelDetail({ params }: Props) {
           <div className="flex items-center gap-4 flex-wrap">
             <Link
               href="/artikel"
-              className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-widest transition-colors text-white/30 hover:text-orange-400"
+              className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-widest transition-colors text-white/30 hover:text-info"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Artikel
@@ -165,7 +165,7 @@ export default async function ArtikelDetail({ params }: Props) {
               <div
                 className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold"
                 style={{
-                  background: "linear-gradient(135deg, #ea580c, #f97316)",
+                  background: "linear-gradient(135deg, #1E88E5, #2E7D32)",
                   color: "white",
                 }}
               >
@@ -188,9 +188,9 @@ export default async function ArtikelDetail({ params }: Props) {
             <span
               className="flex items-center gap-1.5 text-[11px] px-3 py-1 rounded-full"
               style={{
-                background: "rgba(249,115,22,0.10)",
-                border: "1px solid rgba(249,115,22,0.20)",
-                color: "#fb923c",
+                background: "rgba(46, 125, 50,0.10)",
+                border: "1px solid rgba(46, 125, 50,0.20)",
+                color: "#64B5F6",
               }}
             >
               <Clock className="w-3 h-3" />
@@ -213,7 +213,7 @@ export default async function ArtikelDetail({ params }: Props) {
                   fontFamily: "'Georgia', serif",
                   fontWeight: 300,
                   fontStyle: "italic",
-                  borderLeft: "2px solid #f97316",
+                  borderLeft: "2px solid #2E7D32",
                 }}
               >
                 {paragraphs[0]}
@@ -289,7 +289,7 @@ export default async function ArtikelDetail({ params }: Props) {
                 <div
                   className="w-12 h-12 rounded-full flex items-center justify-center text-base font-bold shrink-0"
                   style={{
-                    background: "linear-gradient(135deg, #ea580c, #f97316)",
+                    background: "linear-gradient(135deg, #1E88E5, #2E7D32)",
                     color: "white",
                   }}
                 >
@@ -337,16 +337,16 @@ export default async function ArtikelDetail({ params }: Props) {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.35)" }}>Estimasi baca</span>
-                  <span className="text-[12px] font-semibold" style={{ color: "#fb923c" }}>{readTime}</span>
+                  <span className="text-[12px] font-semibold" style={{ color: "#64B5F6" }}>{readTime}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.35)" }}>Kategori</span>
                   <span
                     className="text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full"
                     style={{
-                      background: "rgba(249,115,22,0.12)",
-                      border: "1px solid rgba(249,115,22,0.25)",
-                      color: "#fb923c",
+                      background: "rgba(46, 125, 50,0.12)",
+                      border: "1px solid rgba(46, 125, 50,0.25)",
+                      color: "#64B5F6",
                     }}
                   >
                     {article.kategori || "Umum"}
@@ -400,7 +400,7 @@ export default async function ArtikelDetail({ params }: Props) {
                           {blog.kategori || "Umum"}
                         </p>
                         <h4
-                          className="text-[12px] font-normal leading-snug line-clamp-2 transition-colors group-hover:text-orange-400"
+                          className="text-[12px] font-normal leading-snug line-clamp-2 transition-colors group-hover:text-info"
                           style={{ color: "rgba(255,255,255,0.60)" }}
                         >
                           {blog.judul}
@@ -472,7 +472,7 @@ export default async function ArtikelDetail({ params }: Props) {
                       />
                     </div>
                     <div className="p-4">
-                      <p className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: "#fb923c" }}>
+                      <p className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: "#64B5F6" }}>
                         {blog.kategori || "Umum"}
                       </p>
                       <h3

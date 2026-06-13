@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   Map,
-  BookOpen,
   Lightbulb,
   Menu,
   X,
@@ -21,9 +20,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [insightOpen, setInsightOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
-  const [mobileInsightOpen, setMobileInsightOpen] = useState(false);
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
 
   const isHiddenPage = pathname === "/kuis" || pathname === "/survei";
@@ -32,11 +29,7 @@ export function Navbar() {
     { href: "/", label: "Beranda" },
     { href: "/peta", label: "Peta", icon: Map },
     { href: "/hasil", label: "Hasil", icon: BarChart3 },
-  ];
-
-  const insightLinks = [
-    { href: "/studi-kasus", label: "Studi Kasus", icon: BookOpen },
-    { href: "/artikel", label: "Artikel & Edukasi", icon: Newspaper },
+    { href: "/artikel", label: "Artikel", icon: Newspaper },
   ];
 
   const aboutLinks = [
@@ -70,7 +63,6 @@ export function Navbar() {
 
   const closeMobile = () => {
     setMobileOpen(false);
-    setMobileInsightOpen(false);
     setMobileAboutOpen(false);
   };
 
@@ -80,26 +72,33 @@ export function Navbar() {
     <>
       <nav
         className={cn(
-          "fixed w-full top-0 z-50 transition-all duration-500",
-          scrolled
-            ? "border-b border-white/10 backdrop-blur-xl"
-            : "bg-transparent",
-          !isVisible && "-translate-y-full",
+          "fixed z-50 left-1/2 -translate-x-1/2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+          !scrolled
+            ? "w-full top-0 bg-transparent rounded-none border-transparent shadow-none"
+            : "w-[92%] sm:w-[85%] max-w-5xl top-4 md:top-6 rounded-3xl border border-primary-light/20 backdrop-blur-xl shadow-2xl",
+          !isVisible && scrolled && "-translate-y-[250%] opacity-0 scale-95",
         )}
-        style={scrolled ? { backgroundColor: "rgba(3,7,18,0.85)" } : {}}
+        style={scrolled ? { backgroundColor: "rgba(255, 255, 255, 0.92)" } : {}}
       >
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div
+            className={cn(
+              "flex items-center justify-between transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+              scrolled ? "h-14 sm:h-16" : "h-16 md:h-20",
+            )}
+          >
             {/* Logo */}
             <Link
               href="/"
               onClick={closeMobile}
               className={cn(
-                "font-extrabold text-xl sm:text-2xl tracking-tight text-white transition-opacity duration-300",
-                mobileOpen ? "opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto" : "opacity-100"
+                "font-extrabold text-xl sm:text-2xl tracking-tight text-text-dark transition-opacity duration-300",
+                mobileOpen
+                  ? "opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto"
+                  : "opacity-100",
               )}
             >
-              GESA<span className="text-orange-500">MEGA</span>
+              GESA<span className="text-primary">MEGA</span>
             </Link>
 
             {/* Desktop Nav */}
@@ -114,8 +113,8 @@ export function Navbar() {
                     className={cn(
                       "px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 transition-all duration-200",
                       active
-                        ? "text-orange-400 bg-orange-500/10 border border-orange-500/20"
-                        : "text-white/60 hover:text-white hover:bg-white/8",
+                        ? "text-info bg-button-nav/20 border border-button-nav/30"
+                        : "text-text-dark/70 hover:text-text-dark hover:bg-button-nav/10",
                     )}
                   >
                     {Icon && <Icon className="w-4 h-4" />}
@@ -123,57 +122,6 @@ export function Navbar() {
                   </Link>
                 );
               })}
-
-              {/* Insight Dropdown */}
-              <div
-                className="relative"
-                onMouseEnter={() => setInsightOpen(true)}
-                onMouseLeave={() => setInsightOpen(false)}
-              >
-                <button
-                  className={cn(
-                    "px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1.5 transition-all duration-200",
-                    insightOpen
-                      ? "text-white bg-white/10"
-                      : "text-white/60 hover:text-white hover:bg-white/8",
-                  )}
-                >
-                  Insight
-                  <motion.span
-                    animate={{ rotate: insightOpen ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <ChevronDown className="w-3.5 h-3.5" />
-                  </motion.span>
-                </button>
-
-                <AnimatePresence>
-                  {insightOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -8, scale: 0.96 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -8, scale: 0.96 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute top-full mt-2 w-52 rounded-2xl p-2 border border-white/10 backdrop-blur-xl"
-                      style={{ backgroundColor: "rgba(15,17,24,0.95)" }}
-                    >
-                      {insightLinks.map((link) => {
-                        const Icon = link.icon;
-                        return (
-                          <Link
-                            key={link.href}
-                            href={link.href}
-                            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/8 transition-all duration-150"
-                          >
-                            <Icon className="w-4 h-4 text-orange-400/70" />
-                            {link.label}
-                          </Link>
-                        );
-                      })}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
 
               {/* About Dropdown */}
               <div
@@ -185,8 +133,8 @@ export function Navbar() {
                   className={cn(
                     "px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1.5 transition-all duration-200",
                     aboutOpen
-                      ? "text-white bg-white/10"
-                      : "text-white/60 hover:text-white hover:bg-white/8",
+                      ? "text-text-dark bg-primary-light/15"
+                      : "text-text-dark/70 hover:text-text-dark hover:bg-primary-light/10",
                   )}
                 >
                   Tentang
@@ -205,14 +153,14 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -8, scale: 0.96 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute top-full mt-2 w-52 rounded-2xl p-2 border border-white/10 backdrop-blur-xl"
-                      style={{ backgroundColor: "rgba(15,17,24,0.95)" }}
+                      className="absolute top-full mt-2 w-52 rounded-2xl p-2 border border-primary-light/20 backdrop-blur-xl"
+                      style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
                     >
                       {aboutLinks.map((link) => (
                         <Link
                           key={link.href}
                           href={link.href}
-                          className="block px-3 py-2.5 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/8 transition-all duration-150"
+                          className="block px-3 py-2.5 rounded-xl text-sm text-text-dark/70 hover:text-text-dark hover:bg-primary-light/10 transition-all duration-150"
                         >
                           {link.label}
                         </Link>
@@ -226,19 +174,24 @@ export function Navbar() {
             {/* CTA Desktop */}
             <div className="hidden lg:flex items-center">
               <Link href="/peta">
-                <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-orange-500 hover:bg-orange-400 text-white font-bold text-sm transition-all duration-300 shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02]">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-button-nav text-text-dark font-extrabold text-sm shadow-lg shadow-button-nav/60 hover:shadow-xl hover:shadow-button-nav/80 transition-colors"
+                >
                   Peta Partisipasi
-                </button>
+                </motion.button>
               </Link>
             </div>
 
             {/* Mobile Hamburger */}
             <button
               onClick={() => setMobileOpen(true)}
-              className="md:hidden p-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
+              className="md:hidden p-2 rounded-full border border-primary-light/20 bg-primary-light/5 hover:bg-primary-light/15 transition-colors"
               aria-label="Buka menu"
             >
-              <Menu className="w-5 h-5 text-white" />
+              <Menu className="w-5 h-5 text-text-dark" />
             </button>
           </div>
         </div>
@@ -266,27 +219,27 @@ export function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 320, damping: 32 }}
-              className="fixed top-0 right-0 z-50 h-full w-4/5 max-w-xs flex flex-col border-l border-white/10"
+              className="fixed top-0 right-0 z-50 h-full w-4/5 max-w-xs flex flex-col border-l border-primary-light/20"
               style={{
-                backgroundColor: "rgba(10,10,18,0.97)",
+                backgroundColor: "rgba(245, 247, 250, 0.97)",
                 backdropFilter: "blur(24px)",
               }}
             >
               {/* Drawer Header */}
-              <div className="flex items-center justify-between px-5 h-16 border-b border-white/8">
+              <div className="flex items-center justify-between px-5 h-16 border-b border-primary-light/15">
                 <Link
                   href="/"
-                  className="font-extrabold text-xl text-white tracking-tight"
+                  className="font-extrabold text-xl text-text-dark tracking-tight"
                   onClick={closeMobile}
                 >
-                  GESA<span className="text-orange-500">MEGA</span>
+                  GESA<span className="text-primary">MEGA</span>
                 </Link>
                 <button
                   onClick={closeMobile}
-                  className="p-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
+                  className="p-2 rounded-full border border-primary-light/20 bg-primary-light/5 hover:bg-primary-light/15 transition-colors"
                   aria-label="Tutup menu"
                 >
-                  <X className="w-4 h-4 text-white/60" />
+                  <X className="w-4 h-4 text-text-dark/70" />
                 </button>
               </div>
 
@@ -303,8 +256,8 @@ export function Navbar() {
                       className={cn(
                         "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-150",
                         active
-                          ? "text-orange-400 bg-orange-500/10 border border-orange-500/20"
-                          : "text-white/60 hover:text-white hover:bg-white/6",
+                          ? "text-info bg-button-nav/20 border border-button-nav/30"
+                          : "text-text-dark/70 hover:text-text-dark hover:bg-button-nav/10",
                       )}
                     >
                       {Icon && <Icon className="w-4 h-4 shrink-0" />}
@@ -313,61 +266,14 @@ export function Navbar() {
                   );
                 })}
 
-                {/* Insight Accordion */}
-                <div>
-                  <button
-                    onClick={() => setMobileInsightOpen((v) => !v)}
-                    className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold text-white/60 hover:text-white hover:bg-white/6 transition-all duration-150"
-                  >
-                    <span className="flex items-center gap-3">
-                      <BookOpen className="w-4 h-4 shrink-0 text-orange-400/70" />
-                      Insight
-                    </span>
-                    <motion.span
-                      animate={{ rotate: mobileInsightOpen ? 180 : 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <ChevronDown className="w-4 h-4" />
-                    </motion.span>
-                  </button>
-                  <AnimatePresence>
-                    {mobileInsightOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="pl-4 mt-1 space-y-1">
-                          {insightLinks.map((link) => {
-                            const Icon = link.icon;
-                            return (
-                              <Link
-                                key={link.href}
-                                href={link.href}
-                                onClick={closeMobile}
-                                className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-white/50 hover:text-orange-400 hover:bg-orange-500/8 transition-all duration-150"
-                              >
-                                <Icon className="w-4 h-4 shrink-0" />
-                                {link.label}
-                              </Link>
-                            );
-                          })}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
                 {/* About Accordion */}
                 <div>
                   <button
                     onClick={() => setMobileAboutOpen((v) => !v)}
-                    className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold text-white/60 hover:text-white hover:bg-white/6 transition-all duration-150"
+                    className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold text-text-dark/70 hover:text-text-dark hover:bg-primary-light/10 transition-all duration-150"
                   >
                     <span className="flex items-center gap-3">
-                      <Lightbulb className="w-4 h-4 shrink-0 text-orange-400/70" />
+                      <Lightbulb className="w-4 h-4 shrink-0 text-info/70" />
                       Tentang
                     </span>
                     <motion.span
@@ -392,7 +298,7 @@ export function Navbar() {
                               key={link.href}
                               href={link.href}
                               onClick={closeMobile}
-                              className="block px-4 py-2.5 rounded-xl text-sm text-white/50 hover:text-orange-400 hover:bg-orange-500/8 transition-all duration-150"
+                              className="block px-4 py-2.5 rounded-xl text-sm text-text-dark/60 hover:text-info hover:bg-info/8 transition-all duration-150"
                             >
                               {link.label}
                             </Link>
@@ -405,10 +311,10 @@ export function Navbar() {
               </nav>
 
               {/* Drawer Footer */}
-              <div className="px-5 py-5 border-t border-white/8">
+              <div className="px-5 py-5 border-t border-primary-light/15">
                 <Link href="/peta" onClick={closeMobile}>
-                  <button className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-orange-500 hover:bg-orange-400 text-white font-bold text-sm transition-all duration-300 shadow-lg shadow-orange-500/25">
-                    Lihat Peta Nasional
+                  <button className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-button-nav hover:bg-button-nav/90 text-text-dark font-bold text-sm transition-all duration-300 shadow-lg shadow-button-nav/25">
+                    Lihat Peta
                   </button>
                 </Link>
               </div>

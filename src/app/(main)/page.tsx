@@ -6,7 +6,7 @@ import { ParticipationFlow } from "@/components/landing/ParticipationFlow";
 import { MapPreview } from "@/components/landing/MapPreview";
 import { LiveStatsSection } from "@/components/landing/LiveStatsSection";
 import { CaseStudySection } from "@/components/landing/CaseStudySection";
-import { ArticleSection } from "@/components/landing/ArticleSection"; 
+import { ArticleSection } from "@/components/landing/ArticleSection";
 
 // Fallback numbers to provide immediate context & social proof
 const BASE_SCHOOLS = 500;
@@ -79,10 +79,10 @@ export default async function Home() {
       <MapPreview />
 
       {/* 6. Live Statistics - Data Driven */}
-      <LiveStatsSection schools={data.schools} commitments={data.commitments} />
+      {/*<LiveStatsSection schools={data.schools} commitments={data.commitments} />*/}
 
       {/* 7. Case Studies - Inspiration */}
-      <CaseStudySection caseStudies={data.caseStudies} />
+      {/*<CaseStudySection caseStudies={data.caseStudies} />*/}
 
       {/* 8. Articles - Insights */}
       <ArticleSection articles={data.articles} />

@@ -22,10 +22,10 @@ const GUIDES = [
     id: 1,
     category: "template",
     icon: ClipboardList,
-    iconBg: "bg-orange-100",
-    iconColor: "text-orange-500",
+    iconBg: "bg-surface-alt",
+    iconColor: "text-primary",
     badge: "Template Siap Pakai",
-    badgeColor: "bg-orange-50 text-orange-600 border-orange-200",
+    badgeColor: "bg-surface-alt text-primary border-primary-soft",
     title: "Template Tata Tertib Penggunaan HP di Sekolah",
     desc: "Dokumen Word yang dapat langsung disesuaikan dengan kebutuhan sekolah Anda. Mencakup pasal-pasal tentang waktu, lokasi, sanksi, dan prosedur pengaduan.",
     highlights: [
@@ -166,7 +166,7 @@ const STEPS = [
   {
     num: "04",
     title: "Pahami Dampak Nasional",
-    desc: "Lihat bagaimana sekolah di seluruh Indonesia mengimplementasikan kebijakan ini di Peta Partisipasi.",
+    desc: "Lihat bagaimana sekolah di seluruh Kota Sidoarjo mengimplementasikan kebijakan ini di Peta Partisipasi.",
   },
 ];
 
@@ -174,19 +174,19 @@ export default function PanduanPage() {
   const [activeTab, setActiveTab] = useState("all");
 
   const filtered = GUIDES.filter(
-    (g) => activeTab === "all" || g.category === activeTab
+    (g) => activeTab === "all" || g.category === activeTab,
   );
 
   return (
     <div className="min-h-[90vh] bg-[#FAFAFA] pt-28 pb-16 relative overflow-hidden">
       {/* Decorative blurs */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-50 rounded-full blur-3xl opacity-60 pointer-events-none -z-10" />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-surface-alt rounded-full blur-3xl opacity-60 pointer-events-none -z-10" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-50 rounded-full blur-3xl opacity-40 pointer-events-none -z-10" />
 
       <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-14">
-          <div className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-gray-100 text-orange-500 mb-5">
+          <div className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-gray-100 text-primary mb-5">
             <Shield className="w-6 h-6" />
           </div>
           <h1 className="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
@@ -207,8 +207,8 @@ export default function PanduanPage() {
         {/* How it Works */}
         <div className="mb-14 bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
           <div className="flex items-center gap-2 mb-8">
-            <Sparkles className="w-4 h-4 text-orange-500" />
-            <h2 className="text-sm font-black uppercase tracking-widest text-orange-500">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <h2 className="text-sm font-black uppercase tracking-widest text-primary">
               Cara Menggunakan
             </h2>
           </div>
@@ -221,11 +221,15 @@ export default function PanduanPage() {
                 transition={{ duration: 0.4, delay: i * 0.1 }}
                 className="flex flex-col"
               >
-                <div className="text-4xl font-black text-orange-100 mb-3 leading-none">
+                <div className="text-4xl font-black text-surface-alt mb-3 leading-none">
                   {step.num}
                 </div>
-                <h3 className="font-extrabold text-gray-900 mb-2">{step.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
+                <h3 className="font-extrabold text-gray-900 mb-2">
+                  {step.title}
+                </h3>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  {step.desc}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -239,8 +243,8 @@ export default function PanduanPage() {
               onClick={() => setActiveTab(tab.value)}
               className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                 activeTab === tab.value
-                  ? "bg-orange-500 text-white shadow-md shadow-orange-500/20"
-                  : "bg-white border border-gray-200 text-gray-600 hover:border-orange-200 hover:text-orange-600"
+                  ? "bg-primary text-white shadow-md shadow-primary/20"
+                  : "bg-white border border-gray-200 text-gray-600 hover:border-primary-soft hover:text-primary"
               }`}
             >
               {tab.label}
@@ -263,12 +267,12 @@ export default function PanduanPage() {
                 transition={{ duration: 0.35, delay: i * 0.07 }}
                 className={`bg-white rounded-2xl border shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden ${
                   guide.featured
-                    ? "border-orange-100 ring-1 ring-orange-100"
+                    ? "border-surface-alt ring-1 ring-primary-soft"
                     : "border-gray-100"
                 }`}
               >
                 {guide.featured && (
-                  <div className="h-1 w-full bg-gradient-to-r from-orange-400 to-rose-400" />
+                  <div className="h-1 w-full bg-gradient-to-r from-info to-rose-400" />
                 )}
                 <div className="p-6 flex flex-col flex-1">
                   {/* Icon + Badge */}
@@ -299,7 +303,7 @@ export default function PanduanPage() {
                         key={idx}
                         className="flex items-start gap-2 text-xs text-gray-600"
                       >
-                        <CheckCircle2 className="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-info shrink-0 mt-0.5" />
                         {h}
                       </li>
                     ))}
@@ -312,7 +316,7 @@ export default function PanduanPage() {
                     </span>
                     <a
                       href={guide.downloadHref}
-                      className="flex items-center gap-1.5 text-sm font-bold text-orange-500 hover:text-orange-600 transition-colors group"
+                      className="flex items-center gap-1.5 text-sm font-bold text-primary hover:text-primary transition-colors group"
                     >
                       <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
                       Unduh
@@ -336,8 +340,8 @@ export default function PanduanPage() {
                 Regulasi & Dasar Hukum
               </h3>
               <p className="text-sm text-gray-500 mb-4">
-                Referensi Permendikbud, Surat Edaran, dan kebijakan resmi sebagai
-                landasan legal kebijakan sekolah Anda.
+                Referensi Permendikbud, Surat Edaran, dan kebijakan resmi
+                sebagai landasan legal kebijakan sekolah Anda.
               </p>
               <a
                 href="https://www.kemdikbud.go.id"
@@ -352,10 +356,10 @@ export default function PanduanPage() {
           </div>
 
           {/* CTA Survei */}
-          <div className="bg-gradient-to-r from-orange-50 to-rose-50 rounded-2xl border border-orange-100 p-7 flex items-start gap-5 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-surface-alt to-rose-50 rounded-2xl border border-surface-alt p-7 flex items-start gap-5 relative overflow-hidden">
             <div className="absolute bottom-0 right-0 w-36 h-36 bg-white/40 rounded-full blur-3xl pointer-events-none" />
             <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center shrink-0">
-              <ArrowRight className="w-5 h-5 text-orange-500" />
+              <ArrowRight className="w-5 h-5 text-primary" />
             </div>
             <div className="relative z-10">
               <h3 className="font-extrabold text-gray-900 mb-1">
@@ -367,7 +371,7 @@ export default function PanduanPage() {
               </p>
               <Link
                 href="/studi-kasus"
-                className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition-colors shadow-md shadow-orange-500/20"
+                className="inline-flex items-center gap-2 bg-primary hover:bg-primary text-white font-bold text-sm px-5 py-2.5 rounded-xl transition-colors shadow-md shadow-primary/20"
               >
                 Baca Studi Kasus <ArrowRight className="w-4 h-4" />
               </Link>

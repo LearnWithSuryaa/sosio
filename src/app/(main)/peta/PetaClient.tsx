@@ -8,23 +8,29 @@ import {
   ClipboardList,
   Globe2,
   Flame,
+  Building,
+  Users,
+  PieChart,
+  Calendar,
+  Globe,
+  ShieldCheck,
+  CheckCircle2,
+  RotateCw,
 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { JourneyBar } from "@/components/JourneyBar";
 import { TourGuide } from "@/components/TourGuide";
 import Link from "next/link";
+import Image from "next/image";
 
 const PetaMap = nextDynamic(() => import("@/components/PetaMap"), {
   ssr: false,
   loading: () => (
-    <div
-      className="w-full h-full flex items-center justify-center"
-      style={{ background: "rgba(251,146,60,0.03)" }}
-    >
+    <div className="w-full h-full flex items-center justify-center bg-slate-50/50">
       <div className="flex flex-col items-center gap-3">
         <div className="w-8 h-8 rounded-full border-2 border-orange-500/30 border-t-orange-500 animate-spin" />
-        <span className="text-xs text-white/20 font-mono tracking-widest uppercase">
+        <span className="text-xs text-slate-500 font-mono tracking-widest uppercase">
           Memuat Peta Nusantara…
         </span>
       </div>
@@ -43,7 +49,7 @@ interface School {
 
 interface PetaClientProps {
   schools: School[];
-  counts: { total: number; komitmen: number };
+  counts: { total: number; komitmen: number; survei: number };
 }
 
 function PetaContent({ schools }: { schools: School[] }) {
@@ -52,30 +58,6 @@ function PetaContent({ schools }: { schools: School[] }) {
   return <PetaMap schoolId={schoolId || undefined} schools={schools} />;
 }
 
-const legend = [
-  {
-    icon: BadgeCheck,
-    label: "Komitmen",
-    accent: "#10b981",
-    bg: "rgba(16,185,129,0.12)",
-    border: "rgba(16,185,129,0.25)",
-  },
-  {
-    icon: ClipboardList,
-    label: "Sudah Survei",
-    accent: "#f59e0b",
-    bg: "rgba(245,158,11,0.12)",
-    border: "rgba(245,158,11,0.25)",
-  },
-  {
-    icon: MapPin,
-    label: "Belum Ikut",
-    accent: "#94a3b8",
-    bg: "rgba(148,163,184,0.08)",
-    border: "rgba(148,163,184,0.18)",
-  },
-];
-
 export function PetaClient({ schools, counts }: PetaClientProps) {
   const searchParams = useSearchParams();
   const from = searchParams.get("from");
@@ -83,40 +65,94 @@ export function PetaClient({ schools, counts }: PetaClientProps) {
   const komitmenPct =
     counts.total > 0 ? Math.round((counts.komitmen / counts.total) * 100) : 0;
 
-  return (
-    <div className="min-h-screen relative overflow-hidden bg-[#050505]">
-      {/* ── Dynamic Glowing Mesh ── */}
-      <div className="absolute inset-0 bg-white/[0.01] mix-blend-overlay" />
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-[10%] -left-[5%] w-[600px] h-[600px] bg-orange-600/10 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />
-        <div className="absolute bottom-[0%] right-[5%] w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[130px] mix-blend-screen pointer-events-none" />
-        <div className="absolute top-[40%] left-[40%] w-[600px] h-[400px] bg-amber-500/10 rounded-full blur-[140px] mix-blend-screen pointer-events-none" />
-      </div>
+  const belumIkutCount = Math.max(
+    0,
+    counts.total - counts.komitmen - counts.survei,
+  );
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 pt-28 pb-16">
+  const tourSteps: any[] = [
+    {
+      element: "#tour-header",
+      popover: {
+        title: "Peta Partisipasi",
+        description:
+          "Selamat datang! Di sini Anda dapat melihat komitmen pemanfaatan gadget sehat dari sekolah-sekolah di Nusantara.",
+      },
+    },
+    {
+      element: "#tour-stats",
+      popover: {
+        title: "Ringkasan Data",
+        description:
+          "Pantau angka total pendaftar, sekolah yang telah berkomitmen, dan yang sudah survei secara real-time.",
+      },
+    },
+    {
+      element: "#tour-map",
+      popover: {
+        title: "Peta Interaktif",
+        description:
+          "Jelajahi peta ini untuk melihat sebaran titik sekolah berdasarkan status partisipasi mereka.",
+      },
+    },
+    {
+      element: "#tour-indicator",
+      popover: {
+        title: "Indikator Status",
+        description:
+          "Rincian kalkulasi status sekolah beserta informasi waktu pembaruan data terakhir.",
+      },
+    },
+  ];
+
+  if (from === "survei" || from === "komitmen") {
+    tourSteps.unshift({
+      element: "#tour-journey-bar",
+      popover: {
+        title: "Jejak Langkah",
+        description:
+          "Lihat dimana Anda berada dari keseluruhan 3 langkah partisipasi ekosistem.",
+      },
+    });
+  }
+
+  if (from === "survei") {
+    tourSteps.push({
+      element: "#tour-peta-cta",
+      popover: {
+        title: "Langkah Terakhir",
+        description:
+          "Setelah melihat Peta, klik tombol di sini untuk melegalkan pengesahan komitmen.",
+      },
+    });
+  }
+
+  // Get current date string
+  const today = new Date();
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  };
+  const formattedDate = today.toLocaleDateString("id-ID", dateOptions);
+
+  return (
+    <div className="min-h-screen relative overflow-hidden bg-slate-50">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 pt-28 pb-16">
         {/* Journey bar */}
         {(from === "survei" || from === "komitmen") && (
-          <div className="mb-8">
+          <div className="mb-8" id="tour-journey-bar">
             <JourneyBar />
           </div>
         )}
 
         {/* Success alert */}
         {(from === "survei" || from === "komitmen") && (
-          <div
-            className="max-w-2xl mx-auto mb-8 flex items-center gap-3 px-5 py-4 rounded-2xl"
-            style={{
-              background: "rgba(16,185,129,0.08)",
-              border: "1px solid rgba(16,185,129,0.22)",
-            }}
-          >
-            <div
-              className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-sm font-black"
-              style={{ background: "rgba(16,185,129,0.18)", color: "#10b981" }}
-            >
+          <div className="max-w-2xl mx-auto mb-8 flex items-center gap-3 px-5 py-4 rounded-2xl bg-emerald-50 border border-emerald-200">
+            <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-sm font-black bg-emerald-100 text-emerald-600">
               ✓
             </div>
-            <p className="text-sm font-medium text-white/65">
+            <p className="text-sm font-medium text-emerald-800">
               {from === "survei"
                 ? "Data survei berhasil disimpan. Posisi sekolah Anda kini terlihat di peta."
                 : "Sertifikat berhasil disahkan. Sekolah Anda resmi berstatus komitmen."}
@@ -126,421 +162,368 @@ export function PetaClient({ schools, counts }: PetaClientProps) {
 
         {/* ── Header ── */}
         <div
-          id="tour-peta-header"
-          className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-8"
+          id="tour-header"
+          className="mb-0 relative rounded-3xl overflow-hidden bg-linear-to-r from-blue-50 to-blue-100/50 border border-blue-100/50 pt-10 pb-28 px-8 md:px-12 flex flex-col md:flex-row items-center justify-between"
         >
-          {/* Left: title */}
-          <div className="flex-1">
-            {/* Live badge */}
-            <div className="flex items-center gap-3 mb-5">
-              <div
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full border"
-                style={{
-                  background: "rgba(249,115,22,0.1)",
-                  borderColor: "rgba(249,115,22,0.28)",
-                }}
-              >
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-70" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-400" />
-                </span>
-                <span
-                  className="text-[10px] font-black uppercase tracking-[0.2em]"
-                  style={{ color: "#fb923c" }}
-                >
-                  Live · Real-time
-                </span>
-              </div>
-            </div>
-
-            <h1 className="text-4xl md:text-5xl font-black text-white leading-[1.05] tracking-tight">
-              Peta{" "}
-              <span
-                style={{
-                  background:
-                    "linear-gradient(120deg, #fb923c 0%, #f97316 40%, #ea580c 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}
-              >
-                Partisipasi
-              </span>
-              <br />
-              <span className="text-white/28 text-3xl md:text-4xl font-black">
-                Sekolah Nasional
-              </span>
-            </h1>
-
-            <p className="text-white/38 text-base mt-4 max-w-lg font-medium leading-relaxed">
-              Lihat distribusi komitmen pemanfaatan gadget sehat dari
-              sekolah-sekolah di seluruh Nusantara.
-            </p>
+          {/* Background Illustration / Image */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/images/peta/7.svg"
+              alt="Background Header"
+              fill
+              className="object-cover"
+              style={{ objectPosition: "120% 20%" }}
+              priority
+            />
           </div>
 
-          {/* Right: stat cards */}
-          <div className="flex gap-3 shrink-0">
-            {[
-              {
-                value: counts.total > 0 ? `${counts.total}` : "—",
-                label: "Total Sekolah",
-                icon: Globe2,
-                color: "#f97316",
-                glow: "#f97316",
-              },
-              {
-                value: counts.komitmen > 0 ? `${counts.komitmen}` : "—",
-                label: "Komitmen",
-                icon: BadgeCheck,
-                color: "#10b981",
-                glow: "#10b981",
-              },
-              {
-                value: `${komitmenPct}%`,
-                label: "Rasio",
-                icon: Flame,
-                color: "#fb923c",
-                glow: "#fb923c",
-              },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className="relative min-w-[95px] rounded-2xl p-4 overflow-hidden group"
-                style={{
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.07)",
-                }}
-              >
-                <div
-                  className="absolute -top-4 -right-4 w-16 h-16 rounded-full blur-xl opacity-20 group-hover:opacity-35 transition-opacity duration-500"
-                  style={{ background: stat.glow }}
-                />
-                <stat.icon
-                  className="w-4 h-4 mb-3 relative z-10"
-                  style={{ color: stat.color }}
-                />
-                <div className="text-2xl font-black text-white relative z-10 tracking-tight">
-                  {stat.value}
-                </div>
-                <div className="text-[10px] text-white/30 font-bold uppercase tracking-widest mt-0.5 relative z-10">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
+          <div className="relative z-10 max-w-lg">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-black leading-[1.15] tracking-tight text-slate-900 mb-3">
+              Peta Partisipasi <br />
+              <span className="text-emerald-600">Sekolah Nasional</span>
+            </h1>
+            <p className="text-slate-800 font-medium text-base md:text-lg leading-relaxed mt-3 max-w-sm md:max-w-md">
+              Lihat distribusi komitmen pemanfaatan gadget sehat dari sekolah di
+              seluruh Kota Sidoarjo.
+            </p>
           </div>
         </div>
 
-        {/* ── Map card ── */}
-        <div id="tour-peta-map-section" className="relative">
-          <div
-            className="relative rounded-3xl overflow-hidden"
-            style={{
-              border: "1px solid rgba(255,255,255,0.07)",
-              background: "#080c14",
-            }}
-          >
-            {/* Corner accents — orange */}
-            <div className="absolute top-0 left-0 w-16 h-16 z-[60] pointer-events-none">
-              <svg viewBox="0 0 64 64" fill="none">
-                <path
-                  d="M2 32 L2 2 L32 2"
-                  stroke="#f97316"
-                  strokeWidth="1.5"
-                  strokeOpacity="0.5"
-                />
-              </svg>
+        {/* ── Stat Cards ── */}
+        <div
+          id="tour-stats"
+          className="relative z-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 -mt-16 px-4 md:px-6"
+        >
+          {/* Card 1 */}
+          <div className="bg-white rounded-2xl p-5 md:p-6 border border-slate-100 shadow-sm flex items-center gap-5">
+            <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-emerald-50 text-emerald-600 shrink-0">
+              <Building className="w-7 h-7" />
             </div>
-            <div className="absolute top-0 right-0 w-16 h-16 z-[60] pointer-events-none">
-              <svg viewBox="0 0 64 64" fill="none">
-                <path
-                  d="M62 32 L62 2 L32 2"
-                  stroke="#f97316"
-                  strokeWidth="1.5"
-                  strokeOpacity="0.5"
-                />
-              </svg>
+            <div>
+              <div className="text-3xl font-black text-slate-900">
+                {counts.total}
+              </div>
+              <div className="text-sm font-semibold text-slate-700">
+                Total Sekolah
+              </div>
+              <div className="text-xs text-emerald-600 font-medium mt-0.5">
+                Terdaftar dalam sistem
+              </div>
             </div>
+          </div>
+          {/* Card 2 */}
+          <div className="bg-white rounded-2xl p-5 md:p-6 border border-slate-100 shadow-sm flex items-center gap-5">
+            <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-emerald-50 text-emerald-600 shrink-0">
+              <Users className="w-7 h-7" />
+            </div>
+            <div>
+              <div className="text-3xl font-black text-slate-900">
+                {counts.komitmen}
+              </div>
+              <div className="text-sm font-semibold text-slate-700">
+                Komitmen
+              </div>
+              <div className="text-xs text-emerald-600 font-medium mt-0.5">
+                Sekolah berkomitmen
+              </div>
+            </div>
+          </div>
+          {/* Card 3 */}
+          <div className="bg-white rounded-2xl p-5 md:p-6 border border-slate-100 shadow-sm flex items-center gap-5">
+            <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-orange-50 text-orange-500 shrink-0">
+              <ClipboardList className="w-7 h-7" />
+            </div>
+            <div>
+              <div className="text-3xl font-black text-slate-900">
+                {counts.survei}
+              </div>
+              <div className="text-sm font-semibold text-slate-700">
+                Sudah Survei
+              </div>
+              <div className="text-xs text-orange-500 font-medium mt-0.5">
+                Survei telah dilakukan
+              </div>
+            </div>
+          </div>
+          {/* Card 4 */}
+          <div className="bg-white rounded-2xl p-5 md:p-6 border border-slate-100 shadow-sm flex items-center gap-5">
+            <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-blue-50 text-blue-500 shrink-0">
+              <PieChart className="w-7 h-7" />
+            </div>
+            <div>
+              <div className="text-3xl font-black text-slate-900">
+                {komitmenPct}%
+              </div>
+              <div className="text-sm font-semibold text-slate-700">
+                Rasio Komitmen
+              </div>
+              <div className="text-xs text-blue-500 font-medium mt-0.5">
+                Dari total sekolah
+              </div>
+            </div>
+          </div>
+        </div>
 
-            {/* Map + sidebar */}
-            <div className="flex flex-col md:flex-row">
-              {/* Map area */}
-              <div className="relative flex-1" style={{ height: "560px" }}>
-                <style>{`
+        {/* ── Main Content (Map & Indicator) ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          {/* Map Area */}
+          <div
+            id="tour-map"
+            className="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col relative"
+          >
+            <div className="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
+              <MapPin className="w-5 h-5 text-emerald-600" />
+              <h2 className="text-lg font-bold text-slate-800">
+                Peta Sebaran Sekolah
+              </h2>
+            </div>
+            <div className="relative flex-1" style={{ minHeight: "550px" }}>
+              <style>{`
                   .peta-leaflet-wrap,
                   .peta-leaflet-wrap .leaflet-container {
                     position: absolute !important;
                     inset: 0 !important;
                     width: 100% !important;
                     height: 100% !important;
-                    background: #080c14 !important;
+                    background: #eef2f6 !important;
                   }
                 `}</style>
-                <div className="peta-leaflet-wrap">
-                  <Suspense
-                    fallback={
-                      <div
-                        className="w-full h-full animate-pulse"
-                        style={{ background: "rgba(249,115,22,0.03)" }}
-                      />
-                    }
-                  >
-                    <PetaContent schools={schools} />
-                  </Suspense>
-                </div>
-
-                {/* Vignette */}
-                <div className="absolute inset-0 pointer-events-none z-[450]">
-                  <div className="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-[#080c14]/60 to-transparent" />
-                  <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-[#080c14]/55 to-transparent" />
-                  <div className="hidden md:block absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[#080c14]/55 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#080c14]/70 to-transparent" />
-                </div>
-
-                {/* Interaction blocker removed so map can be scrolled and zoomed */}
+              <div className="peta-leaflet-wrap">
+                <Suspense
+                  fallback={
+                    <div className="w-full h-full animate-pulse bg-slate-50" />
+                  }
+                >
+                  <PetaContent schools={schools} />
+                </Suspense>
               </div>
 
-              {/* Legend sidebar */}
-              <div
-                id="tour-peta-legend"
-                className="md:w-60 shrink-0 flex flex-col"
-                style={{
-                  borderLeft: "1px solid rgba(255,255,255,0.06)",
-                  background: "rgba(255,255,255,0.018)",
-                }}
-              >
-                {/* Sidebar header */}
-                <div
-                  className="px-5 py-4 flex items-center gap-2"
-                  style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-                >
-                  <MapPin
-                    className="w-3.5 h-3.5"
-                    style={{ color: "#f97316" }}
-                  />
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">
-                    Indikator Status
+              {/* Mini Legend inside Map */}
+              <div className="absolute bottom-6 left-6 z-400 bg-white/95 backdrop-blur-sm rounded-xl shadow-sm border border-slate-100 py-3 px-5 flex flex-wrap gap-5">
+                <div className="flex items-center gap-2.5">
+                  <MapPin className="w-4 h-4 text-emerald-500 fill-emerald-500" />
+                  <span className="text-xs font-semibold text-slate-700">
+                    Komitmen
                   </span>
                 </div>
-
-                {/* Legend items */}
-                <div className="px-4 py-4 space-y-2">
-                  {legend.map((item) => (
-                    <div
-                      key={item.label}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl"
-                      style={{
-                        background: item.bg,
-                        border: `1px solid ${item.border}`,
-                      }}
-                    >
-                      <item.icon
-                        className="w-3.5 h-3.5 shrink-0"
-                        style={{ color: item.accent }}
-                      />
-                      <span className="text-sm font-semibold text-white/55">
-                        {item.label}
-                      </span>
-                    </div>
-                  ))}
+                <div className="flex items-center gap-2.5">
+                  <MapPin className="w-4 h-4 text-orange-500 fill-orange-500" />
+                  <span className="text-xs font-semibold text-slate-700">
+                    Sudah Survei
+                  </span>
                 </div>
-
-                {/* Stats block */}
-                <div
-                  className="mt-auto px-4 py-5 space-y-4"
-                  style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-white/22 font-semibold">
-                      Total terdaftar
-                    </span>
-                    <span className="text-sm font-black text-white/65">
-                      {counts.total > 0 ? counts.total : "—"}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-white/22 font-semibold">
-                      Berkomitmen
-                    </span>
-                    <span
-                      className="text-sm font-black"
-                      style={{
-                        color:
-                          counts.komitmen > 0
-                            ? "#10b981"
-                            : "rgba(255,255,255,0.35)",
-                      }}
-                    >
-                      {counts.komitmen > 0 ? counts.komitmen : "—"}
-                    </span>
-                  </div>
-
-                  {/* Progress bar — orange → emerald */}
-                  <div>
-                    <div
-                      className="w-full rounded-full overflow-hidden"
-                      style={{
-                        height: "4px",
-                        background: "rgba(255,255,255,0.06)",
-                      }}
-                    >
-                      <div
-                        className="h-full rounded-full transition-all duration-700"
-                        style={{
-                          width: `${komitmenPct}%`,
-                          background:
-                            "linear-gradient(90deg, #f97316, #10b981)",
-                        }}
-                      />
-                    </div>
-                    <p className="text-[10px] text-white/18 text-right font-mono mt-1.5">
-                      {komitmenPct}% rasio komitmen
-                    </p>
-                  </div>
+                <div className="flex items-center gap-2.5">
+                  <MapPin className="w-4 h-4 text-slate-500 fill-slate-500" />
+                  <span className="text-xs font-semibold text-slate-700">
+                    Belum Ikut
+                  </span>
                 </div>
               </div>
-            </div>
-
-            {/* Bottom info strip */}
-            <div
-              className="grid grid-cols-3"
-              style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-            >
-              {[
-                { label: "Data diperbarui", value: "Setiap hari" },
-                { label: "Cakupan wilayah", value: "Seluruh Indonesia" },
-                { label: "Status sistem", value: "Operasional" },
-              ].map((item, i) => (
-                <div
-                  key={item.label}
-                  className="flex flex-col items-center justify-center py-4 px-3 gap-0.5"
-                  style={{
-                    borderRight:
-                      i < 2 ? "1px solid rgba(255,255,255,0.06)" : "none",
-                  }}
-                >
-                  <span className="text-[10px] uppercase tracking-widest font-bold text-white/18">
-                    {item.label}
-                  </span>
-                  <span className="text-sm font-semibold text-white/50">
-                    {item.value}
-                  </span>
-                </div>
-              ))}
             </div>
           </div>
 
-          {/* CTA strip — from=survei */}
-          {from === "survei" && (
-            <div
-              id="tour-peta-cta"
-              className="mt-6 relative rounded-2xl overflow-hidden"
-              style={{
-                background: "rgba(255,255,255,0.025)",
-                border: "1px solid rgba(249,115,22,0.18)",
-              }}
-            >
-              {/* Orange left bar */}
-              <div
-                className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
-                style={{
-                  background: "linear-gradient(180deg, #f97316, #fb923c)",
-                }}
-              />
-              {/* Glow */}
-              <div
-                className="absolute -left-6 top-1/2 -translate-y-1/2 w-28 h-28 rounded-full blur-2xl opacity-10"
-                style={{ background: "#f97316" }}
-              />
+          {/* Indicator Sidebar */}
+          <div
+            id="tour-indicator"
+            className="lg:col-span-1 bg-white rounded-2xl border border-slate-100 shadow-sm p-6 md:p-8 flex flex-col"
+          >
+            <h2 className="text-lg font-bold text-slate-800 mb-6">
+              Indikator Status
+            </h2>
 
-              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 pl-8 pr-6 py-6">
-                <div>
-                  <p
-                    className="text-[10px] font-black uppercase tracking-[0.2em] mb-1"
-                    style={{ color: "rgba(251,146,60,0.65)" }}
-                  >
-                    Langkah Berikutnya
-                  </p>
-                  <h3 className="text-lg font-black text-white mb-1">
-                    Sudah melihat posisi sekolah Anda?
-                  </h3>
-                  <p className="text-white/38 text-sm font-medium">
-                    Langkah selanjutnya adalah mengesahkan komitmen digital.
-                  </p>
+            <div className="space-y-3 mb-8">
+              {/* Komitmen Row */}
+              <div className="flex items-center justify-between p-4 rounded-xl bg-emerald-50 border border-emerald-100/50">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  <span className="font-semibold text-slate-800 text-sm">
+                    Komitmen
+                  </span>
                 </div>
-                <Link href="/komitmen" className="shrink-0 w-full md:w-auto">
-                  <button
-                    className="group w-full md:w-auto flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl font-bold text-sm text-white transition-all duration-200"
-                    style={{
-                      background:
-                        "linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fb923c 100%)",
-                      boxShadow: "0 0 28px rgba(249,115,22,0.35)",
-                    }}
-                    onMouseEnter={(e) => {
-                      const el = e.currentTarget as HTMLButtonElement;
-                      el.style.boxShadow = "0 0 44px rgba(249,115,22,0.52)";
-                      el.style.transform = "scale(1.02)";
-                    }}
-                    onMouseLeave={(e) => {
-                      const el = e.currentTarget as HTMLButtonElement;
-                      el.style.boxShadow = "0 0 28px rgba(249,115,22,0.35)";
-                      el.style.transform = "scale(1)";
-                    }}
-                  >
-                    Lanjut ke Komitmen
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-150" />
-                  </button>
-                </Link>
+                <span className="text-emerald-700 font-bold text-sm">
+                  {counts.komitmen} Sekolah
+                </span>
+              </div>
+
+              {/* Sudah Survei Row */}
+              <div className="flex items-center justify-between p-4 rounded-xl bg-orange-50 border border-orange-100/50">
+                <div className="flex items-center gap-3">
+                  <ClipboardList className="w-5 h-5 text-orange-500" />
+                  <span className="font-semibold text-slate-800 text-sm">
+                    Sudah Survei
+                  </span>
+                </div>
+                <span className="text-orange-600 font-bold text-sm">
+                  {counts.survei} Sekolah
+                </span>
+              </div>
+
+              {/* Belum Ikut Row */}
+              <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 border border-slate-200/60">
+                <div className="flex items-center gap-3">
+                  <MapPin className="w-5 h-5 text-slate-500" />
+                  <span className="font-semibold text-slate-800 text-sm">
+                    Belum Ikut
+                  </span>
+                </div>
+                <span className="text-slate-600 font-bold text-sm">
+                  {belumIkutCount} Sekolah
+                </span>
               </div>
             </div>
-          )}
+
+            <hr className="border-slate-100 mb-6" />
+
+            <div className="space-y-5 mb-8">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-slate-500 font-medium">
+                  Total Terdaftar
+                </span>
+                <span className="font-bold text-slate-900">
+                  {counts.total} Sekolah
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-slate-500 font-medium">Berkomitmen</span>
+                <span className="font-bold text-slate-900">
+                  {counts.komitmen} Sekolah
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-slate-500 font-medium">
+                  Rasio Komitmen
+                </span>
+                <span className="font-bold text-slate-900">{komitmenPct}%</span>
+              </div>
+            </div>
+
+            <div className="mt-auto bg-emerald-50/70 rounded-xl p-5 flex items-start gap-4 border border-emerald-100">
+              <RotateCw className="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" />
+              <div>
+                <div className="font-bold text-sm text-emerald-800 mb-1">
+                  Data diperbarui setiap hari
+                </div>
+                <div className="text-xs text-emerald-600/80 font-medium">
+                  Terakhir update: {formattedDate}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* ── Bottom Info Strip ── */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-2 flex flex-col md:flex-row relative overflow-hidden">
+          <div className="flex-1 flex items-center gap-5 py-5 px-6 border-b md:border-b-0 md:border-r border-slate-100">
+            <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
+              <Calendar className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="text-xs text-slate-500 font-semibold mb-1">
+                Data Diperbarui
+              </div>
+              <div className="font-bold text-slate-900 text-base">
+                Setiap hari
+              </div>
+              <div className="text-xs text-slate-500 mt-0.5">
+                Informasi selalu up to date
+              </div>
+            </div>
+          </div>
+
+          <div className="flex-1 flex items-center gap-5 py-5 px-6 border-b md:border-b-0 md:border-r border-slate-100">
+            <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
+              <Globe className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="text-xs text-slate-500 font-semibold mb-1">
+                Cakupan Wilayah
+              </div>
+              <div className="font-bold text-slate-900 text-base">
+                Seluruh Indonesia
+              </div>
+              <div className="text-xs text-slate-500 mt-0.5">
+                34 Provinsi • 514 Kabupaten/Kota
+              </div>
+            </div>
+          </div>
+
+          <div className="flex-1 flex items-center gap-5 py-5 px-6">
+            <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="text-xs text-slate-500 font-semibold mb-1">
+                Status Sistem
+              </div>
+              <div className="font-bold text-emerald-600 text-base">
+                Operasional
+              </div>
+              <div className="text-xs text-slate-500 mt-0.5">
+                Sistem berjalan dengan baik
+              </div>
+            </div>
+          </div>
+
+          {/* Optional background illustration */}
+          <div className="hidden lg:block absolute right-0 bottom-0 pointer-events-none">
+            <Image
+              src="/images/peta/8.svg"
+              alt="Footer Illustration"
+              width={600}
+              height={600}
+              className="object-contain"
+            />
+          </div>
+        </div>
+
+        {/* CTA strip — from=survei */}
+        {from === "survei" && (
+          <div
+            id="tour-peta-cta"
+            className="mt-6 relative rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm"
+          >
+            {/* Orange left bar */}
+            <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl bg-linear-to-b from-orange-500 to-orange-400" />
+            {/* Glow */}
+            <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-28 h-28 rounded-full blur-2xl opacity-10 bg-orange-500" />
+
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 pl-8 pr-6 py-6">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-1 text-orange-600">
+                  Langkah Berikutnya
+                </p>
+                <h3 className="text-lg font-black text-slate-900 mb-1">
+                  Sudah melihat posisi sekolah Anda?
+                </h3>
+                <p className="text-slate-600 text-sm font-medium">
+                  Langkah selanjutnya adalah mengesahkan komitmen digital.
+                </p>
+              </div>
+              <Link href="/komitmen" className="shrink-0 w-full md:w-auto">
+                <button
+                  className="group w-full md:w-auto flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl font-bold text-sm text-white transition-all duration-200 bg-orange-500 hover:bg-orange-600"
+                  style={{
+                    boxShadow: "0 4px 14px 0 rgba(249, 115, 22, 0.25)",
+                  }}
+                  onMouseEnter={(e) => {
+                    const el = e.currentTarget as HTMLButtonElement;
+                    el.style.transform = "scale(1.02)";
+                  }}
+                  onMouseLeave={(e) => {
+                    const el = e.currentTarget as HTMLButtonElement;
+                    el.style.transform = "scale(1)";
+                  }}
+                >
+                  Lanjut ke Komitmen
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-150" />
+                </button>
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
 
-      <TourGuide
-        pageName="Peta"
-        steps={[
-          {
-            element: "#tour-journey-bar",
-            popover: {
-              title: "Jejak Langkah",
-              description:
-                "Lihat dimana Anda berada dari keseluruhan 3 langkah partisipasi ekosistem.",
-            },
-          },
-          {
-            element: "#tour-peta-header",
-            popover: {
-              title: "Papan Partisipasi Nasional",
-              description:
-                "Ini adalah halaman titik temu bagi sekolah-sekolah di seluruh Nusantara.",
-            },
-          },
-          {
-            element: "#tour-peta-map-section",
-            popover: {
-              title: "Peta Persebaran",
-              description:
-                "Titik warna menunjukkan status partisipasi sekolah di setiap wilayah.",
-            },
-          },
-          {
-            element: "#tour-peta-legend",
-            popover: {
-              title: "Label Status",
-              description:
-                "Perhatikan indikator warna ini untuk memahami pemosisian setiap titik wilayah.",
-            },
-          },
-          {
-            element: "#tour-peta-cta",
-            popover: {
-              title: "Langkah Terakhir",
-              description:
-                "Setelah melihat Peta, klik tombol di sini untuk melegalkan pengesahan komitmen.",
-            },
-          },
-        ]}
-      />
+      <TourGuide pageName="Peta" steps={tourSteps} />
     </div>
   );
 }

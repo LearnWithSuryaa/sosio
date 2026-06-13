@@ -5,10 +5,34 @@ import { supabase } from "@/lib/supabase";
 import { SchoolAutocomplete } from "@/components/SchoolAutocomplete";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Lock, School, User, AlertTriangle, CheckCircle2, Clock,
-  MapPin, BarChart3, Brain, ShieldCheck, ArrowRight, LogOut,
-  TrendingUp, FileText, Star, Sparkles, Zap, Target,
-  ChevronRight, BookOpen, Award, Send, Eye, EyeOff,
+  Lock,
+  School,
+  User,
+  AlertTriangle,
+  CheckCircle2,
+  Clock,
+  MapPin,
+  BarChart3,
+  Brain,
+  ShieldCheck,
+  ArrowRight,
+  LogOut,
+  TrendingUp,
+  FileText,
+  Star,
+  Sparkles,
+  Zap,
+  Target,
+  ChevronRight,
+  BookOpen,
+  Award,
+  Send,
+  Eye,
+  EyeOff,
+  AlertOctagon,
+  ClipboardList,
+  Megaphone,
+  Trophy,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -52,10 +76,12 @@ function calcDigitalScore(jawaban: Record<string, string>): number {
   const v2 = jawaban["2"] || "";
   const v3 = jawaban["4"] || "";
   if (v1.includes("Jarang") || v1.includes("Tidak pernah")) score += 33;
-  else if (v1.includes("Kadang-kadang") || v1.includes("Beberapa kali")) score += 17;
+  else if (v1.includes("Kadang-kadang") || v1.includes("Beberapa kali"))
+    score += 17;
   else score += 10;
   if (v2.includes("konsisten") && !v2.includes("kurang")) score += 34;
-  else if (v2.includes("kurang konsisten") || v2.includes("Netral")) score += 17;
+  else if (v2.includes("kurang konsisten") || v2.includes("Netral"))
+    score += 17;
   else score += 10;
   if (v3.includes("baik") || v3.includes("Setuju")) score += 33;
   else if (v3.includes("Sebagian") || v3.includes("Netral")) score += 16;
@@ -64,57 +90,205 @@ function calcDigitalScore(jawaban: Record<string, string>): number {
 }
 
 function getScoreConfig(score: number) {
-  if (score >= 70) return {
-    label: "Ekosistem Siap", grade: "A",
-    textColor: "#34d399", gradFrom: "#059669", gradTo: "#34d399",
-    glow: "rgba(52,211,153,0.30)", bg: "rgba(16,185,129,0.08)", border: "rgba(16,185,129,0.22)",
-  };
-  if (score >= 40) return {
-    label: "Berkembang", grade: "B",
-    textColor: "#fbbf24", gradFrom: "#d97706", gradTo: "#fbbf24",
-    glow: "rgba(251,191,36,0.30)", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.22)",
-  };
+  if (score >= 70)
+    return {
+      label: "Ekosistem Siap",
+      grade: "A",
+      textColor: "#34d399",
+      gradFrom: "#059669",
+      gradTo: "#34d399",
+      glow: "rgba(52,211,153,0.30)",
+      bg: "rgba(16, 185, 129, 0.15)",
+      border: "rgba(16, 185, 129,0.22)",
+    };
+  if (score >= 40)
+    return {
+      label: "Berkembang",
+      grade: "B",
+      textColor: "#fbbf24",
+      gradFrom: "#d97706",
+      gradTo: "#fbbf24",
+      glow: "rgba(251,191,36,0.30)",
+      bg: "rgba(245,158,11,0.08)",
+      border: "rgba(245,158,11,0.22)",
+    };
   return {
-    label: "Perlu Perhatian", grade: "C",
-    textColor: "#f87171", gradFrom: "#dc2626", gradTo: "#f87171",
-    glow: "rgba(248,113,113,0.30)", bg: "rgba(239,68,68,0.08)", border: "rgba(239,68,68,0.22)",
+    label: "Perlu Perhatian",
+    grade: "C",
+    textColor: "#f87171",
+    gradFrom: "#dc2626",
+    gradTo: "#f87171",
+    glow: "rgba(248,113,113,0.30)",
+    bg: "rgba(239,68,68,0.08)",
+    border: "rgba(239,68,68,0.22)",
   };
 }
 
 function getStatusConfig(status: SchoolData["status"]) {
-  if (status === "komitmen") return { label: "Berkomitmen", dot: "#34d399", bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.25)", text: "#34d399" };
-  if (status === "survei") return { label: "Survei Terkirim", dot: "#fbbf24", bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.25)", text: "#fbbf24" };
-  return { label: "Belum Berpartisipasi", dot: "rgba(255,255,255,0.30)", bg: "rgba(255,255,255,0.05)", border: "rgba(255,255,255,0.12)", text: "rgba(255,255,255,0.40)" };
+  if (status === "komitmen")
+    return {
+      label: "Berkomitmen",
+      dot: "#34d399",
+      bg: "rgba(16, 185, 129,0.12)",
+      border: "rgba(16, 185, 129,0.25)",
+      text: "#34d399",
+    };
+  if (status === "survei")
+    return {
+      label: "Survei Terkirim",
+      dot: "#fbbf24",
+      bg: "rgba(245,158,11,0.12)",
+      border: "rgba(245,158,11,0.25)",
+      text: "#fbbf24",
+    };
+  return {
+    label: "Belum Berpartisipasi",
+    dot: "#CFD8DC",
+    bg: "var(--color-surface-alt)",
+    border: "1px solid #ECEFF1",
+    text: "#90A4AE",
+  };
 }
 
 function getValidasiConfig(v: SchoolData["status_validasi"]) {
-  if (v === "valid") return { label: "Terverifikasi", icon: "✓", bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.25)", text: "#34d399" };
-  if (v === "flagged") return { label: "Ditandai", icon: "⚠", bg: "rgba(239,68,68,0.10)", border: "rgba(239,68,68,0.25)", text: "#f87171" };
-  return { label: "Pending Validasi", icon: "○", bg: "rgba(245,158,11,0.10)", border: "rgba(245,158,11,0.22)", text: "#fbbf24" };
+  if (v === "valid")
+    return {
+      label: "Terverifikasi",
+      icon: CheckCircle2,
+      bg: "rgba(16, 185, 129,0.12)",
+      border: "rgba(16, 185, 129,0.25)",
+      text: "#34d399",
+    };
+  if (v === "flagged")
+    return {
+      label: "Ditandai",
+      icon: AlertTriangle,
+      bg: "rgba(239,68,68,0.10)",
+      border: "rgba(239,68,68,0.25)",
+      text: "#f87171",
+    };
+  return {
+    label: "Pending Validasi",
+    icon: Clock,
+    bg: "rgba(245,158,11,0.10)",
+    border: "rgba(245,158,11,0.22)",
+    text: "#fbbf24",
+  };
 }
 
 function getCatConfig(cat: string) {
-  if (cat.includes("Disiplin") || cat.includes("Champion")) return { color: "#34d399", bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.20)" };
-  if (cat.includes("Sadar") || cat.includes("Developing")) return { color: "#fbbf24", bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.20)" };
-  return { color: "#f87171", bg: "rgba(239,68,68,0.10)", border: "rgba(239,68,68,0.20)" };
+  if (
+    cat.includes("Sangat Bijak") ||
+    cat === "Bijak" ||
+    cat.includes("Disiplin") ||
+    cat.includes("Champion")
+  )
+    return {
+      color: "#34d399",
+      bg: "rgba(16, 185, 129,0.12)",
+      border: "rgba(16, 185, 129,0.20)",
+    };
+  if (
+    cat.includes("Cukup Bijak") ||
+    cat.includes("Sadar") ||
+    cat.includes("Developing")
+  )
+    return {
+      color: "#fbbf24",
+      bg: "rgba(245,158,11,0.12)",
+      border: "rgba(245,158,11,0.20)",
+    };
+  return {
+    color: "#f87171",
+    bg: "rgba(239,68,68,0.10)",
+    border: "rgba(239,68,68,0.20)",
+  };
 }
 
 function formatDate(ts: string | null) {
   if (!ts) return "—";
-  return new Date(ts).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+  return new Date(ts).toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 }
 
-function getRecommendations(s: SurveyResult | null, status: string) {
-  const recs: Array<{ text: string; icon: string; color: string }> = [];
+function getRecommendations(
+  s: SurveyResult | null,
+  status: string,
+  quizzes: QuizResult[],
+) {
+  const recs: Array<{ text: string; icon: React.ElementType; color: string }> =
+    [];
   if (s) {
     const j = s.jawaban;
-    if ((j["1"] || "").includes("Sering")) recs.push({ text: "Terapkan kebijakan 'Gadget-Free Zone' di ruang kelas", icon: "🚫", color: "#f87171" });
-    if ((j["2"] || "").includes("kurang konsisten") || (j["2"] || "").includes("Tidak ada")) recs.push({ text: "Perkuat konsistensi penegakan aturan penggunaan HP", icon: "📋", color: "#fbbf24" });
-    if ((j["4"] || "").includes("Sebagian") || (j["4"] || "").includes("Belum")) recs.push({ text: "Sosialisasi dampak digital ke siswa & wali murid", icon: "📢", color: "#fb923c" });
+    if ((j["1"] || "").includes("Sering"))
+      recs.push({
+        text: "Terapkan kebijakan 'Gadget-Free Zone' di ruang kelas",
+        icon: AlertOctagon,
+        color: "#f87171",
+      });
+    if (
+      (j["2"] || "").includes("kurang konsisten") ||
+      (j["2"] || "").includes("Tidak ada")
+    )
+      recs.push({
+        text: "Perkuat konsistensi penegakan aturan penggunaan HP",
+        icon: ClipboardList,
+        color: "#fbbf24",
+      });
+    if ((j["4"] || "").includes("Sebagian") || (j["4"] || "").includes("Belum"))
+      recs.push({
+        text: "Sosialisasi dampak digital ke siswa & wali murid",
+        icon: Megaphone,
+        color: "#64B5F6",
+      });
   }
-  if (recs.length === 0) recs.push({ text: "Pertahankan ekosistem digital positif yang ada", icon: "⭐", color: "#34d399" });
-  if (status !== "komitmen") recs.push({ text: "Daftarkan sekolah dalam program Komitmen Digital Nasional", icon: "🎯", color: "#f97316" });
-  else recs.push({ text: "Terus pertahankan implementasi Komitmen Digital Nasional", icon: "🏆", color: "#34d399" });
+
+  if (quizzes && quizzes.length > 0) {
+    const daruratCount = quizzes.filter(
+      (q) =>
+        q.result_category === "Darurat Digital" ||
+        q.result_category === "Perlu Pendampingan",
+    ).length;
+    if (daruratCount > 0) {
+      recs.push({
+        text: `Perlu pendampingan khusus untuk ${daruratCount} siswa dengan indikasi rentan perilaku digital negatif`,
+        icon: AlertTriangle,
+        color: "#f87171",
+      });
+    }
+    const championCount = quizzes.filter(
+      (q) => q.result_category === "Sangat Bijak",
+    ).length;
+    if (championCount > 0 && championCount === quizzes.length) {
+      recs.push({
+        text: "Luar biasa! Seluruh siswa sejauh ini menunjukkan etika digital yang sangat bijak",
+        icon: Star,
+        color: "#34d399",
+      });
+    }
+  }
+
+  if (recs.length === 0)
+    recs.push({
+      text: "Pertahankan ekosistem digital positif yang ada",
+      icon: Star,
+      color: "#34d399",
+    });
+  if (status !== "komitmen")
+    recs.push({
+      text: "Daftarkan sekolah dalam program Komitmen Digital Nasional",
+      icon: Target,
+      color: "var(--color-primary)",
+    });
+  else
+    recs.push({
+      text: "Terus pertahankan implementasi Komitmen Digital Nasional",
+      icon: Trophy,
+      color: "#34d399",
+    });
   return recs;
 }
 
@@ -125,7 +299,6 @@ const NAV_ITEMS = [
   { id: "survei", label: "Survei", icon: FileText },
   { id: "kuis", label: "Kuis", icon: Brain },
   { id: "rekomendasi", label: "Rekomendasi", icon: Star },
-  { id: "studi", label: "Studi Kasus", icon: BookOpen },
 ];
 
 // ─── Login Gate ───────────────────────────────────────────────────────────────
@@ -141,17 +314,26 @@ function LoginGate({ onLogin }: { onLogin: (s: SchoolData) => void }) {
   const [step, setStep] = useState<1 | 2>(1);
 
   const handleNext = () => {
-    if (!schoolId) { setError("Pilih sekolah terlebih dahulu."); return; }
+    if (!schoolId) {
+      setError("Pilih sekolah terlebih dahulu.");
+      return;
+    }
     setError("");
     setStep(2);
   };
 
   const handleSubmit = async () => {
-    if (!schoolId || !pengirim.trim()) { setError("Harap isi nama pengirim."); return; }
-    setLoading(true); setError("");
+    if (!schoolId || !pengirim.trim()) {
+      setError("Harap isi nama pengirim.");
+      return;
+    }
+    setLoading(true);
+    setError("");
     const { data, error: qErr } = await supabase
       .from("schools")
-      .select("id, nama_sekolah, status, status_validasi, wilayah, pengirim_nama, submit_timestamp, created_at")
+      .select(
+        "id, nama_sekolah, status, status_validasi, wilayah, pengirim_nama, submit_timestamp, created_at",
+      )
       .eq("id", schoolId)
       .ilike("pengirim_nama", pengirim.trim())
       .maybeSingle();
@@ -171,12 +353,51 @@ function LoginGate({ onLogin }: { onLogin: (s: SchoolData) => void }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "#050505" }}>
+    <div
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ background: "var(--color-surface)" }}
+    >
       {/* Mesh bg */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
-        <div style={{ position: "absolute", top: "-20%", right: "-10%", width: 800, height: 800, borderRadius: "50%", background: "radial-gradient(circle, rgba(234,88,12,0.12) 0%, transparent 65%)" }} />
-        <div style={{ position: "absolute", bottom: "-20%", left: "-15%", width: 700, height: 700, borderRadius: "50%", background: "radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 65%)" }} />
-        <div style={{ position: "absolute", top: "40%", left: "35%", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 65%)" }} />
+      <div
+        className="fixed inset-0 pointer-events-none overflow-hidden"
+        style={{ zIndex: 0 }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: "-20%",
+            right: "-10%",
+            width: 800,
+            height: 800,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(46, 125, 50,0.12) 0%, transparent 65%)",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: "-20%",
+            left: "-15%",
+            width: 700,
+            height: 700,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 65%)",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: "40%",
+            left: "35%",
+            width: 500,
+            height: 500,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 65%)",
+          }}
+        />
       </div>
 
       <motion.div
@@ -194,39 +415,65 @@ function LoginGate({ onLogin }: { onLogin: (s: SchoolData) => void }) {
             transition={{ delay: 0.1, duration: 0.5 }}
             className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
             style={{
-              background: "linear-gradient(135deg, rgba(234,88,12,0.20) 0%, rgba(249,115,22,0.12) 100%)",
-              border: "1px solid rgba(249,115,22,0.30)",
-              boxShadow: "0 0 40px rgba(249,115,22,0.20)",
+              background:
+                "linear-gradient(135deg, rgba(46, 125, 50,0.20) 0%, rgba(46, 125, 50,0.12) 100%)",
+              border: "1px solid rgba(46, 125, 50,0.30)",
+              boxShadow: "0 0 40px rgba(46, 125, 50,0.20)",
             }}
           >
-            <Lock className="w-7 h-7" style={{ color: "#f97316" }} />
+            <Lock
+              className="w-7 h-7"
+              style={{ color: "var(--color-primary)" }}
+            />
           </motion.div>
-          <h1 className="text-3xl font-black tracking-tight mb-2" style={{ color: "#ffffff", letterSpacing: "-0.02em" }}>
+          <h1
+            className="text-3xl font-black tracking-tight mb-2"
+            style={{
+              color: "var(--color-text-dark)",
+              letterSpacing: "-0.02em",
+            }}
+          >
             Akses Laporan
           </h1>
-          <p className="text-sm" style={{ color: "rgba(255,255,255,0.40)" }}>
+          <p className="text-sm" style={{ color: "#607D8B" }}>
             Lihat analitik lengkap sekolah Anda
           </p>
         </div>
 
         {/* Step indicator */}
         <div className="flex items-center gap-3 mb-6 px-1">
-          {[1, 2].map(s => (
+          {[1, 2].map((s) => (
             <div key={s} className="flex items-center gap-3 flex-1">
               <div
                 className="flex items-center justify-center w-7 h-7 rounded-full text-xs font-black transition-all duration-300"
                 style={{
-                  background: step >= s ? "linear-gradient(135deg, #ea580c, #f97316)" : "rgba(255,255,255,0.08)",
-                  color: step >= s ? "#fff" : "rgba(255,255,255,0.30)",
-                  boxShadow: step === s ? "0 0 16px rgba(249,115,22,0.40)" : "none",
+                  background:
+                    step >= s
+                      ? "linear-gradient(135deg, var(--color-info), var(--color-primary))"
+                      : "var(--color-surface-alt)",
+                  color: step >= s ? "#ffffff" : "#90A4AE",
+                  boxShadow:
+                    step === s ? "0 0 16px rgba(46, 125, 50,0.40)" : "none",
                 }}
               >
                 {step > s ? "✓" : s}
               </div>
-              <span className="text-xs font-semibold" style={{ color: step >= s ? "rgba(255,255,255,0.65)" : "rgba(255,255,255,0.25)" }}>
+              <span
+                className="text-xs font-semibold"
+                style={{
+                  color: step >= s ? "var(--color-text-dark)" : "#90A4AE",
+                }}
+              >
                 {s === 1 ? "Pilih Sekolah" : "Verifikasi"}
               </span>
-              {s < 2 && <div className="flex-1 h-px" style={{ background: step > s ? "rgba(249,115,22,0.40)" : "rgba(255,255,255,0.08)" }} />}
+              {s < 2 && (
+                <div
+                  className="flex-1 h-px"
+                  style={{
+                    background: step > s ? "rgba(46, 125, 50,0.40)" : "#ECEFF1",
+                  }}
+                />
+              )}
             </div>
           ))}
         </div>
@@ -235,71 +482,89 @@ function LoginGate({ onLogin }: { onLogin: (s: SchoolData) => void }) {
         <div
           className="rounded-3xl p-7 space-y-5"
           style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            background: "#ffffff",
+            border: "1px solid #ECEFF1",
             backdropFilter: "blur(20px)",
-            boxShadow: "0 24px 64px rgba(0,0,0,0.40)",
+            boxShadow:
+              "0 20px 40px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.05)",
           }}
         >
           <AnimatePresence mode="wait">
             {step === 1 ? (
-              <motion.div key="step1" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-5">
+              <motion.div
+                key="step1"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="space-y-5"
+              >
                 <div>
-                  <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest mb-2.5" style={{ color: "rgba(255,255,255,0.35)" }}>
-                    <School className="w-3.5 h-3.5" style={{ color: "#f97316" }} /> Nama Sekolah
+                  <label
+                    className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest mb-2.5"
+                    style={{ color: "#90A4AE" }}
+                  >
+                    <School
+                      className="w-3.5 h-3.5"
+                      style={{ color: "var(--color-primary)" }}
+                    />{" "}
+                    Nama Sekolah
                   </label>
-                  <div className="school-autocomplete-dark">
+                  <div className="school-autocomplete-light">
                     <SchoolAutocomplete
                       value={schoolName}
-                      onChange={(val, s) => { setSchoolName(val); setSchoolId(s?.id ?? null); setError(""); }}
+                      onChange={(val, s) => {
+                        setSchoolName(val);
+                        setSchoolId(s?.id ?? null);
+                        setError("");
+                      }}
                       hasError={false}
                     />
                     <style>{`
-                      .school-autocomplete-dark input,
-                      .school-autocomplete-dark input::placeholder,
-                      .school-autocomplete-dark [role="option"],
-                      .school-autocomplete-dark [role="listbox"] {
-                        color: #ffffff !important;
+                      .school-autocomplete-light input,
+                      .school-autocomplete-light input::placeholder,
+                      .school-autocomplete-light [role="option"],
+                      .school-autocomplete-light [role="listbox"] {
+                        color: var(--color-text-dark) !important;
                       }
-                      .school-autocomplete-dark input::placeholder {
-                        color: rgba(255,255,255,0.30) !important;
+                      .school-autocomplete-light input::placeholder {
+                        color: #90A4AE !important;
                       }
-                      .school-autocomplete-dark input {
-                        background: rgba(255,255,255,0.06) !important;
-                        border-color: rgba(255,255,255,0.12) !important;
-                        color: #ffffff !important;
+                      .school-autocomplete-light input {
+                        background: var(--color-surface) !important;
+                        border-color: #CFD8DC !important;
+                        color: var(--color-text-dark) !important;
                       }
-                      .school-autocomplete-dark input:focus {
-                        border-color: rgba(249,115,22,0.60) !important;
-                        box-shadow: 0 0 0 4px rgba(249,115,22,0.10) !important;
+                      .school-autocomplete-light input:focus {
+                        border-color: rgba(46, 125, 50, 0.60) !important;
+                        box-shadow: 0 0 0 4px rgba(46, 125, 50,0.10) !important;
                         outline: none !important;
                       }
-                      .school-autocomplete-dark [role="listbox"],
-                      .school-autocomplete-dark ul,
-                      .school-autocomplete-dark [data-headlessui-state],
-                      .school-autocomplete-dark > div > div {
-                        background: #0e0e0e !important;
-                        border: 1px solid rgba(255,255,255,0.12) !important;
+                      .school-autocomplete-light [role="listbox"],
+                      .school-autocomplete-light ul,
+                      .school-autocomplete-light [data-headlessui-state],
+                      .school-autocomplete-light > div > div {
+                        background: #ffffff !important;
+                        border: 1px solid #CFD8DC !important;
                         border-radius: 12px !important;
                       }
-                      .school-autocomplete-dark [role="option"],
-                      .school-autocomplete-dark li {
-                        color: rgba(255,255,255,0.75) !important;
+                      .school-autocomplete-light [role="option"],
+                      .school-autocomplete-light li {
+                        color: var(--color-text-dark) !important;
                         background: transparent !important;
                       }
-                      .school-autocomplete-dark [role="option"]:hover,
-                      .school-autocomplete-dark [role="option"][data-headlessui-state~="active"],
-                      .school-autocomplete-dark li:hover {
-                        background: rgba(249,115,22,0.12) !important;
-                        color: #ffffff !important;
+                      .school-autocomplete-light [role="option"]:hover,
+                      .school-autocomplete-light [role="option"][data-headlessui-state~="active"],
+                      .school-autocomplete-light li:hover {
+                        background: rgba(46, 125, 50,0.12) !important;
+                        color: var(--color-text-dark) !important;
                       }
-                      .school-autocomplete-dark [aria-selected="true"],
-                      .school-autocomplete-dark [role="option"][data-headlessui-state~="selected"] {
-                        background: rgba(249,115,22,0.18) !important;
-                        color: #f97316 !important;
+                      .school-autocomplete-light [aria-selected="true"],
+                      .school-autocomplete-light [role="option"][data-headlessui-state~="selected"] {
+                        background: rgba(46, 125, 50,0.18) !important;
+                        color: var(--color-primary) !important;
                       }
-                      .school-autocomplete-dark svg {
-                        color: rgba(255,255,255,0.40) !important;
+                      .school-autocomplete-light svg {
+                        color: #90A4AE !important;
                       }
                     `}</style>
                   </div>
@@ -309,52 +574,113 @@ function LoginGate({ onLogin }: { onLogin: (s: SchoolData) => void }) {
                   onClick={handleNext}
                   disabled={!schoolId}
                   className="w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-30"
-                  style={{ background: "linear-gradient(135deg, #ea580c, #f97316)", color: "#fff", boxShadow: schoolId ? "0 4px 24px rgba(249,115,22,0.35)" : "none" }}
+                  style={{
+                    background:
+                      "linear-gradient(135deg, var(--color-info), var(--color-primary))",
+                    color: "#ffffff",
+                    boxShadow: schoolId
+                      ? "0 4px 24px rgba(46, 125, 50,0.35)"
+                      : "none",
+                  }}
                 >
                   Lanjutkan <ArrowRight className="w-4 h-4" />
                 </button>
               </motion.div>
             ) : (
-              <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-5">
+              <motion.div
+                key="step2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-5"
+              >
                 {/* Selected school */}
-                <div className="flex items-center gap-3 p-3 rounded-xl" style={{ background: "rgba(249,115,22,0.08)", border: "1px solid rgba(249,115,22,0.20)" }}>
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(249,115,22,0.15)" }}>
-                    <School className="w-4 h-4" style={{ color: "#f97316" }} />
+                <div
+                  className="flex items-center gap-3 p-3 rounded-xl"
+                  style={{
+                    background: "rgba(46, 125, 50,0.08)",
+                    border: "1px solid rgba(46, 125, 50,0.20)",
+                  }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center"
+                    style={{ background: "rgba(46, 125, 50,0.15)" }}
+                  >
+                    <School
+                      className="w-4 h-4"
+                      style={{ color: "var(--color-primary)" }}
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold" style={{ color: "rgba(255,255,255,0.35)" }}>Sekolah dipilih</p>
-                    <p className="text-sm font-bold truncate" style={{ color: "rgba(255,255,255,0.85)" }}>{schoolName}</p>
+                    <p
+                      className="text-xs font-bold"
+                      style={{ color: "#90A4AE" }}
+                    >
+                      Sekolah dipilih
+                    </p>
+                    <p
+                      className="text-sm font-bold truncate"
+                      style={{ color: "var(--color-text-dark)" }}
+                    >
+                      {schoolName}
+                    </p>
                   </div>
-                  <button onClick={() => setStep(1)} className="text-xs font-bold" style={{ color: "#f97316" }}>Ubah</button>
+                  <button
+                    onClick={() => setStep(1)}
+                    className="text-xs font-bold"
+                    style={{ color: "var(--color-primary)" }}
+                  >
+                    Ubah
+                  </button>
                 </div>
 
                 <div>
-                  <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest mb-2.5" style={{ color: "rgba(255,255,255,0.35)" }}>
-                    <User className="w-3.5 h-3.5" style={{ color: "#f97316" }} /> Nama Pengirim Survei
+                  <label
+                    className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest mb-2.5"
+                    style={{ color: "#90A4AE" }}
+                  >
+                    <User
+                      className="w-3.5 h-3.5"
+                      style={{ color: "var(--color-primary)" }}
+                    />{" "}
+                    Nama Pengirim Survei
                   </label>
                   <div className="relative">
                     <input
                       type={showPengirim ? "text" : "password"}
                       value={pengirim}
-                      onChange={e => { setPengirim(e.target.value); setError(""); }}
+                      onChange={(e) => {
+                        setPengirim(e.target.value);
+                        setError("");
+                      }}
                       placeholder="Nama yang terdaftar saat survei"
                       className="w-full px-4 py-3.5 pr-12 rounded-xl text-sm font-medium transition-all"
                       style={{
-                        background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)",
-                        color: "#fff", outline: "none",
+                        background: "#ffffff",
+                        border: "1px solid #CFD8DC",
+                        color: "var(--color-text-dark)",
+                        outline: "none",
                       }}
-                      onKeyDown={e => e.key === "Enter" && !blocked && handleSubmit()}
+                      onKeyDown={(e) =>
+                        e.key === "Enter" && !blocked && handleSubmit()
+                      }
                     />
                     <button
                       type="button"
                       onClick={() => setShowPengirim(!showPengirim)}
                       className="absolute right-3.5 top-1/2 -translate-y-1/2"
-                      style={{ color: "rgba(255,255,255,0.30)" }}
+                      style={{ color: "#90A4AE" }}
                     >
-                      {showPengirim ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {showPengirim ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
                     </button>
                   </div>
-                  <p className="text-xs mt-2 pl-1" style={{ color: "rgba(255,255,255,0.25)" }}>Nama ini harus sesuai persis dengan data yang dikirimkan.</p>
+                  <p className="text-xs mt-2 pl-1" style={{ color: "#90A4AE" }}>
+                    Nama ini harus sesuai persis dengan data yang dikirimkan.
+                  </p>
                 </div>
 
                 {error && <ErrorBanner msg={error} />}
@@ -363,18 +689,32 @@ function LoginGate({ onLogin }: { onLogin: (s: SchoolData) => void }) {
                   onClick={handleSubmit}
                   disabled={loading || blocked || !pengirim.trim()}
                   className="w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-30"
-                  style={{ background: "linear-gradient(135deg, #ea580c, #f97316)", color: "#fff", boxShadow: pengirim.trim() ? "0 4px 24px rgba(249,115,22,0.35)" : "none" }}
+                  style={{
+                    background:
+                      "linear-gradient(135deg, var(--color-info), var(--color-primary))",
+                    color: "#ffffff",
+                    boxShadow: pengirim.trim()
+                      ? "0 4px 24px rgba(46, 125, 50,0.35)"
+                      : "none",
+                  }}
                 >
                   {loading ? (
-                    <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Memverifikasi...</>
-                  ) : (<>Lihat Laporan Saya <ArrowRight className="w-4 h-4" /></>)}
+                    <>
+                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />{" "}
+                      Memverifikasi...
+                    </>
+                  ) : (
+                    <>
+                      Lihat Laporan Saya <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
-        <p className="text-center text-xs mt-5" style={{ color: "rgba(255,255,255,0.18)" }}>
+        <p className="text-center text-xs mt-5" style={{ color: "#CFD8DC" }}>
           Hanya untuk perwakilan sekolah yang telah mengirimkan survei
         </p>
       </motion.div>
@@ -384,8 +724,17 @@ function LoginGate({ onLogin }: { onLogin: (s: SchoolData) => void }) {
 
 function ErrorBanner({ msg }: { msg: string }) {
   return (
-    <div className="flex items-start gap-2.5 p-3.5 rounded-xl text-sm" style={{ background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.25)" }}>
-      <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#f87171" }} />
+    <div
+      className="flex items-start gap-2.5 p-3.5 rounded-xl text-sm"
+      style={{
+        background: "rgba(239,68,68,0.10)",
+        border: "1px solid rgba(239,68,68,0.25)",
+      }}
+    >
+      <AlertTriangle
+        className="w-4 h-4 mt-0.5 shrink-0"
+        style={{ color: "#f87171" }}
+      />
       <span style={{ color: "#f87171" }}>{msg}</span>
     </div>
   );
@@ -393,24 +742,33 @@ function ErrorBanner({ msg }: { msg: string }) {
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 
-function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => void }) {
+function Dashboard({
+  school,
+  onLogout,
+}: {
+  school: SchoolData;
+  onLogout: () => void;
+}) {
   const [surveys, setSurveys] = useState<SurveyResult[]>([]);
   const [quizzes, setQuizzes] = useState<QuizResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeNav, setActiveNav] = useState("profil");
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // Case study form
-  const [csData, setCsData] = useState({ judul: "", penulis: "", isi: "", category: "inovasi", impact: "" });
-  const [csLoading, setCsLoading] = useState(false);
-  const [csSuccess, setCsSuccess] = useState(false);
-  const [csError, setCsError] = useState("");
-
   useEffect(() => {
     async function fetch() {
       const [{ data: sv }, { data: qz }] = await Promise.all([
-        supabase.from("survey_results").select("id, school_id, nama, jawaban, created_at").eq("school_id", school.id).order("created_at", { ascending: false }).limit(10),
-        supabase.from("quiz_results").select("id, school_id, user_name, answers, result_category, qualification, indicator_color, description, created_at").eq("school_id", school.id).order("created_at", { ascending: false }).limit(10),
+        supabase
+          .from("survey_results")
+          .select("id, school_id, nama, jawaban, created_at")
+          .eq("school_id", school.id)
+          .order("created_at", { ascending: false })
+          .limit(10),
+        supabase
+          .from("quiz_results")
+          .select("id, user_name, result_category")
+          .eq("school_id", school.id)
+          .order("created_at", { ascending: false }),
       ]);
       setSurveys((sv as SurveyResult[]) || []);
       setQuizzes((qz as QuizResult[]) || []);
@@ -422,30 +780,22 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
   // Scrollspy
   useEffect(() => {
     const obs = new IntersectionObserver(
-      entries => {
-        entries.forEach(e => { if (e.isIntersecting) setActiveNav(e.target.id); });
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActiveNav(e.target.id);
+        });
       },
-      { rootMargin: "-30% 0px -60% 0px" }
+      { rootMargin: "-30% 0px -60% 0px" },
     );
-    Object.values(sectionRefs.current).forEach(el => el && obs.observe(el));
+    Object.values(sectionRefs.current).forEach((el) => el && obs.observe(el));
     return () => obs.disconnect();
   }, [loading]);
 
   const scrollTo = (id: string) => {
-    sectionRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
-  const submitCS = async () => {
-    setCsError("");
-    if (!csData.judul.trim() || !csData.penulis.trim() || !csData.isi.trim()) {
-      setCsError("Judul, Nama Penulis, dan Isi wajib diisi.");
-      return;
-    }
-    setCsLoading(true);
-    const { error } = await supabase.from("case_studies").insert({ school_id: school.id, ...csData });
-    setCsLoading(false);
-    if (error) { setCsError("Gagal mengirim. Periksa koneksi dan coba lagi."); }
-    else { setCsSuccess(true); setCsData({ judul: "", penulis: "", isi: "", category: "inovasi", impact: "" }); }
+    sectionRefs.current[id]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   const latestSurvey = surveys[0] ?? null;
@@ -453,41 +803,115 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
   const sc = getScoreConfig(score);
   const statusCfg = getStatusConfig(school.status);
   const validCfg = getValidasiConfig(school.status_validasi);
-  const recs = getRecommendations(latestSurvey, school.status);
+  const recs = getRecommendations(latestSurvey, school.status, quizzes);
 
-  const quizCats = quizzes.reduce<Record<string, number>>((a, q) => { a[q.result_category] = (a[q.result_category] || 0) + 1; return a; }, {});
-  const championCount = quizzes.filter(q => q.result_category.includes("Disiplin") || q.result_category.includes("Champion")).length;
-  const watchCount = quizzes.filter(q => q.result_category.includes("Waspada") || q.result_category.includes("Addicted")).length;
+  const quizCats = quizzes.reduce<Record<string, number>>((a, q) => {
+    a[q.result_category] = (a[q.result_category] || 0) + 1;
+    return a;
+  }, {});
+  const championCount = quizzes.filter(
+    (q) =>
+      q.result_category === "Sangat Bijak" ||
+      q.result_category === "Bijak" ||
+      q.result_category.includes("Disiplin") ||
+      q.result_category.includes("Champion"),
+  ).length;
+  const watchCount = quizzes.filter(
+    (q) =>
+      q.result_category === "Darurat Digital" ||
+      q.result_category === "Perlu Pendampingan" ||
+      q.result_category.includes("Waspada") ||
+      q.result_category.includes("Addicted"),
+  ).length;
 
-  const fade = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } };
+  const fade = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+  };
 
   return (
-    <div className="min-h-screen" style={{ background: "#050505" }}>
+    <div
+      className="min-h-screen"
+      style={{ background: "var(--color-surface)" }}
+    >
       {/* Fixed bg mesh */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
-        <div style={{ position: "absolute", top: 0, right: 0, width: 900, height: 900, borderRadius: "50%", background: "radial-gradient(circle, rgba(234,88,12,0.09) 0%, transparent 60%)" }} />
-        <div style={{ position: "absolute", bottom: 0, left: 0, width: 700, height: 700, borderRadius: "50%", background: "radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 60%)" }} />
-        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(139,92,246,0.05) 0%, transparent 65%)" }} />
+      <div
+        className="fixed inset-0 pointer-events-none overflow-hidden"
+        style={{ zIndex: 0 }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: 900,
+            height: 900,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(46, 125, 50,0.09) 0%, transparent 60%)",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            width: 700,
+            height: 700,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(16, 185, 129,0.07) 0%, transparent 60%)",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+            width: 600,
+            height: 600,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(139,92,246,0.05) 0%, transparent 65%)",
+          }}
+        />
       </div>
 
       {/* Top navbar */}
       <header
         className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6"
         style={{
-          background: "rgba(5,5,5,0.80)",
+          background: "rgba(255,255,255,0.80)",
           backdropFilter: "blur(24px)",
-          borderBottom: "1px solid rgba(255,255,255,0.07)",
+          borderBottom: "1px solid #ECEFF1",
         }}
       >
         <div className="max-w-7xl mx-auto h-16 flex items-center gap-4">
           {/* Logo/brand */}
           <div className="flex items-center gap-3 mr-4">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "linear-gradient(135deg, #ea580c, #f97316)" }}>
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center"
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--color-info), var(--color-primary))",
+              }}
+            >
               <BarChart3 className="w-4 h-4 text-white" />
             </div>
             <div className="hidden sm:block">
-              <p className="text-xs font-black uppercase tracking-widest" style={{ color: "#f97316", lineHeight: 1 }}>Laporan</p>
-              <p className="text-xs font-bold truncate max-w-[180px]" style={{ color: "rgba(255,255,255,0.55)" }}>{school.nama_sekolah}</p>
+              <p
+                className="text-xs font-black uppercase tracking-widest"
+                style={{ color: "var(--color-primary)", lineHeight: 1 }}
+              >
+                Laporan
+              </p>
+              <p
+                className="text-xs font-bold truncate max-w-[180px]"
+                style={{ color: "#607D8B" }}
+              >
+                {school.nama_sekolah}
+              </p>
             </div>
           </div>
 
@@ -499,9 +923,13 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
                 onClick={() => scrollTo(id)}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200"
                 style={{
-                  background: activeNav === id ? "rgba(249,115,22,0.12)" : "transparent",
-                  color: activeNav === id ? "#f97316" : "rgba(255,255,255,0.40)",
-                  border: activeNav === id ? "1px solid rgba(249,115,22,0.22)" : "1px solid transparent",
+                  background:
+                    activeNav === id ? "rgba(46, 125, 50,0.12)" : "transparent",
+                  color: activeNav === id ? "var(--color-primary)" : "#607D8B",
+                  border:
+                    activeNav === id
+                      ? "1px solid rgba(46, 125, 50,0.22)"
+                      : "1px solid transparent",
                 }}
               >
                 <Icon className="w-3.5 h-3.5" /> {label}
@@ -512,19 +940,35 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
           {/* Status pill */}
           <div
             className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full"
-            style={{ background: statusCfg.bg, border: `1px solid ${statusCfg.border}` }}
+            style={{
+              background: statusCfg.bg,
+              border: `1px solid ${statusCfg.border}`,
+            }}
           >
-            <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: statusCfg.dot }} />
-            <span className="text-xs font-bold" style={{ color: statusCfg.text }}>{statusCfg.label}</span>
+            <div
+              className="w-2 h-2 rounded-full animate-pulse"
+              style={{ background: statusCfg.dot }}
+            />
+            <span
+              className="text-xs font-bold"
+              style={{ color: statusCfg.text }}
+            >
+              {statusCfg.label}
+            </span>
           </div>
 
           {/* Logout */}
           <button
             onClick={onLogout}
             className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all ml-auto md:ml-0"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", color: "rgba(255,255,255,0.50)" }}
+            style={{
+              background: "var(--color-surface-alt)",
+              border: "1px solid #ECEFF1",
+              color: "#607D8B",
+            }}
           >
-            <LogOut className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Keluar</span>
+            <LogOut className="w-3.5 h-3.5" />{" "}
+            <span className="hidden sm:inline">Keluar</span>
           </button>
         </div>
       </header>
@@ -535,54 +979,134 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
           <LoadingSkeleton />
         ) : (
           <div className="flex flex-col gap-8">
-
             {/* ── Hero score banner ── */}
             <motion.div
               {...fade}
               transition={{ duration: 0.5 }}
               className="relative rounded-3xl overflow-hidden"
-              style={{ background: sc.bg, border: `1px solid ${sc.border}`, boxShadow: `0 0 80px ${sc.glow}` }}
+              style={{
+                background: sc.bg,
+                border: `1px solid ${sc.border}`,
+                boxShadow: `0 0 80px ${sc.glow}`,
+              }}
             >
               <div className="absolute inset-0 pointer-events-none">
-                <div style={{ position: "absolute", top: "-40%", right: "-10%", width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${sc.glow} 0%, transparent 60%)`, mixBlendMode: "screen" }} />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "-40%",
+                    right: "-10%",
+                    width: 500,
+                    height: 500,
+                    borderRadius: "50%",
+                    background: `radial-gradient(circle, ${sc.glow} 0%, transparent 60%)`,
+                    mixBlendMode: "screen",
+                  }}
+                />
               </div>
               <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-6">
                 {latestSurvey ? (
                   <>
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1">
-                        <Sparkles className="w-5 h-5" style={{ color: sc.textColor }} />
-                        <span className="text-xs font-black uppercase tracking-widest" style={{ color: sc.textColor }}>Skor Kesiapan Digital</span>
+                        <Sparkles
+                          className="w-5 h-5"
+                          style={{ color: sc.textColor }}
+                        />
+                        <span
+                          className="text-xs font-black uppercase tracking-widest"
+                          style={{ color: sc.textColor }}
+                        >
+                          Skor Kesiapan Digital
+                        </span>
                       </div>
-                      <h2 className="text-4xl sm:text-5xl font-black mb-2" style={{ color: "#fff", letterSpacing: "-0.03em" }}>
+                      <h2
+                        className="text-4xl sm:text-5xl font-black mb-2"
+                        style={{
+                          color: "var(--color-text-dark)",
+                          letterSpacing: "-0.03em",
+                        }}
+                      >
                         {score}
-                        <span className="text-2xl" style={{ color: "rgba(255,255,255,0.30)" }}>/100</span>
+                        <span className="text-2xl" style={{ color: "#90A4AE" }}>
+                          /100
+                        </span>
                       </h2>
-                      <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-bold" style={{ background: `${sc.glow}`, color: sc.textColor, border: `1px solid ${sc.border}` }}>
-                        {sc.grade === "A" ? "🏆" : sc.grade === "B" ? "📈" : "⚡"} {sc.label}
+                      <span
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-bold"
+                        style={{
+                          background: `${sc.glow}`,
+                          color: sc.textColor,
+                          border: `1px solid ${sc.border}`,
+                        }}
+                      >
+                        {sc.grade === "A"
+                          ? "🏆"
+                          : sc.grade === "B"
+                            ? "📈"
+                            : "⚡"}{" "}
+                        {sc.label}
                       </span>
                     </div>
                     <div className="w-full sm:w-64">
-                      <div className="flex justify-between text-xs mb-2" style={{ color: "rgba(255,255,255,0.40)" }}>
-                        <span>Progress</span><span style={{ color: sc.textColor }}>{score}%</span>
+                      <div
+                        className="flex justify-between text-xs mb-2"
+                        style={{ color: "#607D8B" }}
+                      >
+                        <span>Progress</span>
+                        <span style={{ color: sc.textColor }}>{score}%</span>
                       </div>
-                      <div className="h-3 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+                      <div
+                        className="h-3 rounded-full overflow-hidden"
+                        style={{ background: "var(--color-surface-alt)" }}
+                      >
                         <motion.div
                           className="h-full rounded-full"
-                          style={{ background: `linear-gradient(90deg, ${sc.gradFrom}, ${sc.gradTo})` }}
+                          style={{
+                            background: `linear-gradient(90deg, ${sc.gradFrom}, ${sc.gradTo})`,
+                          }}
                           initial={{ width: 0 }}
                           animate={{ width: `${score}%` }}
-                          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+                          transition={{
+                            duration: 1.2,
+                            ease: [0.22, 1, 0.36, 1],
+                            delay: 0.3,
+                          }}
                         />
                       </div>
                       <div className="flex justify-between text-xs mt-4 gap-3">
                         {[
-                          { label: "Survei Terkirim", val: surveys.length, icon: FileText },
-                          { label: "Peserta Kuis", val: quizzes.length, icon: Brain },
+                          {
+                            label: "Survei Terkirim",
+                            val: surveys.length,
+                            icon: FileText,
+                          },
+                          {
+                            label: "Peserta Kuis",
+                            val: quizzes.length,
+                            icon: Brain,
+                          },
                         ].map(({ label, val, icon: Icon }) => (
-                          <div key={label} className="flex-1 p-3 rounded-xl" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}>
-                            <p className="text-xl font-black" style={{ color: "#fff" }}>{val}</p>
-                            <p className="text-[10px] font-bold uppercase tracking-wide mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>{label}</p>
+                          <div
+                            key={label}
+                            className="flex-1 p-3 rounded-xl"
+                            style={{
+                              background: "#ffffff",
+                              border: "1px solid #ECEFF1",
+                            }}
+                          >
+                            <p
+                              className="text-xl font-black"
+                              style={{ color: "var(--color-text-dark)" }}
+                            >
+                              {val}
+                            </p>
+                            <p
+                              className="text-[10px] font-bold uppercase tracking-wide mt-0.5"
+                              style={{ color: "#90A4AE" }}
+                            >
+                              {label}
+                            </p>
                           </div>
                         ))}
                       </div>
@@ -590,46 +1114,146 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
                   </>
                 ) : (
                   <div className="flex-1 text-center py-4">
-                    <p className="text-2xl font-black mb-2" style={{ color: "rgba(255,255,255,0.50)" }}>Belum Ada Data Survei</p>
-                    <p className="text-sm" style={{ color: "rgba(255,255,255,0.30)" }}>Isi survei untuk melihat skor kesiapan digital sekolah Anda.</p>
+                    <p
+                      className="text-2xl font-black mb-2"
+                      style={{ color: "#607D8B" }}
+                    >
+                      Belum Ada Data Survei
+                    </p>
+                    <p className="text-sm" style={{ color: "#90A4AE" }}>
+                      Isi survei untuk melihat skor kesiapan digital sekolah
+                      Anda.
+                    </p>
                   </div>
                 )}
               </div>
             </motion.div>
 
             {/* ── Section: Profil ── */}
-            <Section id="profil" innerRef={el => { sectionRefs.current["profil"] = el; }}>
+            <Section
+              id="profil"
+              innerRef={(el) => {
+                sectionRefs.current["profil"] = el;
+              }}
+            >
               <SectionHeader icon={School} label="Profil Sekolah" delay={0.1} />
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
                 {[
-                  { label: "Wilayah", value: school.wilayah || "—", icon: MapPin, color: "#fb923c" },
-                  { label: "Pengirim", value: school.pengirim_nama || "—", icon: User, color: "#a78bfa" },
-                  { label: "Tanggal Survei", value: formatDate(school.submit_timestamp), icon: Clock, color: "#60a5fa" },
+                  {
+                    label: "Wilayah",
+                    value: school.wilayah || "—",
+                    icon: MapPin,
+                    color: "#64B5F6",
+                  },
+                  {
+                    label: "Pengirim",
+                    value: school.pengirim_nama || "—",
+                    icon: User,
+                    color: "#a78bfa",
+                  },
+                  {
+                    label: "Tanggal Survei",
+                    value: formatDate(school.submit_timestamp),
+                    icon: Clock,
+                    color: "#60a5fa",
+                  },
                 ].map(({ label, value, icon: Icon, color }) => (
-                  <motion.div key={label} {...fade} transition={{ duration: 0.4, delay: 0.12 }} className="col-span-1 p-4 rounded-2xl" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-3" style={{ background: `${color}18` }}>
+                  <motion.div
+                    key={label}
+                    {...fade}
+                    transition={{ duration: 0.4, delay: 0.12 }}
+                    className="col-span-1 p-4 rounded-2xl"
+                    style={{
+                      background: "#ffffff",
+                      border: "1px solid #ECEFF1",
+                    }}
+                  >
+                    <div
+                      className="w-8 h-8 rounded-lg flex items-center justify-center mb-3"
+                      style={{ background: `${color}18` }}
+                    >
                       <Icon className="w-4 h-4" style={{ color }} />
                     </div>
-                    <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "rgba(255,255,255,0.25)" }}>{label}</p>
-                    <p className="text-sm font-bold leading-tight" style={{ color: "rgba(255,255,255,0.80)" }}>{value}</p>
+                    <p
+                      className="text-[10px] font-black uppercase tracking-widest mb-1"
+                      style={{ color: "#90A4AE" }}
+                    >
+                      {label}
+                    </p>
+                    <p
+                      className="text-sm font-bold leading-tight"
+                      style={{ color: "var(--color-text-dark)" }}
+                    >
+                      {value}
+                    </p>
                   </motion.div>
                 ))}
-                <motion.div {...fade} transition={{ duration: 0.4, delay: 0.14 }} className="p-4 rounded-2xl" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-3" style={{ background: `${statusCfg.dot}18` }}>
-                    <CheckCircle2 className="w-4 h-4" style={{ color: statusCfg.dot }} />
+                <motion.div
+                  {...fade}
+                  transition={{ duration: 0.4, delay: 0.14 }}
+                  className="p-4 rounded-2xl"
+                  style={{ background: "#ffffff", border: "1px solid #ECEFF1" }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center mb-3"
+                    style={{ background: `${statusCfg.dot}18` }}
+                  >
+                    <CheckCircle2
+                      className="w-4 h-4"
+                      style={{ color: statusCfg.dot }}
+                    />
                   </div>
-                  <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "rgba(255,255,255,0.25)" }}>Partisipasi</p>
-                  <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-bold" style={{ background: statusCfg.bg, border: `1px solid ${statusCfg.border}`, color: statusCfg.text }}>
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: statusCfg.dot }} /> {statusCfg.label}
+                  <p
+                    className="text-[10px] font-black uppercase tracking-widest mb-1"
+                    style={{ color: "#90A4AE" }}
+                  >
+                    Partisipasi
+                  </p>
+                  <span
+                    className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-bold"
+                    style={{
+                      background: statusCfg.bg,
+                      border: `1px solid ${statusCfg.border}`,
+                      color: statusCfg.text,
+                    }}
+                  >
+                    <span
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ background: statusCfg.dot }}
+                    />{" "}
+                    {statusCfg.label}
                   </span>
                 </motion.div>
-                <motion.div {...fade} transition={{ duration: 0.4, delay: 0.16 }} className="p-4 rounded-2xl" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-3" style={{ background: "rgba(99,102,241,0.15)" }}>
-                    <ShieldCheck className="w-4 h-4" style={{ color: "#818cf8" }} />
+                <motion.div
+                  {...fade}
+                  transition={{ duration: 0.4, delay: 0.16 }}
+                  className="p-4 rounded-2xl"
+                  style={{ background: "#ffffff", border: "1px solid #ECEFF1" }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center mb-3"
+                    style={{ background: "rgba(99,102,241,0.15)" }}
+                  >
+                    <ShieldCheck
+                      className="w-4 h-4"
+                      style={{ color: "#818cf8" }}
+                    />
                   </div>
-                  <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "rgba(255,255,255,0.25)" }}>Validasi</p>
-                  <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-bold" style={{ background: validCfg.bg, border: `1px solid ${validCfg.border}`, color: validCfg.text }}>
-                    {validCfg.icon} {validCfg.label}
+                  <p
+                    className="text-[10px] font-black uppercase tracking-widest mb-1"
+                    style={{ color: "#90A4AE" }}
+                  >
+                    Validasi
+                  </p>
+                  <span
+                    className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-bold"
+                    style={{
+                      background: validCfg.bg,
+                      border: `1px solid ${validCfg.border}`,
+                      color: validCfg.text,
+                    }}
+                  >
+                    <validCfg.icon className="w-3.5 h-3.5" /> {validCfg.label}
                   </span>
                 </motion.div>
               </div>
@@ -637,90 +1261,242 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
 
             {/* ── Main Grid ── */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
               {/* Left 2/3 */}
               <div className="lg:col-span-2 flex flex-col gap-6">
-
                 {/* ── Section: Survei ── */}
-                <Section id="survei" innerRef={el => { sectionRefs.current["survei"] = el; }}>
-                  <SectionHeader icon={FileText} label="Hasil Survei" badge={`${surveys.length} kiriman`} delay={0.15} />
+                <Section
+                  id="survei"
+                  innerRef={(el) => {
+                    sectionRefs.current["survei"] = el;
+                  }}
+                >
+                  <SectionHeader
+                    icon={FileText}
+                    label="Hasil Survei"
+                    badge={`${surveys.length} kiriman`}
+                    delay={0.15}
+                  />
                   {!latestSurvey ? (
-                    <EmptyState icon={FileText} msg="Belum ada data survei dari sekolah ini." />
+                    <EmptyState
+                      icon={FileText}
+                      msg="Belum ada data survei dari sekolah ini."
+                    />
                   ) : (
                     <div className="space-y-3">
                       {[
-                        { label: "Penggunaan Gadget di Luar Belajar", val: latestSurvey.jawaban["1"] || "—", icon: Clock, iconColor: "#fb923c" },
-                        { label: "Konsistensi Aturan HP", val: latestSurvey.jawaban["2"] || "—", icon: ShieldCheck, iconColor: "#60a5fa" },
-                        { label: "Sosialisasi Kebijakan Digital", val: latestSurvey.jawaban["4"] || "—", icon: TrendingUp, iconColor: "#34d399" },
+                        {
+                          label: "Penggunaan Gadget di Luar Belajar",
+                          val: latestSurvey.jawaban["1"] || "—",
+                          icon: Clock,
+                          iconColor: "#64B5F6",
+                        },
+                        {
+                          label: "Konsistensi Aturan HP",
+                          val: latestSurvey.jawaban["2"] || "—",
+                          icon: ShieldCheck,
+                          iconColor: "#60a5fa",
+                        },
+                        {
+                          label: "Sosialisasi Kebijakan Digital",
+                          val: latestSurvey.jawaban["4"] || "—",
+                          icon: TrendingUp,
+                          iconColor: "#34d399",
+                        },
                       ].map(({ label, val, icon: Icon, iconColor }, i) => (
                         <motion.div
                           key={label}
                           {...fade}
                           transition={{ duration: 0.4, delay: 0.15 + i * 0.05 }}
                           className="flex items-start gap-4 p-4 rounded-2xl group transition-all duration-200 cursor-default"
-                          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
-                          onMouseEnter={e => { Object.assign((e.currentTarget as HTMLDivElement).style, { background: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.12)" }); }}
-                          onMouseLeave={e => { Object.assign((e.currentTarget as HTMLDivElement).style, { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.07)" }); }}
+                          style={{
+                            background: "#ffffff",
+                            border: "1px solid #ECEFF1",
+                          }}
+                          onMouseEnter={(e) => {
+                            Object.assign(
+                              (e.currentTarget as HTMLDivElement).style,
+                              { background: "#ffffff", borderColor: "#CFD8DC" },
+                            );
+                          }}
+                          onMouseLeave={(e) => {
+                            Object.assign(
+                              (e.currentTarget as HTMLDivElement).style,
+                              { background: "#ffffff", borderColor: "#ECEFF1" },
+                            );
+                          }}
                         >
-                          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${iconColor}18` }}>
-                            <Icon className="w-5 h-5" style={{ color: iconColor }} />
+                          <div
+                            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                            style={{ background: `${iconColor}18` }}
+                          >
+                            <Icon
+                              className="w-5 h-5"
+                              style={{ color: iconColor }}
+                            />
                           </div>
                           <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: "rgba(255,255,255,0.28)" }}>{label}</p>
-                            <p className="text-sm font-bold leading-relaxed" style={{ color: "rgba(255,255,255,0.80)" }}>{val}</p>
+                            <p
+                              className="text-[10px] font-black uppercase tracking-widest mb-1"
+                              style={{ color: "#90A4AE" }}
+                            >
+                              {label}
+                            </p>
+                            <p
+                              className="text-sm font-bold leading-relaxed"
+                              style={{ color: "var(--color-text-dark)" }}
+                            >
+                              {val}
+                            </p>
                           </div>
                         </motion.div>
                       ))}
-                      <p className="text-xs text-right pt-1" style={{ color: "rgba(255,255,255,0.22)" }}>
-                        Dikirim oleh: <span style={{ color: "rgba(255,255,255,0.50)", fontWeight: 700 }}>{latestSurvey.nama || "Anonim"}</span>
+                      <p
+                        className="text-xs text-right pt-1"
+                        style={{ color: "#CFD8DC" }}
+                      >
+                        Dikirim oleh:{" "}
+                        <span style={{ color: "#607D8B", fontWeight: 700 }}>
+                          {latestSurvey.nama || "Anonim"}
+                        </span>
                       </p>
                     </div>
                   )}
                 </Section>
 
                 {/* ── Section: Kuis ── */}
-                <Section id="kuis" innerRef={el => { sectionRefs.current["kuis"] = el; }}>
-                  <SectionHeader icon={Brain} label="Data Kuis Refleksi Digital" badge={`${quizzes.length} peserta`} delay={0.2} />
+                <Section
+                  id="kuis"
+                  innerRef={(el) => {
+                    sectionRefs.current["kuis"] = el;
+                  }}
+                >
+                  <SectionHeader
+                    icon={Brain}
+                    label="Data Kuis Refleksi Digital"
+                    badge={`${quizzes.length} peserta`}
+                    delay={0.2}
+                  />
                   {quizzes.length === 0 ? (
-                    <EmptyState icon={Brain} msg="Belum ada peserta kuis dari sekolah ini." />
+                    <EmptyState
+                      icon={Brain}
+                      msg="Belum ada peserta kuis dari sekolah ini."
+                    />
                   ) : (
                     <div className="space-y-5">
                       {/* Stat cards */}
                       <div className="grid grid-cols-3 gap-3">
                         {[
-                          { label: "Total Peserta", val: quizzes.length, color: "#a78bfa", bg: "rgba(139,92,246,0.12)", border: "rgba(139,92,246,0.22)" },
-                          { label: "Champion", val: championCount, color: "#34d399", bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.22)" },
-                          { label: "Perlu Perhatian", val: watchCount, color: "#f87171", bg: "rgba(239,68,68,0.10)", border: "rgba(239,68,68,0.20)" },
+                          {
+                            label: "Total Peserta",
+                            val: quizzes.length,
+                            color: "#a78bfa",
+                            bg: "rgba(139,92,246,0.12)",
+                            border: "rgba(139,92,246,0.22)",
+                          },
+                          {
+                            label: "Champion",
+                            val: championCount,
+                            color: "#34d399",
+                            bg: "rgba(16, 185, 129,0.12)",
+                            border: "rgba(16, 185, 129,0.22)",
+                          },
+                          {
+                            label: "Perlu Perhatian",
+                            val: watchCount,
+                            color: "#f87171",
+                            bg: "rgba(239,68,68,0.10)",
+                            border: "rgba(239,68,68,0.20)",
+                          },
                         ].map(({ label, val, color, bg, border }) => (
-                          <motion.div key={label} {...fade} transition={{ duration: 0.4, delay: 0.22 }} className="p-4 rounded-2xl text-center" style={{ background: bg, border: `1px solid ${border}` }}>
-                            <p className="text-3xl font-black" style={{ color }}>{val}</p>
-                            <p className="text-[10px] font-black uppercase tracking-widest mt-1" style={{ color: "rgba(255,255,255,0.35)" }}>{label}</p>
+                          <motion.div
+                            key={label}
+                            {...fade}
+                            transition={{ duration: 0.4, delay: 0.22 }}
+                            className="p-4 rounded-2xl text-center"
+                            style={{
+                              background: bg,
+                              border: `1px solid ${border}`,
+                            }}
+                          >
+                            <p
+                              className="text-3xl font-black"
+                              style={{ color }}
+                            >
+                              {val}
+                            </p>
+                            <p
+                              className="text-[10px] font-black uppercase tracking-widest mt-1"
+                              style={{ color: "#90A4AE" }}
+                            >
+                              {label}
+                            </p>
                           </motion.div>
                         ))}
                       </div>
 
                       {/* Distribution */}
-                      <div className="p-4 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
-                        <p className="text-[10px] font-black uppercase tracking-widest mb-4" style={{ color: "rgba(255,255,255,0.28)" }}>Distribusi Kategori</p>
+                      <div
+                        className="p-4 rounded-2xl"
+                        style={{
+                          background: "#ffffff",
+                          border: "1px solid #ECEFF1",
+                        }}
+                      >
+                        <p
+                          className="text-[10px] font-black uppercase tracking-widest mb-4"
+                          style={{ color: "#90A4AE" }}
+                        >
+                          Distribusi Kategori
+                        </p>
                         <div className="space-y-3">
                           {Object.entries(quizCats).map(([cat, count]) => {
                             const cfg = getCatConfig(cat);
-                            const pct = Math.round((count / quizzes.length) * 100);
+                            const pct = Math.round(
+                              (count / quizzes.length) * 100,
+                            );
                             return (
-                              <div key={cat} className="flex items-center gap-3">
-                                <div className="w-2 h-2 rounded-full shrink-0" style={{ background: cfg.color, boxShadow: `0 0 6px ${cfg.color}` }} />
-                                <span className="text-sm font-semibold flex-1" style={{ color: "rgba(255,255,255,0.65)" }}>{cat}</span>
+                              <div
+                                key={cat}
+                                className="flex items-center gap-3"
+                              >
+                                <div
+                                  className="w-2 h-2 rounded-full shrink-0"
+                                  style={{
+                                    background: cfg.color,
+                                    boxShadow: `0 0 6px ${cfg.color}`,
+                                  }}
+                                />
+                                <span
+                                  className="text-sm font-semibold flex-1"
+                                  style={{ color: "#607D8B" }}
+                                >
+                                  {cat}
+                                </span>
                                 <div className="flex items-center gap-3 w-36">
-                                  <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+                                  <div
+                                    className="flex-1 h-1.5 rounded-full overflow-hidden"
+                                    style={{
+                                      background: "var(--color-surface-alt)",
+                                    }}
+                                  >
                                     <motion.div
                                       className="h-full rounded-full"
                                       style={{ background: cfg.color }}
                                       initial={{ width: 0 }}
                                       animate={{ width: `${pct}%` }}
-                                      transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+                                      transition={{
+                                        duration: 0.8,
+                                        ease: "easeOut",
+                                        delay: 0.3,
+                                      }}
                                     />
                                   </div>
-                                  <span className="text-xs font-bold w-8 text-right" style={{ color: cfg.color }}>{count}</span>
+                                  <span
+                                    className="text-xs font-bold w-8 text-right"
+                                    style={{ color: cfg.color }}
+                                  >
+                                    {count}
+                                  </span>
                                 </div>
                               </div>
                             );
@@ -730,7 +1506,12 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
 
                       {/* Recent participants */}
                       <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: "rgba(255,255,255,0.28)" }}>Peserta Terbaru</p>
+                        <p
+                          className="text-[10px] font-black uppercase tracking-widest mb-3"
+                          style={{ color: "#90A4AE" }}
+                        >
+                          Peserta Terbaru
+                        </p>
                         <div className="space-y-2">
                           {quizzes.slice(0, 5).map((q, i) => {
                             const cfg = getCatConfig(q.result_category);
@@ -739,21 +1520,71 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
                                 key={q.id}
                                 initial={{ opacity: 0, x: -12 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.35, delay: 0.25 + i * 0.05 }}
+                                transition={{
+                                  duration: 0.35,
+                                  delay: 0.25 + i * 0.05,
+                                }}
                                 className="p-3.5 rounded-xl transition-all duration-200"
-                                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
-                                onMouseEnter={e => { Object.assign((e.currentTarget as HTMLDivElement).style, { background: cfg.bg, borderColor: cfg.border }); }}
-                                onMouseLeave={e => { Object.assign((e.currentTarget as HTMLDivElement).style, { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.07)" }); }}
+                                style={{
+                                  background: "#ffffff",
+                                  border: "1px solid #ECEFF1",
+                                }}
+                                onMouseEnter={(e) => {
+                                  Object.assign(
+                                    (e.currentTarget as HTMLDivElement).style,
+                                    {
+                                      background: cfg.bg,
+                                      borderColor: cfg.border,
+                                    },
+                                  );
+                                }}
+                                onMouseLeave={(e) => {
+                                  Object.assign(
+                                    (e.currentTarget as HTMLDivElement).style,
+                                    {
+                                      background: "#ffffff",
+                                      borderColor: "#ECEFF1",
+                                    },
+                                  );
+                                }}
                               >
                                 <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0" style={{ background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color }}>
+                                  <div
+                                    className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0"
+                                    style={{
+                                      background: cfg.bg,
+                                      border: `1px solid ${cfg.border}`,
+                                      color: cfg.color,
+                                    }}
+                                  >
                                     {(q.user_name || "?")[0].toUpperCase()}
                                   </div>
                                   <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-bold truncate" style={{ color: "rgba(255,255,255,0.85)" }}>{q.user_name || "Anonim"}</p>
-                                    {q.qualification && <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.35)" }}>{q.qualification}</p>}
+                                    <p
+                                      className="text-sm font-bold truncate"
+                                      style={{
+                                        color: "var(--color-text-dark)",
+                                      }}
+                                    >
+                                      {q.user_name || "Anonim"}
+                                    </p>
+                                    {q.qualification && (
+                                      <p
+                                        className="text-xs truncate"
+                                        style={{ color: "#90A4AE" }}
+                                      >
+                                        {q.qualification}
+                                      </p>
+                                    )}
                                   </div>
-                                  <span className="text-xs font-bold px-2.5 py-1 rounded-lg shrink-0" style={{ background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color }}>
+                                  <span
+                                    className="text-xs font-bold px-2.5 py-1 rounded-lg shrink-0"
+                                    style={{
+                                      background: cfg.bg,
+                                      border: `1px solid ${cfg.border}`,
+                                      color: cfg.color,
+                                    }}
+                                  >
                                     {q.result_category}
                                   </span>
                                 </div>
@@ -769,10 +1600,19 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
 
               {/* Right 1/3 — Sidebar */}
               <div className="flex flex-col gap-6">
-
                 {/* ── Section: Rekomendasi ── */}
-                <Section id="rekomendasi" innerRef={el => { sectionRefs.current["rekomendasi"] = el; }} className="lg:sticky lg:top-24">
-                  <SectionHeader icon={Zap} label="Rekomendasi Aksi" delay={0.2} />
+                <Section
+                  id="rekomendasi"
+                  innerRef={(el) => {
+                    sectionRefs.current["rekomendasi"] = el;
+                  }}
+                  className="lg:sticky lg:top-24"
+                >
+                  <SectionHeader
+                    icon={Zap}
+                    label="Rekomendasi Aksi"
+                    delay={0.2}
+                  />
                   <div className="space-y-2.5 mb-5">
                     {recs.map((rec, i) => (
                       <motion.div
@@ -781,46 +1621,126 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.35, delay: 0.2 + i * 0.06 }}
                         className="flex items-start gap-3 p-3.5 rounded-xl"
-                        style={{ background: "rgba(249,115,22,0.06)", border: "1px solid rgba(249,115,22,0.15)" }}
+                        style={{
+                          background: "rgba(46, 125, 50,0.06)",
+                          border: "1px solid rgba(46, 125, 50,0.15)",
+                        }}
                       >
-                        <span className="text-base leading-none mt-0.5 shrink-0">{rec.icon}</span>
-                        <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>{rec.text}</p>
+                        <span className="mt-0.5 shrink-0">
+                          <rec.icon className="w-5 h-5" color={rec.color} />
+                        </span>
+                        <p
+                          className="text-sm leading-relaxed"
+                          style={{ color: "#607D8B" }}
+                        >
+                          {rec.text}
+                        </p>
                       </motion.div>
                     ))}
                   </div>
 
                   {/* Quick action buttons */}
                   <div className="space-y-2.5">
-                    <a href="/peta" className="flex items-center justify-between p-3.5 rounded-xl group transition-all duration-200" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
-                      onMouseEnter={e => Object.assign((e.currentTarget as HTMLAnchorElement).style, { background: "rgba(255,255,255,0.08)", borderColor: "rgba(255,255,255,0.14)" })}
-                      onMouseLeave={e => Object.assign((e.currentTarget as HTMLAnchorElement).style, { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.08)" })}
+                    <a
+                      href="/peta"
+                      className="flex items-center justify-between p-3.5 rounded-xl group transition-all duration-200"
+                      style={{
+                        background: "#ffffff",
+                        border: "1px solid #ECEFF1",
+                      }}
+                      onMouseEnter={(e) =>
+                        Object.assign(
+                          (e.currentTarget as HTMLAnchorElement).style,
+                          {
+                            background: "var(--color-surface-alt)",
+                            borderColor: "#CFD8DC",
+                          },
+                        )
+                      }
+                      onMouseLeave={(e) =>
+                        Object.assign(
+                          (e.currentTarget as HTMLAnchorElement).style,
+                          { background: "#ffffff", borderColor: "#ECEFF1" },
+                        )
+                      }
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(96,165,250,0.15)" }}>
-                          <MapPin className="w-4 h-4" style={{ color: "#60a5fa" }} />
+                        <div
+                          className="w-8 h-8 rounded-lg flex items-center justify-center"
+                          style={{ background: "rgba(96,165,250,0.15)" }}
+                        >
+                          <MapPin
+                            className="w-4 h-4"
+                            style={{ color: "#60a5fa" }}
+                          />
                         </div>
-                        <span className="text-sm font-bold" style={{ color: "rgba(255,255,255,0.70)" }}>Peta Partisipasi</span>
+                        <span
+                          className="text-sm font-bold"
+                          style={{ color: "#607D8B" }}
+                        >
+                          ipasi
+                        </span>
                       </div>
-                      <ChevronRight className="w-4 h-4" style={{ color: "rgba(255,255,255,0.25)" }} />
+                      <ChevronRight
+                        className="w-4 h-4"
+                        style={{ color: "#90A4AE" }}
+                      />
                     </a>
 
                     {school.status !== "komitmen" && (
                       <a
                         href="/komitmen"
                         className="flex items-center justify-center gap-2 p-3.5 rounded-xl font-bold text-sm text-white transition-all duration-200"
-                        style={{ background: "linear-gradient(135deg, #ea580c, #f97316)", boxShadow: "0 4px 24px rgba(249,115,22,0.35)" }}
-                        onMouseEnter={e => Object.assign((e.currentTarget as HTMLAnchorElement).style, { boxShadow: "0 6px 36px rgba(249,115,22,0.50)", transform: "translateY(-1px)" })}
-                        onMouseLeave={e => Object.assign((e.currentTarget as HTMLAnchorElement).style, { boxShadow: "0 4px 24px rgba(249,115,22,0.35)", transform: "none" })}
+                        style={{
+                          background:
+                            "linear-gradient(135deg, var(--color-info), var(--color-primary))",
+                          boxShadow: "0 4px 24px rgba(46, 125, 50,0.35)",
+                        }}
+                        onMouseEnter={(e) =>
+                          Object.assign(
+                            (e.currentTarget as HTMLAnchorElement).style,
+                            {
+                              boxShadow: "0 6px 36px rgba(46, 125, 50,0.50)",
+                              transform: "translateY(-1px)",
+                            },
+                          )
+                        }
+                        onMouseLeave={(e) =>
+                          Object.assign(
+                            (e.currentTarget as HTMLAnchorElement).style,
+                            {
+                              boxShadow: "0 4px 24px rgba(46, 125, 50,0.35)",
+                              transform: "none",
+                            },
+                          )
+                        }
                       >
-                        <Target className="w-4 h-4" /> Ambil Komitmen <ArrowRight className="w-4 h-4" />
+                        <Target className="w-4 h-4" /> Ambil Komitmen{" "}
+                        <ArrowRight className="w-4 h-4" />
                       </a>
                     )}
                     {school.status === "komitmen" && (
-                      <div className="flex items-center gap-3 p-3.5 rounded-xl" style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.20)" }}>
-                        <Award className="w-5 h-5 shrink-0" style={{ color: "#34d399" }} />
+                      <div
+                        className="flex items-center gap-3 p-3.5 rounded-xl"
+                        style={{
+                          background: "rgba(16, 185, 129, 0.15)",
+                          border: "1px solid rgba(16, 185, 129,0.20)",
+                        }}
+                      >
+                        <Award
+                          className="w-5 h-5 shrink-0"
+                          style={{ color: "#34d399" }}
+                        />
                         <div>
-                          <p className="text-xs font-black" style={{ color: "#34d399" }}>Komitmen Aktif</p>
-                          <p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>Sekolah ini telah berkomitmen</p>
+                          <p
+                            className="text-xs font-black"
+                            style={{ color: "#34d399" }}
+                          >
+                            Komitmen Aktif
+                          </p>
+                          <p className="text-xs" style={{ color: "#90A4AE" }}>
+                            Sekolah ini telah berkomitmen
+                          </p>
                         </div>
                       </div>
                     )}
@@ -828,98 +1748,6 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
                 </Section>
               </div>
             </div>
-
-            {/* ── Section: Studi Kasus ── */}
-            <Section id="studi" innerRef={el => { sectionRefs.current["studi"] = el; }}>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <BookOpen className="w-5 h-5" style={{ color: "#a78bfa" }} />
-                    <h2 className="text-lg font-black" style={{ color: "#fff" }}>Bagikan Studi Kasus</h2>
-                  </div>
-                  <p className="text-sm" style={{ color: "rgba(255,255,255,0.35)" }}>
-                    Inspirasi sekolah lain dengan praktik terbaik digital Anda.
-                  </p>
-                </div>
-                {csSuccess && (
-                  <span className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold" style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.25)", color: "#34d399" }}>
-                    <CheckCircle2 className="w-4 h-4" /> Terkirim!
-                  </span>
-                )}
-              </div>
-
-              {csSuccess ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="p-10 rounded-2xl text-center"
-                  style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.20)", boxShadow: "0 0 60px rgba(16,185,129,0.12)" }}
-                >
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.30)" }}>
-                    <CheckCircle2 className="w-8 h-8" style={{ color: "#34d399" }} />
-                  </div>
-                  <h3 className="text-xl font-black mb-2" style={{ color: "#34d399" }}>Studi Kasus Berhasil Dikirim!</h3>
-                  <p className="text-sm mb-6" style={{ color: "rgba(255,255,255,0.40)" }}>Terima kasih telah menginspirasi komunitas pendidikan Indonesia.</p>
-                  <button
-                    onClick={() => setCsSuccess(false)}
-                    className="px-6 py-2.5 rounded-xl text-sm font-bold transition-all"
-                    style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.65)" }}
-                  >
-                    Kirim Studi Kasus Lainnya
-                  </button>
-                </motion.div>
-              ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                  {/* Left inputs */}
-                  <div className="space-y-4">
-                    <CSInput label="Judul Studi Kasus" required placeholder="Contoh: Sistem Loker HP Terpadu" value={csData.judul} onChange={v => setCsData(p => ({ ...p, judul: v }))} />
-                    <CSInput label="Nama Penulis" required placeholder="Contoh: Drs. Hendra Permana" value={csData.penulis} onChange={v => setCsData(p => ({ ...p, penulis: v }))} />
-                    <div>
-                      <label className="block text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: "rgba(255,255,255,0.28)" }}>Kategori <span style={{ color: "#f97316" }}>*</span></label>
-                      <select
-                        value={csData.category}
-                        onChange={e => setCsData(p => ({ ...p, category: e.target.value }))}
-                        className="w-full px-4 py-3 rounded-xl text-sm font-medium transition-all"
-                        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", outline: "none" }}
-                      >
-                        {[["inovasi","Inovasi Sekolah"],["regulasi","Regulasi & Kebijakan"],["literasi","Literasi Digital"],["pembelajaran","Metode Pembelajaran"]].map(([v,l]) => (
-                          <option key={v} value={v} style={{ background: "#111" }}>{l}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <CSInput label="Dampak Terukur (Opsional)" placeholder="Contoh: +42% Fokus Belajar" value={csData.impact} onChange={v => setCsData(p => ({ ...p, impact: v }))} />
-                  </div>
-                  {/* Right textarea */}
-                  <div className="flex flex-col">
-                    <label className="block text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: "rgba(255,255,255,0.28)" }}>Isi Cerita <span style={{ color: "#f97316" }}>*</span></label>
-                    <textarea
-                      value={csData.isi}
-                      onChange={e => setCsData(p => ({ ...p, isi: e.target.value }))}
-                      placeholder="Ceritakan latar belakang masalah, proses implementasi, dan hasil yang dicapai..."
-                      rows={8}
-                      className="flex-1 px-4 py-3 rounded-xl text-sm font-medium resize-none transition-all"
-                      style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", outline: "none" }}
-                    />
-                    {csError && <ErrorBanner msg={csError} />}
-                    <button
-                      onClick={submitCS}
-                      disabled={csLoading}
-                      className="mt-4 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm text-white transition-all duration-200 disabled:opacity-40"
-                      style={{ background: "linear-gradient(135deg, #7c3aed, #a78bfa)", boxShadow: "0 4px 24px rgba(139,92,246,0.30)" }}
-                      onMouseEnter={e => { if (!csLoading) Object.assign((e.currentTarget as HTMLButtonElement).style, { boxShadow: "0 6px 36px rgba(139,92,246,0.50)", transform: "translateY(-1px)" }); }}
-                      onMouseLeave={e => Object.assign((e.currentTarget as HTMLButtonElement).style, { boxShadow: "0 4px 24px rgba(139,92,246,0.30)", transform: "none" })}
-                    >
-                      {csLoading ? (
-                        <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Mengirim...</>
-                      ) : (
-                        <><Send className="w-4 h-4" /> Kirim Studi Kasus</>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              )}
-            </Section>
-
           </div>
         )}
       </main>
@@ -929,24 +1757,39 @@ function Dashboard({ school, onLogout }: { school: SchoolData; onLogout: () => v
 
 // ─── Reusable sub-components ──────────────────────────────────────────────────
 
-function Section({ id, innerRef, children, className = "" }: {
-  id: string; innerRef: (el: HTMLDivElement | null) => void;
-  children: React.ReactNode; className?: string;
+function Section({
+  id,
+  innerRef,
+  children,
+  className = "",
+}: {
+  id: string;
+  innerRef: (el: HTMLDivElement | null) => void;
+  children: React.ReactNode;
+  className?: string;
 }) {
   return (
     <div
       id={id}
       ref={innerRef}
       className={`rounded-3xl p-5 sm:p-6 scroll-mt-24 ${className}`}
-      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
+      style={{ background: "#ffffff", border: "1px solid #ECEFF1" }}
     >
       {children}
     </div>
   );
 }
 
-function SectionHeader({ icon: Icon, label, badge, delay = 0 }: {
-  icon: React.ElementType; label: string; badge?: string; delay?: number;
+function SectionHeader({
+  icon: Icon,
+  label,
+  badge,
+  delay = 0,
+}: {
+  icon: React.ElementType;
+  label: string;
+  badge?: string;
+  delay?: number;
 }) {
   return (
     <motion.div
@@ -955,42 +1798,52 @@ function SectionHeader({ icon: Icon, label, badge, delay = 0 }: {
       transition={{ duration: 0.4, delay }}
       className="flex items-center gap-2.5 mb-5"
     >
-      <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(249,115,22,0.12)" }}>
-        <Icon className="w-4 h-4" style={{ color: "#f97316" }} />
+      <div
+        className="w-8 h-8 rounded-xl flex items-center justify-center"
+        style={{ background: "rgba(46, 125, 50,0.12)" }}
+      >
+        <Icon className="w-4 h-4" style={{ color: "var(--color-primary)" }} />
       </div>
-      <h2 className="text-base font-black" style={{ color: "#fff" }}>{label}</h2>
-      {badge && <span className="ml-auto text-xs font-bold px-2.5 py-1 rounded-lg" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)", color: "rgba(255,255,255,0.40)" }}>{badge}</span>}
+      <h2
+        className="text-base font-black"
+        style={{ color: "var(--color-text-dark)" }}
+      >
+        {label}
+      </h2>
+      {badge && (
+        <span
+          className="ml-auto text-xs font-bold px-2.5 py-1 rounded-lg"
+          style={{
+            background: "#ffffff",
+            border: "1px solid #ECEFF1",
+            color: "#607D8B",
+          }}
+        >
+          {badge}
+        </span>
+      )}
     </motion.div>
   );
 }
 
-function EmptyState({ icon: Icon, msg }: { icon: React.ElementType; msg: string }) {
-  return (
-    <div className="text-center py-10">
-      <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3" style={{ background: "rgba(255,255,255,0.05)" }}>
-        <Icon className="w-6 h-6" style={{ color: "rgba(255,255,255,0.20)" }} />
-      </div>
-      <p className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.25)" }}>{msg}</p>
-    </div>
-  );
-}
-
-function CSInput({ label, required, placeholder, value, onChange }: {
-  label: string; required?: boolean; placeholder: string; value: string; onChange: (v: string) => void;
+function EmptyState({
+  icon: Icon,
+  msg,
+}: {
+  icon: React.ElementType;
+  msg: string;
 }) {
   return (
-    <div>
-      <label className="block text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: "rgba(255,255,255,0.28)" }}>
-        {label} {required && <span style={{ color: "#f97316" }}>*</span>}
-      </label>
-      <input
-        type="text"
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="w-full px-4 py-3 rounded-xl text-sm font-medium transition-all"
-        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", outline: "none" }}
-      />
+    <div className="text-center py-10">
+      <div
+        className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3"
+        style={{ background: "var(--color-surface-alt)" }}
+      >
+        <Icon className="w-6 h-6" style={{ color: "#CFD8DC" }} />
+      </div>
+      <p className="text-sm font-semibold" style={{ color: "#90A4AE" }}>
+        {msg}
+      </p>
     </div>
   );
 }
@@ -998,9 +1851,19 @@ function CSInput({ label, required, placeholder, value, onChange }: {
 function LoadingSkeleton() {
   return (
     <div className="space-y-6 animate-pulse">
-      <div className="h-40 rounded-3xl" style={{ background: "rgba(255,255,255,0.04)" }} />
-      <div className="grid grid-cols-5 gap-3">{Array(5).fill(0).map((_, i) => <div key={i} className="h-24 rounded-2xl" style={{ background: "rgba(255,255,255,0.04)" }} />)}</div>
-      <div className="h-64 rounded-3xl" style={{ background: "rgba(255,255,255,0.04)" }} />
+      <div className="h-40 rounded-3xl" style={{ background: "#ffffff" }} />
+      <div className="grid grid-cols-5 gap-3">
+        {Array(5)
+          .fill(0)
+          .map((_, i) => (
+            <div
+              key={i}
+              className="h-24 rounded-2xl"
+              style={{ background: "#ffffff" }}
+            />
+          ))}
+      </div>
+      <div className="h-64 rounded-3xl" style={{ background: "#ffffff" }} />
     </div>
   );
 }
@@ -1015,7 +1878,9 @@ export default function HasilPage() {
     try {
       const raw = sessionStorage.getItem(SESSION_KEY);
       if (raw) setSchool(JSON.parse(raw) as SchoolData);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     setChecked(true);
   }, []);
 
@@ -1024,11 +1889,29 @@ export default function HasilPage() {
   return (
     <AnimatePresence mode="wait">
       {school ? (
-        <motion.div key="dash" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-          <Dashboard school={school} onLogout={() => { sessionStorage.removeItem(SESSION_KEY); setSchool(null); }} />
+        <motion.div
+          key="dash"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Dashboard
+            school={school}
+            onLogout={() => {
+              sessionStorage.removeItem(SESSION_KEY);
+              setSchool(null);
+            }}
+          />
         </motion.div>
       ) : (
-        <motion.div key="login" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+        <motion.div
+          key="login"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
           <LoginGate onLogin={setSchool} />
         </motion.div>
       )}

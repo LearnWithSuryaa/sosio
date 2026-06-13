@@ -51,8 +51,8 @@ export function CaseStudySection({ caseStudies = [] }: CaseStudySectionProps) {
     
     switch (cs.category) {
       case "regulasi":
-        tagColor = "bg-orange-500/10 text-orange-400 border-orange-500/20";
-        accent = "#f97316"; // orange-500
+        tagColor = "bg-primary/10 text-info border-primary/20";
+        accent = "#2E7D32"; // orange-500
         break;
       case "pembelajaran":
         tagColor = "bg-blue-500/10 text-blue-400 border-blue-500/20";
@@ -88,12 +88,12 @@ export function CaseStudySection({ caseStudies = [] }: CaseStudySectionProps) {
   }));
 
   return (
-    <section className="relative py-28 px-4 overflow-hidden bg-[#050505]">
+    <section className="relative py-28 px-4 overflow-hidden bg-white">
       {/* ── Dynamic Glowing Mesh ── */}
-      <div className="absolute inset-0 bg-white/[0.01] mix-blend-overlay" />
+      <div className="absolute inset-0 bg-surface/50 mix-blend-overlay" />
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[20%] right-[5%] w-[600px] h-[600px] bg-emerald-500/10 blur-[150px] rounded-full mix-blend-screen" />
-        <div className="absolute bottom-[10%] left-[5%] w-[500px] h-[500px] bg-sky-500/10 blur-[130px] rounded-full mix-blend-screen" />
+        <div className="absolute top-[20%] right-[5%] w-[600px] h-[600px] bg-surface-alt/50 blur-[150px] rounded-full mix-blend-multiply" />
+        <div className="absolute bottom-[10%] left-[5%] w-[500px] h-[500px] bg-emerald-100/50 blur-[130px] rounded-full mix-blend-multiply" />
       </div>
       <div className="max-w-6xl mx-auto relative z-10">
         <motion.div
@@ -103,15 +103,15 @@ export function CaseStudySection({ caseStudies = [] }: CaseStudySectionProps) {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-bold uppercase tracking-[0.15em] mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary-soft bg-surface-alt text-primary text-xs font-bold uppercase tracking-[0.15em] mb-6 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             Inspirasi
           </span>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white mt-2 mb-4 leading-tight tracking-tight">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-text-dark mt-2 mb-4 leading-tight tracking-tight">
             Praktik Baik dari{" "}
             <span
               style={{
-                background: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
+                background: "linear-gradient(135deg, #2E7D32 0%, #1E88E5 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -120,7 +120,7 @@ export function CaseStudySection({ caseStudies = [] }: CaseStudySectionProps) {
               Sekolah Lain
             </span>
           </h2>
-          <p className="text-white/50 max-w-2xl mx-auto text-lg font-medium leading-relaxed">
+          <p className="text-text-dark max-w-2xl mx-auto text-lg font-medium leading-relaxed">
             Pelajari pendekatan inovatif yang telah terbukti berhasil dalam mengelola penggunaan gadget di lingkungan sekolah.
           </p>
         </motion.div>
@@ -134,7 +134,7 @@ export function CaseStudySection({ caseStudies = [] }: CaseStudySectionProps) {
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.6, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="relative bg-white/[0.03] border border-white/10 backdrop-blur-sm rounded-[24px] p-8 flex flex-col group overflow-hidden"
+              className="relative bg-white border border-slate-200 shadow-sm rounded-[24px] p-8 flex flex-col group overflow-hidden hover:shadow-md transition-all"
             >
               {/* Hover glow */}
               <div
@@ -159,15 +159,15 @@ export function CaseStudySection({ caseStudies = [] }: CaseStudySectionProps) {
                 ))}
               </div>
 
-              <h3 className="relative z-10 text-xl font-bold text-white mb-2 leading-snug">{cs.title}</h3>
+              <h3 className="relative z-10 text-xl font-bold text-text-dark mb-2 leading-snug">{cs.title}</h3>
               <p className="relative z-10 text-sm font-bold mb-5" style={{ color: cs.accent }}>{cs.school}</p>
 
-              <p className="relative z-10 text-white/50 text-sm leading-relaxed mb-8 flex-1">{cs.story}</p>
+              <p className="relative z-10 text-text-dark text-sm leading-relaxed mb-8 flex-1">{cs.story}</p>
 
               {/* Quote block */}
-              <div className="relative z-10 mt-auto pt-5 border-t border-white/10">
-                <Quote className="absolute top-3 right-0 w-12 h-12 text-white/5 -z-10" />
-                <p className="text-sm italic text-white/40 font-medium leading-relaxed">
+              <div className="relative z-10 mt-auto pt-5 border-t border-slate-100">
+                <Quote className="absolute top-3 right-0 w-12 h-12 text-slate-100 -z-10" />
+                <p className="text-sm italic text-slate-500 font-medium leading-relaxed">
                   &ldquo;{cs.quote}&rdquo;
                 </p>
               </div>
@@ -183,7 +183,7 @@ export function CaseStudySection({ caseStudies = [] }: CaseStudySectionProps) {
           className="text-center mt-16"
         >
           <Link href="/studi-kasus">
-            <button className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold text-sm transition-all duration-300 hover:scale-[1.02]">
+            <button className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-slate-200 bg-white hover:bg-surface text-text-dark font-bold text-sm transition-all duration-300 hover:scale-[1.02] shadow-sm">
               Lihat Semua Studi Kasus
               <ArrowRight className="w-4 h-4" />
             </button>

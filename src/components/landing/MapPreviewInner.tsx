@@ -26,6 +26,7 @@ function makeLucideMarker(
   border: string,
   shadow: string,
   isPending: boolean = false,
+  stroke: string = "white"
 ): L.DivIcon {
   const size = isPending ? 24 : 30;
   const iconSize = isPending ? 12 : 15;
@@ -41,7 +42,7 @@ function makeLucideMarker(
       display:flex; align-items:center; justify-content:center;
     ">
       <svg width="${iconSize}" height="${iconSize}" viewBox="0 0 24 24"
-        fill="none" stroke="white"
+        fill="none" stroke="${stroke}"
         stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         ${svgPaths}
       </svg>
@@ -55,46 +56,49 @@ function makeLucideMarker(
   });
 }
 
-// ── Icons — vivid on dark map ──────────────────────────────────────────────
-const iconGreen = makeLucideMarker(
+// ── Icons — vivid on light map ─────────────────────────────────────────────
+const iconPrimary = makeLucideMarker(
   ICON_CHECK,
-  "#10B981",
-  "#34d399",
-  "#10b98170",
+  "#2E7D32", // primary (Green)
+  "#FFFFFF", // clean white border
+  "#2E7D3260",
 );
-const iconYellow = makeLucideMarker(
+const iconInfo = makeLucideMarker(
   ICON_CLIPBOARD,
-  "#f59e0b",
-  "#fbbf24",
-  "#f59e0b70",
+  "#FFB74D", // accent (Orange)
+  "#FFFFFF",
+  "#FFB74D60",
 );
-const iconGray = makeLucideMarker(
+const iconNeutral = makeLucideMarker(
   ICON_MAP_PIN,
-  "#475569",
-  "#64748b",
-  "#47556940",
+  "#FFFFFF", // white background
+  "#CBD5E1", // light gray border
+  "#00000020",
+  false,
+  "#64748B" // slate-500 stroke for visibility
 );
 
-const iconGreenPending = makeLucideMarker(
+const iconPrimaryPending = makeLucideMarker(
   ICON_CHECK,
-  "#10B981",
-  "#34d399",
-  "#10b98140",
+  "#2E7D32",
+  "#FFFFFF",
+  "#2E7D3230",
   true,
 );
-const iconYellowPending = makeLucideMarker(
+const iconInfoPending = makeLucideMarker(
   ICON_CLIPBOARD,
-  "#f59e0b",
-  "#fbbf24",
-  "#f59e0b40",
+  "#FFB74D",
+  "#FFFFFF",
+  "#FFB74D30",
   true,
 );
-const iconGrayPending = makeLucideMarker(
+const iconNeutralPending = makeLucideMarker(
   ICON_MAP_PIN,
-  "#475569",
-  "#64748b",
-  "#00000020",
+  "#FFFFFF",
+  "#CBD5E1",
+  "#00000010",
   true,
+  "#64748B"
 );
 
 interface School {
@@ -123,9 +127,9 @@ function DisableInteractions() {
 
 function getIcon(status: string, validasi: string) {
   const isPending = validasi === "pending";
-  if (status === "komitmen") return isPending ? iconGreenPending : iconGreen;
-  if (status === "survei") return isPending ? iconYellowPending : iconYellow;
-  return isPending ? iconGrayPending : iconGray;
+  if (status === "komitmen") return isPending ? iconPrimaryPending : iconPrimary;
+  if (status === "survei") return isPending ? iconInfoPending : iconInfo;
+  return isPending ? iconNeutralPending : iconNeutral;
 }
 
 export default function MapPreviewInner() {
@@ -148,10 +152,10 @@ export default function MapPreviewInner() {
       zoomControl={false}
       attributionControl={false}
       className="w-full h-[420px]"
-      style={{ cursor: "default", background: "#080c14" }}
+      style={{ cursor: "default", background: "#F5F7FA" }}
     >
-       <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        <TileLayer
+          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           subdomains="abcd"
           maxZoom={19}

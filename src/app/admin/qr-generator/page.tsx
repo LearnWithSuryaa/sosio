@@ -176,16 +176,16 @@ export default function QRGeneratorPage() {
         ctx.fill();
         ctx.restore();
       };
-      drawBlob(80, 80, 220, "#f97316", 0.35);
-      drawBlob(W - 60, 100, 180, "#fb923c", 0.25);
-      drawBlob(W - 40, H - 80, 200, "#f97316", 0.3);
-      drawBlob(50, H - 60, 160, "#ea580c", 0.2);
+      drawBlob(80, 80, 220, "#2E7D32", 0.35);
+      drawBlob(W - 60, 100, 180, "#64B5F6", 0.25);
+      drawBlob(W - 40, H - 80, 200, "#2E7D32", 0.3);
+      drawBlob(50, H - 60, 160, "#1E88E5", 0.2);
       drawBlob(W / 2, H / 2, 260, "#c2410c", 0.12);
 
       // 3. Dot grid
       ctx.save();
       ctx.globalAlpha = 0.06;
-      ctx.fillStyle = "#fb923c";
+      ctx.fillStyle = "#64B5F6";
       for (let x = 20; x < W; x += 28) {
         for (let y = 20; y < H; y += 28) {
           ctx.beginPath();
@@ -198,7 +198,7 @@ export default function QRGeneratorPage() {
       // 4. Wavy abstract lines
       ctx.save();
       ctx.globalAlpha = 0.07;
-      ctx.strokeStyle = "#fb923c";
+      ctx.strokeStyle = "#64B5F6";
       ctx.lineWidth = 1;
       for (let i = 0; i < 8; i++) {
         const y = 40 + i * 100;
@@ -217,12 +217,12 @@ export default function QRGeneratorPage() {
       ctx.save();
       ctx.beginPath();
       ctx.roundRect(pillX, badgeY, pillW, pillH, 19);
-      ctx.fillStyle = "rgba(249,115,22,0.15)";
+      ctx.fillStyle = "rgba(46, 125, 50,0.15)";
       ctx.fill();
-      ctx.strokeStyle = "rgba(249,115,22,0.4)";
+      ctx.strokeStyle = "rgba(46, 125, 50,0.4)";
       ctx.lineWidth = 1;
       ctx.stroke();
-      ctx.fillStyle = "#fb923c";
+      ctx.fillStyle = "#64B5F6";
       ctx.font = "bold 13px system-ui, sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -265,7 +265,7 @@ export default function QRGeneratorPage() {
 
       // Orange corner accents on card
       ctx.save();
-      ctx.fillStyle = "#f97316";
+      ctx.fillStyle = "#2E7D32";
       ctx.globalAlpha = 0.85;
       const as = 18;
       // top-left corner
@@ -325,14 +325,14 @@ export default function QRGeneratorPage() {
       const chipW2 = chipTW + 30;
       const chipH2 = 32;
       const chipX2 = (W - chipW2) / 2;
-      ctx.fillStyle = "rgba(249,115,22,0.13)";
-      ctx.strokeStyle = "rgba(249,115,22,0.3)";
+      ctx.fillStyle = "rgba(46, 125, 50,0.13)";
+      ctx.strokeStyle = "rgba(46, 125, 50,0.3)";
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.roundRect(chipX2, chipY, chipW2, chipH2, 8);
       ctx.fill();
       ctx.stroke();
-      ctx.fillStyle = "#fb923c";
+      ctx.fillStyle = "#64B5F6";
       ctx.textBaseline = "middle";
       ctx.fillText(chipText, W / 2, chipY + chipH2 / 2);
       ctx.restore();
@@ -341,7 +341,7 @@ export default function QRGeneratorPage() {
       const divY = chipY + chipH2 + 24;
       ctx.save();
       ctx.globalAlpha = 0.15;
-      ctx.strokeStyle = "#fb923c";
+      ctx.strokeStyle = "#64B5F6";
       ctx.lineWidth = 1;
       ctx.setLineDash([4, 8]);
       ctx.beginPath();
@@ -363,7 +363,7 @@ export default function QRGeneratorPage() {
         footerY,
       );
       ctx.font = "bold 13px system-ui, sans-serif";
-      ctx.fillStyle = "rgba(249,115,22,0.75)";
+      ctx.fillStyle = "rgba(46, 125, 50,0.75)";
       ctx.fillText("gesamega.web.id", W / 2, footerY + 22);
       ctx.restore();
 
@@ -391,7 +391,7 @@ export default function QRGeneratorPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
-          <QrCode className="w-8 h-8 text-orange-500" />
+          <QrCode className="w-8 h-8 text-primary" />
           QR Code Generator
         </h1>
         <p className="text-gray-500 mt-2">
@@ -446,12 +446,12 @@ export default function QRGeneratorPage() {
                 onChange={(e) => setCampaignName(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleCreate()}
                 placeholder="Nama event / sekolah..."
-                className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm font-medium text-gray-900 focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-50 outline-none transition-all"
+                className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm font-medium text-gray-900 focus:border-info focus:bg-white focus:ring-2 focus:ring-orange-50 outline-none transition-all"
               />
               <button
                 onClick={handleCreate}
                 disabled={!campaignName.trim() || creating}
-                className="w-10 h-10 rounded-xl bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
+                className="w-10 h-10 rounded-xl bg-primary hover:bg-primary text-white flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
               >
                 {creating ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -481,7 +481,7 @@ export default function QRGeneratorPage() {
 
             {loading ? (
               <div className="p-8 flex justify-center">
-                <Loader2 className="w-6 h-6 text-orange-400 animate-spin" />
+                <Loader2 className="w-6 h-6 text-info animate-spin" />
               </div>
             ) : campaigns.length === 0 && !fetchError ? (
               <div className="p-8 text-center text-gray-400 text-sm">
@@ -497,14 +497,14 @@ export default function QRGeneratorPage() {
                     tabIndex={0}
                     onKeyDown={(e) => e.key === "Enter" && setSelectedId(c.id)}
                     className={`w-full flex items-center justify-between px-5 py-4 text-left transition-all cursor-pointer ${
-                      selectedId === c.id ? "bg-orange-50" : "hover:bg-gray-50"
+                      selectedId === c.id ? "bg-surface-alt" : "hover:bg-gray-50"
                     }`}
                   >
                     <div className="min-w-0 flex-1 pr-3">
                       <p
                         className={`text-sm font-bold truncate ${
                           selectedId === c.id
-                            ? "text-orange-700"
+                            ? "text-text-dark"
                             : "text-gray-800"
                         }`}
                       >
@@ -594,7 +594,7 @@ export default function QRGeneratorPage() {
                                 selected.id,
                               )
                             }
-                            className="text-gray-400 hover:text-orange-500 transition-colors shrink-0"
+                            className="text-gray-400 hover:text-primary transition-colors shrink-0"
                           >
                             {copied === selected.id ? (
                               <CheckCheck className="w-4 h-4 text-emerald-500" />
@@ -608,7 +608,7 @@ export default function QRGeneratorPage() {
                       <div className="flex items-center gap-3 flex-wrap">
                         <button
                           onClick={() => handleDownloadQR(selected)}
-                          className="flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold rounded-xl transition-colors"
+                          className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary text-white text-sm font-bold rounded-xl transition-colors"
                         >
                           <Download className="w-4 h-4" />
                           Download PNG
@@ -636,17 +636,17 @@ export default function QRGeneratorPage() {
                     </h3>
                     <button
                       onClick={fetchCampaigns}
-                      className="ml-auto text-xs text-gray-400 hover:text-orange-500 transition-colors"
+                      className="ml-auto text-xs text-gray-400 hover:text-primary transition-colors"
                     >
                       Refresh
                     </button>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-orange-50 rounded-xl p-4 border border-orange-100">
-                      <p className="text-xs font-bold text-orange-500 uppercase tracking-wider mb-1">
+                    <div className="bg-surface-alt rounded-xl p-4 border border-surface-alt">
+                      <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1">
                         Total Peserta
                       </p>
-                      <p className="text-3xl font-extrabold text-orange-700">
+                      <p className="text-3xl font-extrabold text-text-dark">
                         {selected.participantCount}
                       </p>
                     </div>

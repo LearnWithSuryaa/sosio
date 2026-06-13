@@ -43,7 +43,7 @@ export default async function ArtikelPage() {
           badge = "Riset Terbaru";
           break;
         case "guru":
-          badgeColor = "bg-orange-50 text-orange-600 border-orange-200";
+          badgeColor = "bg-surface-alt text-primary border-primary-soft";
           badge = "Tips & Trik";
           break;
       }

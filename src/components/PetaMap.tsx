@@ -29,6 +29,7 @@ function makeLucideMarker(
   border: string,
   shadow: string,
   isPending: boolean = false,
+  stroke: string = "white"
 ): L.DivIcon {
   const size = isPending ? 24 : 30;
   const iconSize = isPending ? 12 : 15;
@@ -44,7 +45,7 @@ function makeLucideMarker(
       display:flex; align-items:center; justify-content:center;
     ">
       <svg width="${iconSize}" height="${iconSize}" viewBox="0 0 24 24"
-        fill="none" stroke="white"
+        fill="none" stroke="${stroke}"
         stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         ${svgPaths}
       </svg>
@@ -59,46 +60,49 @@ function makeLucideMarker(
   });
 }
 
-// ── Icons — vivid on dark map ──────────────────────────────────────────────
-const iconGreen = makeLucideMarker(
+// ── Icons — vivid on light map ─────────────────────────────────────────────
+const iconPrimary = makeLucideMarker(
   ICON_CHECK,
-  "#10B981",
-  "#34d399",
-  "#10b98170",
+  "#2E7D32", // primary (Green)
+  "#FFFFFF", // clean white border
+  "#2E7D3260",
 );
-const iconYellow = makeLucideMarker(
+const iconInfo = makeLucideMarker(
   ICON_CLIPBOARD,
-  "#f59e0b",
-  "#fbbf24",
-  "#f59e0b70",
+  "#FFB74D", // accent (Orange)
+  "#FFFFFF",
+  "#FFB74D60",
 );
-const iconGray = makeLucideMarker(
+const iconNeutral = makeLucideMarker(
   ICON_MAP_PIN,
-  "#475569",
-  "#64748b",
-  "#47556940",
+  "#FFFFFF", // white background
+  "#CBD5E1", // light gray border
+  "#00000020",
+  false,
+  "#64748B" // slate-500 stroke for visibility
 );
 
-const iconGreenPending = makeLucideMarker(
+const iconPrimaryPending = makeLucideMarker(
   ICON_CHECK,
-  "#10B981",
-  "#34d399",
-  "#10b98140",
+  "#2E7D32",
+  "#FFFFFF",
+  "#2E7D3230",
   true,
 );
-const iconYellowPending = makeLucideMarker(
+const iconInfoPending = makeLucideMarker(
   ICON_CLIPBOARD,
-  "#f59e0b",
-  "#fbbf24",
-  "#f59e0b40",
+  "#FFB74D",
+  "#FFFFFF",
+  "#FFB74D30",
   true,
 );
-const iconGrayPending = makeLucideMarker(
+const iconNeutralPending = makeLucideMarker(
   ICON_MAP_PIN,
-  "#475569",
-  "#64748b",
-  "#00000020",
+  "#FFFFFF",
+  "#CBD5E1",
+  "#00000010",
   true,
+  "#64748B"
 );
 
 
@@ -133,22 +137,22 @@ export default function PetaKomponen({ schoolId, schools }: Props) {
 
   const getIcon = (status: string, validasi: string) => {
     const isPending = validasi === "pending";
-    if (status === "komitmen") return isPending ? iconGreenPending : iconGreen;
-    if (status === "survei") return isPending ? iconYellowPending : iconYellow;
-    return isPending ? iconGrayPending : iconGray;
+    if (status === "komitmen") return isPending ? iconPrimaryPending : iconPrimary;
+    if (status === "survei") return isPending ? iconInfoPending : iconInfo;
+    return isPending ? iconNeutralPending : iconNeutral;
   };
 
   return (
-    <div className="w-full h-full relative z-10 rounded-2xl overflow-hidden" style={{ background: "#080c14" }}>
+    <div className="w-full h-full relative z-10 rounded-2xl overflow-hidden" style={{ background: "#F5F7FA" }}>
       <MapContainer 
         center={[-7.4478, 112.7183]} 
         zoom={11} 
         scrollWheelZoom={true} 
         className="w-full h-[600px] z-10"
-        style={{ background: "#080c14" }}
+        style={{ background: "#F5F7FA" }}
       >
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           subdomains="abcd"
           maxZoom={19}
@@ -166,7 +170,7 @@ export default function PetaKomponen({ schoolId, schools }: Props) {
                 <h3 className="font-bold text-gray-900 mb-1">{school.nama_sekolah}</h3>
                 <span className={`inline-block px-2 py-1 text-xs rounded-md uppercase tracking-wider font-semibold ${
                   school.status === 'komitmen' ? 'bg-emerald-100 text-emerald-700' : 
-                  school.status === 'survei' ? 'bg-orange-100 text-orange-700' : 
+                  school.status === 'survei' ? 'bg-surface-alt text-text-dark' : 
                   'bg-gray-100 text-gray-700'
                 }`}>
                   {school.status}
@@ -174,7 +178,7 @@ export default function PetaKomponen({ schoolId, schools }: Props) {
 
                 {school.status !== 'komitmen' && (
                   <div className="mt-4 border-t pt-3">
-                     <a href="/komitmen" className="block text-xs bg-orange-500 text-white px-3 py-2 rounded-md hover:bg-orange-600 transition">
+                     <a href="/komitmen" className="block text-xs bg-primary text-white px-3 py-2 rounded-md hover:bg-primary transition">
                        Sahkan Komitmen
                      </a>
                   </div>

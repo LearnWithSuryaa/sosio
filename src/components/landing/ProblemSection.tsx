@@ -10,7 +10,7 @@ const problems = [
     description:
       "Penggunaan smartphone di lingkungan sekolah sering kali tidak terkontrol. Alih-alih membantu proses belajar, gadget justru membuat siswa kehilangan fokus karena lebih tertarik pada media sosial, game, dan hiburan digital lainnya. Kondisi ini berdampak langsung pada konsentrasi dan kualitas pembelajaran di kelas.",
     stat: "70%",
-    color: "#f97316",
+    color: "#2E7D32",
     size: "large",
   },
   {
@@ -68,13 +68,13 @@ const cardVariants = {
 
 export function ProblemSection() {
   return (
-    <section className="relative overflow-hidden py-28 px-6 bg-[#050505]">
+    <section className="relative overflow-hidden py-28 px-6 bg-surface">
       {/* Lightweight texture */}
-      <div className="absolute inset-0 bg-white/[0.01] mix-blend-overlay" />
+      <div className="absolute inset-0 bg-surface/50 mix-blend-overlay" />
 
       {/* Optimized blur orbs for Vite-style mesh */}
-      <div className="absolute top-[10%] left-[10%] w-[400px] h-[400px] rounded-full bg-orange-500/15 blur-[120px] pointer-events-none mix-blend-screen" />
-      <div className="absolute bottom-[10%] right-[10%] w-[500px] h-[500px] rounded-full bg-rose-500/10 blur-[130px] pointer-events-none mix-blend-screen" />
+      <div className="absolute top-[10%] left-[10%] w-100 h-100 rounded-full bg-primary-soft/50 blur-[120px] pointer-events-none mix-blend-multiply transform-gpu" />
+      <div className="absolute bottom-[10%] right-[10%] w-125 h-125 rounded-full bg-surface-alt/50 blur-[130px] pointer-events-none mix-blend-multiply transform-gpu" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Header */}
@@ -85,19 +85,19 @@ export function ProblemSection() {
           transition={{ duration: 0.5 }}
           className="max-w-3xl mb-16"
         >
-          <span className="inline-block text-xs uppercase tracking-[0.25em] text-orange-400 mb-5">
+          <span className="inline-block text-xs uppercase tracking-[0.25em] text-info mb-5">
             Problem Mapping
           </span>
 
-          <h2 className="text-4xl md:text-6xl font-black text-white leading-[0.95] tracking-tight">
+          <h2 className="text-4xl md:text-6xl font-black text-text-dark leading-[0.95] tracking-tight">
             Realita Digital
             <br />
-            <span className="bg-gradient-to-r from-orange-400 to-rose-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-primary to-primary bg-clip-text text-transparent">
               di Dunia Pendidikan
             </span>
           </h2>
 
-          <p className="mt-6 text-base md:text-lg text-white/50 leading-relaxed max-w-xl">
+          <p className="mt-6 text-base md:text-lg text-text-dark leading-relaxed max-w-xl">
             Transformasi digital menghadirkan peluang besar sekaligus tantangan
             yang membutuhkan literasi, pengawasan, dan kolaborasi yang lebih
             baik.
@@ -133,10 +133,6 @@ export function ProblemSection() {
               <motion.div
                 key={index}
                 variants={cardVariants}
-                whileHover={{
-                  y: -4,
-                  scale: 1.01,
-                }}
                 className={`
                   ${sizeClass}
                   group
@@ -144,12 +140,16 @@ export function ProblemSection() {
                   overflow-hidden
                   rounded-[28px]
                   border
-                  border-white/10
-                  bg-white/[0.04]
-                  backdrop-blur-sm
+                  border-slate-200
+                  bg-white
+                  shadow-sm
                   p-7
                   transform-gpu
-                  will-change-transform
+                  hover:-translate-y-1
+                  hover:scale-[1.01]
+                  hover:shadow-md
+                  transition-all
+                  duration-300
                 `}
               >
                 {/* Lightweight hover glow */}
@@ -182,16 +182,16 @@ export function ProblemSection() {
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-xl md:text-2xl font-bold text-white mb-3 leading-tight">
+                  <h3 className="text-xl md:text-2xl font-bold text-text-dark mb-3 leading-tight">
                     {item.title}
                   </h3>
 
-                  <p className="text-white/50 text-sm leading-relaxed flex-1">
+                  <p className="text-text-dark text-sm leading-relaxed flex-1">
                     {item.description}
                   </p>
 
                   {/* Progress bar */}
-                  <div className="mt-6 h-1.5 w-full rounded-full bg-white/5 overflow-hidden">
+                  <div className="mt-6 h-1.5 w-full rounded-full bg-surface overflow-hidden">
                     <div
                       className="h-full rounded-full"
                       style={{

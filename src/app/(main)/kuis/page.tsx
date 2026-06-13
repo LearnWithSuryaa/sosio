@@ -104,17 +104,17 @@ const COLOR_CONFIG: Record<string, any> = {
   },
   amber: {
     icon: Zap,
-    gradient: "from-amber-400 to-orange-500",
+    gradient: "from-amber-400 to-primary",
     softBg: "bg-amber-500/10",
     iconColor: "text-amber-400",
     badge: "bg-amber-500/10 text-amber-300 border border-amber-500/20",
   },
   orange: {
     icon: Zap,
-    gradient: "from-orange-400 to-red-500",
-    softBg: "bg-orange-500/10",
-    iconColor: "text-orange-400",
-    badge: "bg-orange-500/10 text-orange-300 border border-orange-500/20",
+    gradient: "from-info to-red-500",
+    softBg: "bg-primary/10",
+    iconColor: "text-info",
+    badge: "bg-primary/10 text-info-light border border-primary/20",
   },
   red: {
     icon: AlertTriangle,
@@ -152,14 +152,14 @@ function Background() {
         className="absolute -top-32 right-0 w-[640px] h-[640px] rounded-full"
         style={{
           background:
-            "radial-gradient(circle, rgba(249,115,22,0.09) 0%, transparent 65%)",
+            "radial-gradient(circle, rgba(46, 125, 50,0.09) 0%, transparent 65%)",
         }}
       />
       <div
         className="absolute bottom-0 left-0 w-[480px] h-[480px] rounded-full"
         style={{
           background:
-            "radial-gradient(circle, rgba(251,146,60,0.05) 0%, transparent 65%)",
+            "radial-gradient(circle, rgba(30, 136, 229,0.05) 0%, transparent 65%)",
         }}
       />
       {/* Subtle grid */}
@@ -167,7 +167,7 @@ function Background() {
         className="absolute inset-0 opacity-[0.025]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+            "linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)",
           backgroundSize: "48px 48px",
         }}
       />
@@ -188,22 +188,22 @@ function PageHeader() {
       <div
         className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6"
         style={{
-          background: "rgba(249,115,22,0.1)",
-          border: "1px solid rgba(249,115,22,0.2)",
+          background: "rgba(46, 125, 50,0.1)",
+          border: "1px solid rgba(46, 125, 50,0.2)",
         }}
       >
-        <Lightbulb className="w-4 h-4 text-orange-400" />
-        <span className="text-[11px] font-bold text-orange-400 uppercase tracking-widest">
+        <Lightbulb className="w-4 h-4 text-info" />
+        <span className="text-[11px] font-bold text-info uppercase tracking-widest">
           Refleksi Digital Diri
         </span>
       </div>
       <h1
-        className="text-3xl font-black text-white mb-3 tracking-tight leading-tight"
+        className="text-3xl font-black text-text-dark mb-3 tracking-tight leading-tight"
         style={{ fontFamily: "'Syne', sans-serif" }}
       >
         Kenali Dirimu di Era Digital
       </h1>
-      <p className="text-white/40 text-sm max-w-xs mx-auto leading-relaxed">
+      <p className="text-text-dark/60 text-sm max-w-xs mx-auto leading-relaxed">
         Jawab jujur — hasilnya hanya untukmu dan data riset nasional.
       </p>
     </motion.div>
@@ -227,14 +227,14 @@ function StepIndicator({ step, total }: { step: number; total: number }) {
           <div key={i} className="flex items-center gap-2">
             <div
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all duration-300
-              ${active ? "bg-orange-500 text-white" : done ? "bg-orange-500/20 text-orange-400" : "bg-white/5 text-white/20"}`}
+              ${active ? "bg-primary text-white" : done ? "bg-primary/20 text-info" : "bg-black/5 text-text-dark/50"}`}
             >
               <Icon className="w-3 h-3" />
               <span>{s.label}</span>
             </div>
             {i < steps.length - 1 && (
               <ChevronRight
-                className={`w-3 h-3 ${done ? "text-orange-500/50" : "text-white/10"}`}
+                className={`w-3 h-3 ${done ? "text-primary/50" : "text-white/10"}`}
               />
             )}
           </div>
@@ -259,8 +259,8 @@ function Card({
       id={id}
       className={`rounded-3xl overflow-hidden ${className}`}
       style={{
-        background: "rgba(255,255,255,0.035)",
-        border: "1px solid rgba(255,255,255,0.08)",
+        background: "#ffffff",
+        border: "1px solid rgba(0,0,0,0.08)",
       }}
     >
       {children}
@@ -291,13 +291,13 @@ function InputField({
     <div>
       <label
         htmlFor={id}
-        className="block text-xs font-bold text-white/50 mb-2 ml-1 uppercase tracking-widest"
+        className="block text-xs font-bold text-text-dark/70 mb-2 ml-1 uppercase tracking-widest"
       >
         {label}
       </label>
       <div className="relative">
         <Icon
-          className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-200 ${focused ? "text-orange-400" : "text-white/20"}`}
+          className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-200 ${focused ? "text-info" : "text-text-dark/50"}`}
         />
         <input
           id={id}
@@ -307,17 +307,17 @@ function InputField({
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className="w-full pl-11 pr-4 py-3.5 rounded-2xl outline-none transition-all duration-200 font-medium text-sm text-white placeholder:text-white/20"
+          className="w-full pl-11 pr-4 py-3.5 rounded-2xl outline-none transition-all duration-200 font-medium text-sm text-text-dark placeholder:text-text-dark/50"
           style={{
-            background: focused
-              ? "rgba(249,115,22,0.08)"
-              : "rgba(255,255,255,0.05)",
-            border: `1px solid ${focused ? "rgba(249,115,22,0.4)" : "rgba(255,255,255,0.08)"}`,
-            boxShadow: focused ? "0 0 0 3px rgba(249,115,22,0.08)" : "none",
+            background: focused ? "rgba(46, 125, 50,0.08)" : "#ffffff",
+            border: `1px solid ${focused ? "rgba(46, 125, 50,0.4)" : "rgba(0,0,0,0.08)"}`,
+            boxShadow: focused ? "0 0 0 3px rgba(46, 125, 50,0.08)" : "none",
           }}
         />
       </div>
-      {hint && <p className="text-[11px] text-white/25 mt-1.5 ml-1">{hint}</p>}
+      {hint && (
+        <p className="text-[11px] text-text-dark/50 mt-1.5 ml-1">{hint}</p>
+      )}
     </div>
   );
 }
@@ -462,7 +462,7 @@ function KuisForm() {
   const stepIdx = result ? 2 : isStarted ? 1 : 0;
 
   return (
-    <div className="min-h-screen bg-[#070707] flex flex-col items-center pt-24 pb-20 px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-surface flex flex-col items-center pt-24 pb-20 px-4 relative overflow-hidden">
       <Background />
 
       <div className="w-full max-w-xl relative z-10">
@@ -474,15 +474,15 @@ function KuisForm() {
             <motion.div key="loading-init" {...slideUp}>
               <Card className="p-16 text-center flex flex-col items-center gap-4">
                 <div className="relative">
-                  <div className="w-14 h-14 rounded-2xl bg-orange-500/10 flex items-center justify-center">
-                    <Loader2 className="w-7 h-7 text-orange-400 animate-spin" />
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <Loader2 className="w-7 h-7 text-info animate-spin" />
                   </div>
                 </div>
                 <div>
-                  <p className="text-white/60 font-semibold text-sm">
+                  <p className="text-text-dark/80 font-semibold text-sm">
                     Memuat pertanyaan kuis...
                   </p>
-                  <p className="text-white/20 text-xs mt-1">Sebentar ya</p>
+                  <p className="text-text-dark/50 text-xs mt-1">Sebentar ya</p>
                 </div>
               </Card>
             </motion.div>
@@ -495,15 +495,15 @@ function KuisForm() {
                 <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
                   <AlertTriangle className="w-8 h-8 text-red-400" />
                 </div>
-                <h2 className="text-xl font-black text-white mb-2">
+                <h2 className="text-xl font-black text-text-dark mb-2">
                   Gagal Memuat
                 </h2>
-                <p className="text-white/40 text-sm mb-6 max-w-xs mx-auto">
+                <p className="text-text-dark/60 text-sm mb-6 max-w-xs mx-auto">
                   {loadError}
                 </p>
                 <button
                   onClick={() => window.location.reload()}
-                  className="px-6 py-3 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-2xl transition-colors text-sm"
+                  className="px-6 py-3 bg-primary hover:bg-info text-white font-bold rounded-2xl transition-colors text-sm"
                 >
                   Coba Lagi
                 </button>
@@ -520,10 +520,10 @@ function KuisForm() {
                     <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
                       <AlertTriangle className="w-8 h-8 text-red-400" />
                     </div>
-                    <h2 className="text-xl font-black text-white mb-2">
+                    <h2 className="text-xl font-black text-text-dark mb-2">
                       Gagal Menyimpan
                     </h2>
-                    <p className="text-white/40 text-sm max-w-xs mx-auto mb-6">
+                    <p className="text-text-dark/60 text-sm max-w-xs mx-auto mb-6">
                       {submitError}
                     </p>
                     <button
@@ -531,7 +531,7 @@ function KuisForm() {
                         setSubmitError(null);
                         finishQuiz(answers);
                       }}
-                      className="px-6 py-3 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-2xl transition-colors text-sm"
+                      className="px-6 py-3 bg-primary hover:bg-info text-white font-bold rounded-2xl transition-colors text-sm"
                     >
                       Coba Lagi
                     </button>
@@ -541,25 +541,25 @@ function KuisForm() {
                     {/* Animated analyzing indicator */}
                     <div className="relative w-20 h-20">
                       <div
-                        className="absolute inset-0 rounded-full bg-orange-500/10 animate-ping"
+                        className="absolute inset-0 rounded-full bg-primary/10 animate-ping"
                         style={{ animationDuration: "1.5s" }}
                       />
                       <div
-                        className="absolute inset-0 rounded-full bg-orange-500/5 animate-ping"
+                        className="absolute inset-0 rounded-full bg-primary/5 animate-ping"
                         style={{
                           animationDuration: "2s",
                           animationDelay: "0.3s",
                         }}
                       />
-                      <div className="relative w-20 h-20 rounded-full bg-orange-500/15 flex items-center justify-center">
-                        <Flame className="w-9 h-9 text-orange-400 animate-pulse" />
+                      <div className="relative w-20 h-20 rounded-full bg-primary/15 flex items-center justify-center">
+                        <Flame className="w-9 h-9 text-info animate-pulse" />
                       </div>
                     </div>
                     <div>
-                      <p className="text-white/70 font-bold text-base">
+                      <p className="text-text-dark/80 font-bold text-base">
                         Menganalisis profil digital Anda...
                       </p>
-                      <p className="text-white/25 text-xs mt-1 text-center">
+                      <p className="text-text-dark/50 text-xs mt-1 text-center">
                         Memverifikasi keamanan · Harap tunggu
                       </p>
                     </div>
@@ -568,7 +568,7 @@ function KuisForm() {
                       {[0, 1, 2].map((i) => (
                         <div
                           key={i}
-                          className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-bounce"
+                          className="w-1.5 h-1.5 rounded-full bg-info animate-bounce"
                           style={{ animationDelay: `${i * 0.15}s` }}
                         />
                       ))}
@@ -613,19 +613,19 @@ function KuisForm() {
                       </span>
 
                       <h2
-                        className="text-2xl font-black text-white mb-3 tracking-tight"
+                        className="text-2xl font-black text-text-dark mb-3 tracking-tight"
                         style={{ fontFamily: "'Syne', sans-serif" }}
                       >
                         {result.category}
                       </h2>
 
-                      <p className="text-white/45 text-sm max-w-sm mx-auto leading-relaxed mb-5">
+                      <p className="text-text-dark/70 text-sm max-w-sm mx-auto leading-relaxed mb-5">
                         &ldquo;{result.description}&rdquo;
                       </p>
 
                       {result.motivation_message && (
-                        <div className="inline-block bg-orange-500/10 border border-orange-500/20 rounded-2xl px-5 py-3 mb-6">
-                          <p className="text-orange-300 text-sm font-semibold leading-relaxed">
+                        <div className="inline-block bg-primary/10 border border-primary/20 rounded-2xl px-5 py-3 mb-6">
+                          <p className="text-info-light text-sm font-semibold leading-relaxed">
                             {result.motivation_message}
                           </p>
                         </div>
@@ -633,13 +633,13 @@ function KuisForm() {
 
                       {/* Score meter */}
                       <div className="max-w-[280px] mx-auto">
-                        <div className="flex justify-between text-[10px] font-bold text-white/25 mb-2 uppercase tracking-widest">
+                        <div className="flex justify-between text-[10px] font-bold text-text-dark/50 mb-2 uppercase tracking-widest">
                           <span>Kritis</span>
                           <span>Bijak</span>
                         </div>
                         <div
                           className="w-full h-2 rounded-full overflow-hidden"
-                          style={{ background: "rgba(255,255,255,0.06)" }}
+                          style={{ background: "rgba(0,0,0,0.06)" }}
                         >
                           <motion.div
                             className={`h-full rounded-full bg-gradient-to-r ${cfg.gradient}`}
@@ -660,8 +660,8 @@ function KuisForm() {
 
                   {/* Action steps */}
                   <Card className="p-6">
-                    <h3 className="text-sm font-black text-white mb-4 flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-orange-400" />
+                    <h3 className="text-sm font-black text-text-dark mb-4 flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-info" />
                       Langkah Aksi
                     </h3>
                     <div className="space-y-3">
@@ -677,10 +677,10 @@ function KuisForm() {
                           transition={{ delay: 0.6 + i * 0.1 }}
                           className="flex items-start gap-3"
                         >
-                          <span className="w-5 h-5 rounded-full bg-orange-500/15 text-orange-400 font-black text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="w-5 h-5 rounded-full bg-primary/15 text-info font-black text-[10px] flex items-center justify-center shrink-0 mt-0.5">
                             {i + 1}
                           </span>
-                          <p className="text-sm text-white/50 leading-relaxed">
+                          <p className="text-sm text-text-dark/70 leading-relaxed">
                             {tip}
                           </p>
                         </motion.div>
@@ -691,7 +691,7 @@ function KuisForm() {
                   {/* CTA */}
                   <button
                     onClick={() => (window.location.href = "/")}
-                    className="w-full py-4 rounded-2xl text-white/50 text-sm font-bold border border-white/[0.06] hover:bg-white/[0.04] hover:text-white/70 transition-all"
+                    className="w-full py-4 rounded-2xl text-text-dark/70 text-sm font-bold border border-black/[0.06] hover:bg-black/[0.04] hover:text-text-dark/80 transition-all"
                   >
                     Kembali ke Beranda
                   </button>
@@ -710,16 +710,16 @@ function KuisForm() {
                   <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
                     <CheckCircle2 className="w-8 h-8 text-emerald-400" />
                   </div>
-                  <h2 className="text-2xl font-black text-white mb-3">
+                  <h2 className="text-2xl font-black text-text-dark mb-3">
                     Sudah Mengisi
                   </h2>
-                  <p className="text-white/40 text-sm max-w-xs mx-auto leading-relaxed mb-8">
+                  <p className="text-text-dark/60 text-sm max-w-xs mx-auto leading-relaxed mb-8">
                     Setiap perangkat hanya dapat mengisi kuis satu kali untuk
                     menjaga integritas data riset nasional.
                   </p>
                   <button
                     onClick={() => (window.location.href = "/")}
-                    className="w-full py-3.5 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-2xl transition-colors text-sm"
+                    className="w-full py-3.5 bg-primary hover:bg-info text-white font-bold rounded-2xl transition-colors text-sm"
                   >
                     Kembali ke Beranda
                   </button>
@@ -740,12 +740,12 @@ function KuisForm() {
                   {/* Card header */}
                   <div className="mb-7">
                     <h2
-                      className="text-xl font-black text-white mb-1.5"
+                      className="text-xl font-black text-text-dark mb-1.5"
                       style={{ fontFamily: "'Syne', sans-serif" }}
                     >
                       Siapa Anda hari ini?
                     </h2>
-                    <p className="text-white/35 text-sm">
+                    <p className="text-text-dark/60 text-sm">
                       Isi data singkat untuk memulai refleksi.
                     </p>
                   </div>
@@ -762,7 +762,7 @@ function KuisForm() {
                     />
 
                     <div id="input-school">
-                      <label className="block text-xs font-bold text-white/50 mb-2 ml-1 uppercase tracking-widest">
+                      <label className="block text-xs font-bold text-text-dark/70 mb-2 ml-1 uppercase tracking-widest">
                         Asal Sekolah
                       </label>
                       <SchoolAutocomplete
@@ -779,7 +779,7 @@ function KuisForm() {
                           {schoolError}
                         </p>
                       ) : (
-                        <p className="text-[11px] text-white/25 mt-1.5 ml-1">
+                        <p className="text-[11px] text-text-dark/50 mt-1.5 ml-1">
                           Pilih dari daftar yang muncul.
                         </p>
                       )}
@@ -798,20 +798,20 @@ function KuisForm() {
                       style={{
                         background:
                           userName.trim() && schoolId
-                            ? "linear-gradient(135deg, #F97316, #EA580C)"
-                            : "rgba(255,255,255,0.05)",
+                            ? "linear-gradient(135deg, #2E7D32, #66BB6A)"
+                            : "#f1f5f9",
                         boxShadow:
                           userName.trim() && schoolId
-                            ? "0 8px 24px rgba(249,115,22,0.3)"
+                            ? "0 8px 24px rgba(46, 125, 50,0.3)"
                             : "none",
                         border:
                           userName.trim() && schoolId
                             ? "none"
-                            : "1px solid rgba(255,255,255,0.08)",
+                            : "1px solid rgba(0,0,0,0.08)",
                         color:
                           userName.trim() && schoolId
                             ? "white"
-                            : "rgba(255,255,255,0.2)",
+                            : "rgba(55, 71, 79, 0.4)",
                       }}
                     >
                       {/* Shimmer on active */}
@@ -838,7 +838,7 @@ function KuisForm() {
                 </Card>
 
                 {/* Trust signal */}
-                <p className="text-center text-[11px] text-white/20 mt-5 flex items-center justify-center gap-1.5">
+                <p className="text-center text-[11px] text-text-dark/50 mt-5 flex items-center justify-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   Data dilindungi dan tidak diperjualbelikan
                 </p>
@@ -858,10 +858,10 @@ function KuisForm() {
                 {/* Progress bar section */}
                 <div className="mb-6" id="quiz-progress">
                   <div className="flex items-center justify-between mb-2.5">
-                    <span className="text-[11px] font-bold text-orange-400 bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-full uppercase tracking-widest">
+                    <span className="text-[11px] font-bold text-info bg-primary/10 border border-primary/20 px-3 py-1 rounded-full uppercase tracking-widest">
                       {currentQuestion + 1} / {questions.length}
                     </span>
-                    <span className="text-[11px] font-bold text-white/25 tabular-nums">
+                    <span className="text-[11px] font-bold text-text-dark/50 tabular-nums">
                       {Math.round(progress)}% selesai
                     </span>
                   </div>
@@ -876,8 +876,8 @@ function KuisForm() {
                             i < currentQuestion
                               ? "#F97316"
                               : i === currentQuestion
-                                ? "rgba(249,115,22,0.4)"
-                                : "rgba(255,255,255,0.06)",
+                                ? "rgba(46, 125, 50,0.4)"
+                                : "rgba(0,0,0,0.06)",
                         }}
                         animate={
                           i === currentQuestion
@@ -893,11 +893,11 @@ function KuisForm() {
                 {/* Question card */}
                 <Card id="quiz-question-card" className="p-8">
                   {/* Question number eyebrow */}
-                  <p className="text-[11px] font-bold text-white/25 uppercase tracking-widest mb-4">
+                  <p className="text-[11px] font-bold text-text-dark/50 uppercase tracking-widest mb-4">
                     Pertanyaan {currentQuestion + 1}
                   </p>
                   <h2
-                    className="text-xl font-black text-white leading-snug mb-7"
+                    className="text-xl font-black text-text-dark leading-snug mb-7"
                     style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     {questions[currentQuestion].question_text}
@@ -928,14 +928,14 @@ function KuisForm() {
                             className="w-full text-left flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-200 group"
                             style={{
                               background: isSelected
-                                ? "rgba(249,115,22,0.12)"
-                                : "rgba(255,255,255,0.04)",
+                                ? "rgba(46, 125, 50,0.12)"
+                                : "#f8fafc",
                               border: isSelected
-                                ? "1px solid rgba(249,115,22,0.4)"
-                                : "1px solid rgba(255,255,255,0.07)",
+                                ? "1px solid rgba(46, 125, 50,0.4)"
+                                : "1px solid rgba(0,0,0,0.08)",
                               opacity: isDimmed ? 0.35 : 1,
                               boxShadow: isSelected
-                                ? "0 0 0 3px rgba(249,115,22,0.08)"
+                                ? "0 0 0 3px rgba(46, 125, 50,0.08)"
                                 : "none",
                             }}
                           >
@@ -944,8 +944,8 @@ function KuisForm() {
                               className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200
                           ${
                             isSelected
-                              ? "border-orange-500 bg-orange-500"
-                              : "border-white/20 group-hover:border-orange-400/50"
+                              ? "border-primary bg-primary"
+                              : "border-black/20 group-hover:border-info/50"
                           }`}
                             >
                               {isSelected && (
@@ -954,7 +954,7 @@ function KuisForm() {
                             </div>
                             <span
                               className={`text-sm leading-snug font-medium transition-colors duration-200
-                          ${isSelected ? "text-orange-200" : "text-white/65 group-hover:text-white/85"}`}
+                          ${isSelected ? "text-primary-soft" : "text-white/65 group-hover:text-white/85"}`}
                             >
                               {opt.option_text}
                             </span>
@@ -966,7 +966,7 @@ function KuisForm() {
                 </Card>
 
                 {/* Helper text */}
-                <p className="text-center text-[11px] text-white/20 mt-5">
+                <p className="text-center text-[11px] text-text-dark/50 mt-5">
                   Pilih jawaban yang paling menggambarkan dirimu sehari-hari
                 </p>
               </motion.div>
@@ -988,8 +988,8 @@ export default function KuisPage() {
     >
       <Suspense
         fallback={
-          <div className="min-h-screen flex items-center justify-center bg-[#070707]">
-            <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+          <div className="min-h-screen flex items-center justify-center bg-surface">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
         }
       >

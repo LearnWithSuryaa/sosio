@@ -33,7 +33,7 @@ export default function StudiKasusDetail({ params }: { params: Promise<{ id: str
     return (
       <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
         <div className="animate-pulse flex flex-col items-center">
-           <BookOpen className="w-12 h-12 text-orange-400 mb-4" />
+           <BookOpen className="w-12 h-12 text-info mb-4" />
            <p className="text-gray-500 font-medium">Memuat Studi Kasus...</p>
         </div>
       </div>
@@ -46,7 +46,7 @@ export default function StudiKasusDetail({ params }: { params: Promise<{ id: str
          <BookOpen className="w-16 h-16 text-gray-300 mb-4" />
          <h2 className="text-2xl font-bold text-gray-800 mb-2">Studi Kasus Tidak Ditemukan</h2>
          <p className="text-gray-500 mb-6">Mungkin data telah dihapus atau tautan tidak valid.</p>
-         <Link href="/studi-kasus" className="px-6 py-3 bg-orange-500 text-white rounded-xl font-bold hover:bg-orange-600 transition-colors">
+         <Link href="/studi-kasus" className="px-6 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary transition-colors">
            Kembali ke Daftar
          </Link>
       </div>
@@ -55,7 +55,7 @@ export default function StudiKasusDetail({ params }: { params: Promise<{ id: str
 
   const getIconAndColor = (category: string) => {
     switch (category) {
-      case "regulasi": return { icon: Lock, color: "bg-orange-50 text-orange-600 border-orange-200" };
+      case "regulasi": return { icon: Lock, color: "bg-surface-alt text-primary border-primary-soft" };
       case "pembelajaran": return { icon: Zap, color: "bg-blue-50 text-blue-600 border-blue-200" };
       case "literasi": return { icon: ShieldCheck, color: "bg-emerald-50 text-emerald-600 border-emerald-200" };
       case "inovasi": 
@@ -67,10 +67,10 @@ export default function StudiKasusDetail({ params }: { params: Promise<{ id: str
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] pt-28 pb-20 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-50 rounded-full blur-3xl opacity-60 pointer-events-none -z-10" />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-surface-alt rounded-full blur-3xl opacity-60 pointer-events-none -z-10" />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
-        <Link href="/studi-kasus" className="inline-flex items-center gap-2 text-gray-500 hover:text-orange-600 font-semibold mb-8 transition-colors bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-100">
+        <Link href="/studi-kasus" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary font-semibold mb-8 transition-colors bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-100">
           <ArrowLeft className="w-4 h-4" /> Kembali ke Daftar Studi Kasus
         </Link>
         
@@ -92,7 +92,7 @@ export default function StudiKasusDetail({ params }: { params: Promise<{ id: str
             
             <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600">
                <div className="flex items-center gap-2 font-bold bg-white px-4 py-2 rounded-xl border border-gray-100 shadow-sm">
-                 <School className="w-4 h-4 text-orange-500" />
+                 <School className="w-4 h-4 text-primary" />
                  {(data.schools as any)?.nama_sekolah || "Sekolah Tidak Diketahui"}
                </div>
                <div className="flex items-center gap-2 font-semibold">

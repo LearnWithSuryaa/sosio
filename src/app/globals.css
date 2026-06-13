@@ -6,20 +6,23 @@
    ============================================================ */
 
 @theme {
-  /* Brand Colors - Warm & Friendly */
-  --color-brand-primary: #F97316; /* Orange-500 */
-  --color-brand-secondary: #F43F5E; /* Rose-500 */
-  --color-brand-accent: #FBBF24; /* Amber-400 */
-  --color-brand-light: #FFF7ED; /* Orange-50 */
+  /* New Color Palette */
+  --color-primary: #2E7D32;
+  --color-primary-light: #66BB6A;
+  --color-primary-soft: #A5D6A7;
   
-  /* Neutral Palette */
-  --color-foreground: #1F2937; /* Gray-800 */
-  --color-foreground-muted: #4B5563; /* Gray-600 */
-  --color-background: #FAFAFA; /* Gray-50 */
+  --color-info: #1E88E5;
+  --color-info-light: #64B5F6;
   
-  /* Foreground Colors for specific contrasts */
-  --color-surface: #FFFFFF;
-  --color-surface-hover: #F3F4F6; /* Gray-100 */
+  --color-warning: #FFC107;
+  --color-accent: #FFB74D;
+  
+  --color-surface: #F5F7FA;
+  --color-surface-alt: #F1F8E9;
+  
+  --color-text-dark: #37474F;
+
+  --color-button-nav: #80c4ed;
 
   /* Fonts */
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
@@ -47,7 +50,7 @@
   }
 
   ::selection {
-    background: rgba(249, 115, 22, 0.2); /* Orange-500 with opacity */
+    background: rgba(46, 125, 50, 0.2); /* Orange-500 with opacity */
     color: #C2410C; /* Orange-700 */
   }
 
@@ -107,11 +110,11 @@
   .btn-pill-primary {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, #fb923c, #fb7185); /* Soft Orange to Soft Rose */
+    background: linear-gradient(135deg, #64B5F6, #fb7185); /* Soft Orange to Soft Rose */
     color: white;
     font-weight: 600;
     border-radius: 9999px; /* Pill shape */
-    box-shadow: 0 4px 14px rgba(251, 146, 60, 0.25);
+    box-shadow: 0 4px 14px rgba(30, 136, 229, 0.25);
     transition: all 0.3s ease;
     padding: 0.75rem 1.5rem;
     display: inline-flex;
@@ -122,7 +125,7 @@
 
   .btn-pill-primary:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(251, 146, 60, 0.35);
+    box-shadow: 0 6px 20px rgba(30, 136, 229, 0.35);
   }
   
   .btn-pill-primary:active {
@@ -133,8 +136,8 @@
     position: relative;
     overflow: hidden;
     background: white;
-    border: 1.5px solid #fed7aa; /* Orange-200 */
-    color: #ea580c; /* Orange-600 */
+    border: 1.5px solid #A5D6A7; /* Orange-200 */
+    color: #1E88E5; /* Orange-600 */
     font-weight: 600;
     border-radius: 9999px;
     transition: all 0.3s ease;
@@ -145,16 +148,16 @@
   }
 
   .btn-pill-outline:hover {
-    background: #fff7ed; /* Orange-50 */
-    border-color: #fb923c; /* Orange-400 */
+    background: #F1F8E9; /* Orange-50 */
+    border-color: #64B5F6; /* Orange-400 */
     color: #c2410c; /* Orange-700 */
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(251, 146, 60, 0.1);
+    box-shadow: 0 4px 12px rgba(30, 136, 229, 0.1);
   }
 
   /* ---- Form Elements ---- */
   .input-field {
-    @apply w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all;
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-info focus:ring-2 focus:ring-primary-soft outline-none transition-all;
   }
 
   .input-error {
@@ -186,11 +189,11 @@
   }
 
   .tile-radio:hover {
-    @apply border-orange-200 bg-orange-50/50 -translate-y-0.5 shadow-md shadow-orange-500/5;
+    @apply border-primary-soft bg-surface-alt/50 -translate-y-0.5 shadow-md shadow-primary/5;
   }
 
   .tile-radio.selected {
-    @apply border-orange-500 bg-orange-50 ring-4 ring-orange-500/10 shadow-lg shadow-orange-500/10 scale-[1.02];
+    @apply border-primary bg-surface-alt ring-4 ring-primary/10 shadow-lg shadow-primary/10 scale-[1.02];
   }
 
   /* ---- Form Input — Consistent across all feature pages ---- */
@@ -245,7 +248,7 @@
 }
 
 .gesamega-tour-theme .driver-popover-title {
-  color: #fb923c !important; /* orange-400 */
+  color: #64B5F6 !important; /* orange-400 */
   font-weight: 900 !important;
   font-size: 1.1rem !important;
   text-transform: uppercase !important;
@@ -289,14 +292,14 @@
 }
 
 .gesamega-tour-theme .driver-popover-next-btn {
-  background: linear-gradient(135deg, #ea580c, #f97316) !important;
+  background: linear-gradient(135deg, #1E88E5, #2E7D32) !important;
   color: white !important;
-  box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3) !important;
+  box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3) !important;
 }
 
 .gesamega-tour-theme .driver-popover-next-btn:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 25px rgba(234, 88, 12, 0.5) !important;
+  box-shadow: 0 8px 25px rgba(46, 125, 50, 0.5) !important;
 }
 
 .gesamega-tour-theme .driver-popover-prev-btn {

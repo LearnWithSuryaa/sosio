@@ -61,7 +61,7 @@ function Background() {
         className="absolute -top-32 right-0 w-[640px] h-[640px] rounded-full"
         style={{
           background:
-            "radial-gradient(circle, rgba(249,115,22,0.09) 0%, transparent 65%)",
+            "radial-gradient(circle, rgba(46, 125, 50,0.09) 0%, transparent 65%)",
         }}
       />
       <div
@@ -75,7 +75,7 @@ function Background() {
         className="absolute inset-0 opacity-[0.025]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+            "linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)",
           backgroundSize: "48px 48px",
         }}
       />
@@ -98,8 +98,8 @@ function Card({
       id={id}
       className={`rounded-3xl overflow-hidden ${className}`}
       style={{
-        background: "rgba(255,255,255,0.035)",
-        border: "1px solid rgba(255,255,255,0.08)",
+        background: "#ffffff",
+        border: "1px solid rgba(0,0,0,0.08)",
       }}
     >
       {children}
@@ -126,10 +126,10 @@ function StepIndicator({ step }: { step: number }) {
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all duration-300
               ${
                 active
-                  ? "bg-orange-500 text-white"
+                  ? "bg-primary text-white"
                   : done
-                    ? "bg-orange-500/20 text-orange-400"
-                    : "bg-white/5 text-white/20"
+                    ? "bg-primary/20 text-info"
+                    : "bg-black/5 text-text-dark/50"
               }`}
             >
               {done ? (
@@ -141,7 +141,7 @@ function StepIndicator({ step }: { step: number }) {
             </div>
             {i < steps.length - 1 && (
               <ChevronRight
-                className={`w-3 h-3 ${done ? "text-orange-500/50" : "text-white/10"}`}
+                className={`w-3 h-3 ${done ? "text-primary/50" : "text-white/10"}`}
               />
             )}
           </div>
@@ -180,15 +180,15 @@ function InputField({
     <div>
       <label
         htmlFor={id || name}
-        className="block text-xs font-bold text-white/50 mb-2 ml-1 uppercase tracking-widest"
+        className="block text-xs font-bold text-text-dark/70 mb-2 ml-1 uppercase tracking-widest"
       >
         {label}{" "}
-        {required && <span className="text-orange-400 normal-case">*</span>}
+        {required && <span className="text-info normal-case">*</span>}
       </label>
       <div className="relative">
         <Icon
           className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-200 pointer-events-none
-            ${focused ? "text-orange-400" : error ? "text-red-400/60" : "text-white/20"}`}
+            ${focused ? "text-info" : error ? "text-red-400/60" : "text-text-dark/50"}`}
         />
         <input
           id={id || name}
@@ -199,21 +199,21 @@ function InputField({
           placeholder={placeholder}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className="w-full pl-11 pr-4 py-3.5 rounded-2xl outline-none transition-all duration-200 font-medium text-sm text-white placeholder:text-white/20"
+          className="w-full pl-11 pr-4 py-3.5 rounded-2xl outline-none transition-all duration-200 font-medium text-sm text-text-dark placeholder:text-text-dark/50"
           style={{
             background: focused
-              ? "rgba(249,115,22,0.08)"
+              ? "rgba(46, 125, 50,0.08)"
               : error
                 ? "rgba(239,68,68,0.06)"
-                : "rgba(255,255,255,0.05)",
+                : "#ffffff",
             border: `1px solid ${
               focused
-                ? "rgba(249,115,22,0.4)"
+                ? "rgba(46, 125, 50,0.4)"
                 : error
                   ? "rgba(239,68,68,0.3)"
-                  : "rgba(255,255,255,0.08)"
+                  : "rgba(0,0,0,0.08)"
             }`,
-            boxShadow: focused ? "0 0 0 3px rgba(249,115,22,0.08)" : "none",
+            boxShadow: focused ? "0 0 0 3px rgba(46, 125, 50,0.08)" : "none",
           }}
         />
       </div>
@@ -222,7 +222,7 @@ function InputField({
           <AlertTriangle className="w-3.5 h-3.5 shrink-0" /> {error}
         </p>
       ) : hint ? (
-        <p className="text-[11px] text-white/25 mt-1.5 ml-1">{hint}</p>
+        <p className="text-[11px] text-text-dark/50 mt-1.5 ml-1">{hint}</p>
       ) : null}
     </div>
   );
@@ -250,12 +250,12 @@ function AnswerOption({
       className="w-full text-left flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-200 group"
       style={{
         background: selected
-          ? "rgba(249,115,22,0.1)"
-          : "rgba(255,255,255,0.04)",
+          ? "rgba(46, 125, 50,0.1)"
+          : "#f8fafc",
         border: selected
-          ? "1px solid rgba(249,115,22,0.4)"
-          : "1px solid rgba(255,255,255,0.07)",
-        boxShadow: selected ? "0 0 0 3px rgba(249,115,22,0.08)" : "none",
+          ? "1px solid rgba(46, 125, 50,0.4)"
+          : "1px solid rgba(0,0,0,0.08)",
+        boxShadow: selected ? "0 0 0 3px rgba(46, 125, 50,0.08)" : "none",
       }}
     >
       {/* Radio dot */}
@@ -263,15 +263,15 @@ function AnswerOption({
         className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200
           ${
             selected
-              ? "border-orange-500 bg-orange-500"
-              : "border-white/20 group-hover:border-orange-400/50"
+              ? "border-primary bg-primary"
+              : "border-black/20 group-hover:border-info/50"
           }`}
       >
         {selected && <div className="w-2 h-2 rounded-full bg-white" />}
       </div>
       <span
         className={`text-sm leading-snug font-medium transition-colors duration-200
-          ${selected ? "text-orange-200" : "text-white/60 group-hover:text-white/80"}`}
+          ${selected ? "text-primary-soft" : "text-text-dark/80 group-hover:text-text-dark/90"}`}
       >
         {label}
       </span>
@@ -451,7 +451,7 @@ function SurveiForm() {
   // ── Success screen ──────────────────────────────────────────────────────────
   if (success) {
     return (
-      <div className="min-h-screen bg-[#070707] flex flex-col items-center justify-center px-4 relative overflow-hidden">
+      <div className="min-h-screen bg-surface flex flex-col items-center justify-center px-4 relative overflow-hidden">
         <Background />
         <motion.div {...fadeUp} className="relative z-10 text-center">
           {/* Pulsing ring */}
@@ -474,12 +474,12 @@ function SurveiForm() {
             </div>
           </div>
           <h2
-            className="text-4xl font-black text-white mb-4 tracking-tight"
+            className="text-4xl font-black text-text-dark mb-4 tracking-tight"
             style={{ fontFamily: "'Syne', sans-serif" }}
           >
             Berhasil Dikirim!
           </h2>
-          <p className="text-white/45 max-w-sm mx-auto text-sm leading-relaxed mb-3">
+          <p className="text-text-dark/70 max-w-sm mx-auto text-sm leading-relaxed mb-3">
             Tanggapan Anda telah tersimpan di pangkalan data nasional.
           </p>
           <div className="flex items-center justify-center gap-2 text-emerald-400/70">
@@ -496,26 +496,26 @@ function SurveiForm() {
   // ── Already completed ───────────────────────────────────────────────────────
   if (hasCompleted) {
     return (
-      <div className="min-h-screen bg-[#070707] flex flex-col items-center justify-center px-4 relative overflow-hidden">
+      <div className="min-h-screen bg-surface flex flex-col items-center justify-center px-4 relative overflow-hidden">
         <Background />
         <motion.div {...fadeUp} className="w-full max-w-md relative z-10">
           <Card className="p-12 text-center">
-            <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
-              <CheckCircle2 className="w-8 h-8 text-orange-400" />
+            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+              <CheckCircle2 className="w-8 h-8 text-info" />
             </div>
             <h2
-              className="text-2xl font-black text-white mb-3"
+              className="text-2xl font-black text-text-dark mb-3"
               style={{ fontFamily: "'Syne', sans-serif" }}
             >
               Sudah Mengisi
             </h2>
-            <p className="text-white/40 text-sm max-w-xs mx-auto leading-relaxed mb-8">
+            <p className="text-text-dark/60 text-sm max-w-xs mx-auto leading-relaxed mb-8">
               Perangkat ini telah mengirimkan tanggapan. Terima kasih atas
               partisipasi Anda dalam memajukan ekosistem digital nasional.
             </p>
             <button
               onClick={() => router.push("/")}
-              className="w-full py-3.5 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-2xl transition-colors text-sm"
+              className="w-full py-3.5 bg-primary hover:bg-info text-white font-bold rounded-2xl transition-colors text-sm"
             >
               Kembali ke Beranda
             </button>
@@ -527,7 +527,7 @@ function SurveiForm() {
 
   // ── Main wizard ─────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#070707] flex flex-col items-center pt-24 pb-20 px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-surface flex flex-col items-center pt-24 pb-20 px-4 relative overflow-hidden">
       <Background />
 
       <div className="w-full max-w-2xl relative z-10">
@@ -541,22 +541,22 @@ function SurveiForm() {
           <div
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6"
             style={{
-              background: "rgba(249,115,22,0.1)",
-              border: "1px solid rgba(249,115,22,0.2)",
+              background: "rgba(46, 125, 50,0.1)",
+              border: "1px solid rgba(46, 125, 50,0.2)",
             }}
           >
-            <Activity className="w-4 h-4 text-orange-400" />
-            <span className="text-[11px] font-bold text-orange-400 uppercase tracking-widest">
+            <Activity className="w-4 h-4 text-info" />
+            <span className="text-[11px] font-bold text-info uppercase tracking-widest">
               Evaluasi Diagnostik
             </span>
           </div>
           <h1
-            className="text-3xl font-black text-white mb-3 tracking-tight leading-tight"
+            className="text-3xl font-black text-text-dark mb-3 tracking-tight leading-tight"
             style={{ fontFamily: "'Syne', sans-serif" }}
           >
             Pemetaan Ekosistem Digital
           </h1>
-          <p className="text-white/40 text-sm max-w-xs mx-auto leading-relaxed">
+          <p className="text-text-dark/60 text-sm max-w-xs mx-auto leading-relaxed">
             Bantu kami memahami kesiapan digital instansi Anda dalam 3 langkah
             singkat.
           </p>
@@ -569,11 +569,11 @@ function SurveiForm() {
         <div
           id="tour-survei-progress"
           className="w-full h-1 rounded-full mb-8 overflow-hidden"
-          style={{ background: "rgba(255,255,255,0.06)" }}
+          style={{ background: "rgba(0,0,0,0.06)" }}
         >
           <motion.div
             className="h-full rounded-full"
-            style={{ background: "linear-gradient(90deg, #ea580c, #f97316)" }}
+            style={{ background: "linear-gradient(90deg, #1E88E5, #2E7D32)" }}
             animate={{ width: `${(currentStep / totalSteps) * 100}%` }}
             transition={{ duration: 0.5, ease: customEase }}
           />
@@ -611,12 +611,12 @@ function SurveiForm() {
               <Card className="p-8">
                 <div className="mb-7">
                   <h2
-                    className="text-xl font-black text-white mb-1.5"
+                    className="text-xl font-black text-text-dark mb-1.5"
                     style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Informasi Instansi
                   </h2>
-                  <p className="text-white/35 text-sm">
+                  <p className="text-text-dark/60 text-sm">
                     Pastikan data instansi Anda terisi dengan benar.
                   </p>
                 </div>
@@ -635,9 +635,9 @@ function SurveiForm() {
                   />
 
                   <div>
-                    <label className="block text-xs font-bold text-white/50 mb-2 ml-1 uppercase tracking-widest">
+                    <label className="block text-xs font-bold text-text-dark/70 mb-2 ml-1 uppercase tracking-widest">
                       Nama Instansi / Sekolah{" "}
-                      <span className="text-orange-400">*</span>
+                      <span className="text-info">*</span>
                     </label>
                     <SchoolAutocomplete
                       value={form.namaSekolah}
@@ -654,7 +654,7 @@ function SurveiForm() {
                         {errors.namaSekolah}
                       </p>
                     ) : (
-                      <p className="text-[11px] text-white/25 mt-1.5 ml-1">
+                      <p className="text-[11px] text-text-dark/50 mt-1.5 ml-1">
                         Pilih dari daftar yang muncul.
                       </p>
                     )}
@@ -674,7 +674,7 @@ function SurveiForm() {
                 </div>
               </Card>
 
-              <p className="text-center text-[11px] text-white/20 mt-5 flex items-center justify-center gap-1.5">
+              <p className="text-center text-[11px] text-text-dark/50 mt-5 flex items-center justify-center gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 Data dilindungi dan hanya digunakan untuk keperluan riset
               </p>
@@ -688,24 +688,24 @@ function SurveiForm() {
               <div
                 className="sticky top-0 z-20 py-4 mb-6"
                 style={{
-                  background: "#070707",
-                  borderBottom: "1px solid rgba(255,255,255,0.06)",
+                  background: "var(--color-surface)",
+                  borderBottom: "1px solid rgba(0,0,0,0.06)",
                 }}
               >
                 <div className="flex items-start justify-between">
                   <div>
                     <h2
-                      className="text-xl font-black text-white"
+                      className="text-xl font-black text-text-dark"
                       style={{ fontFamily: "'Syne', sans-serif" }}
                     >
                       Pertanyaan Inti
                     </h2>
-                    <p className="text-white/35 text-sm mt-0.5">
+                    <p className="text-text-dark/60 text-sm mt-0.5">
                       Pilih jawaban yang paling mewakili kondisi di lapangan.
                     </p>
                   </div>
                   {/* Mini progress counter */}
-                  <span className="text-[11px] font-bold text-orange-400 bg-orange-500/10 border border-orange-500/20 px-3 py-1.5 rounded-full shrink-0 mt-0.5">
+                  <span className="text-[11px] font-bold text-info bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-full shrink-0 mt-0.5">
                     {answeredCount}/{questions.length} dijawab
                   </span>
                 </div>
@@ -720,7 +720,7 @@ function SurveiForm() {
                         style={{
                           background: jawaban[q.id]
                             ? "#F97316"
-                            : "rgba(255,255,255,0.06)",
+                            : "rgba(0,0,0,0.06)",
                         }}
                       />
                     ))}
@@ -755,10 +755,10 @@ function SurveiForm() {
 
               {loadingQuestions ? (
                 <div className="flex flex-col items-center justify-center py-20 gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center">
-                    <Loader2 className="w-6 h-6 text-orange-400 animate-spin" />
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <Loader2 className="w-6 h-6 text-info animate-spin" />
                   </div>
-                  <p className="text-white/40 text-sm font-medium">
+                  <p className="text-text-dark/60 text-sm font-medium">
                     Memuat pertanyaan survei...
                   </p>
                 </div>
@@ -777,10 +777,10 @@ function SurveiForm() {
                       >
                         {/* Question header */}
                         <div className="flex items-start gap-3 mb-5">
-                          <span className="w-6 h-6 rounded-full bg-orange-500/15 text-orange-400 font-black text-[11px] flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="w-6 h-6 rounded-full bg-primary/15 text-info font-black text-[11px] flex items-center justify-center shrink-0 mt-0.5">
                             {index + 1}
                           </span>
-                          <h3 className="text-base font-black text-white leading-snug">
+                          <h3 className="text-base font-black text-text-dark leading-snug">
                             {q.question_text}
                           </h3>
                         </div>
@@ -827,12 +827,12 @@ function SurveiForm() {
                     </div>
                   </div>
                   <h2
-                    className="text-xl font-black text-white mb-2"
+                    className="text-xl font-black text-text-dark mb-2"
                     style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Siap Dikirim!
                   </h2>
-                  <p className="text-white/40 text-sm max-w-xs mx-auto leading-relaxed">
+                  <p className="text-text-dark/60 text-sm max-w-xs mx-auto leading-relaxed">
                     Semua jawaban Anda telah tercatat. Tekan tombol di bawah
                     untuk mengirimkan ke sistem.
                   </p>
@@ -859,14 +859,14 @@ function SurveiForm() {
                       className="flex items-center gap-3 px-4 py-3 rounded-xl"
                       style={{
                         background: "rgba(255,255,255,0.03)",
-                        border: "1px solid rgba(255,255,255,0.06)",
+                        border: "1px solid rgba(0,0,0,0.06)",
                       }}
                     >
-                      <Icon className="w-4 h-4 text-white/25 shrink-0" />
-                      <span className="text-xs text-white/35 min-w-[100px]">
+                      <Icon className="w-4 h-4 text-text-dark/50 shrink-0" />
+                      <span className="text-xs text-text-dark/60 min-w-[100px]">
                         {label}
                       </span>
-                      <span className="text-sm font-semibold text-white/70 truncate">
+                      <span className="text-sm font-semibold text-text-dark/80 truncate">
                         {value}
                       </span>
                     </div>
@@ -878,13 +878,13 @@ function SurveiForm() {
                   className="flex items-center gap-2.5 px-4 py-3 rounded-xl"
                   style={{
                     background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(0,0,0,0.06)",
                   }}
                 >
                   <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
                   <p className="text-[11px] text-white/30 leading-relaxed">
                     Formulir ini dilindungi oleh{" "}
-                    <span className="text-white/50 font-semibold">
+                    <span className="text-text-dark/70 font-semibold">
                       Google reCAPTCHA v3
                     </span>
                     . Verifikasi berjalan otomatis.
@@ -898,12 +898,12 @@ function SurveiForm() {
         {/* Navigation footer */}
         <div
           className="mt-8 pt-6 flex items-center justify-between"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}
         >
           <button
             type="button"
             onClick={goToPrevStep}
-            className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold border border-white/[0.07] text-white/40 hover:text-white/70 hover:bg-white/[0.04] transition-all
+            className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold border border-black/[0.07] text-text-dark/60 hover:text-text-dark/80 hover:bg-black/[0.04] transition-all
               ${currentStep === 1 ? "invisible" : "visible"}`}
           >
             <ChevronLeft className="w-4 h-4" /> Kembali
@@ -918,8 +918,8 @@ function SurveiForm() {
               whileTap={{ scale: 0.98 }}
               className="flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-black text-white disabled:opacity-40 disabled:cursor-not-allowed"
               style={{
-                background: "linear-gradient(135deg, #F97316, #EA580C)",
-                boxShadow: "0 8px 20px rgba(249,115,22,0.25)",
+                background: "linear-gradient(135deg, #2E7D32, #66BB6A)",
+                boxShadow: "0 8px 20px rgba(46, 125, 50,0.25)",
               }}
             >
               Selanjutnya <ChevronRight className="w-4 h-4" />
@@ -933,8 +933,8 @@ function SurveiForm() {
               whileTap={!loading ? { scale: 0.98 } : {}}
               className="flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-black text-white disabled:opacity-60 disabled:cursor-not-allowed overflow-hidden relative"
               style={{
-                background: "linear-gradient(135deg, #F97316, #EA580C)",
-                boxShadow: "0 8px 20px rgba(249,115,22,0.25)",
+                background: "linear-gradient(135deg, #2E7D32, #66BB6A)",
+                boxShadow: "0 8px 20px rgba(46, 125, 50,0.25)",
               }}
             >
               {loading ? (
@@ -951,7 +951,7 @@ function SurveiForm() {
         </div>
 
         {/* Step counter */}
-        <p className="text-center text-[11px] text-white/20 mt-5 uppercase tracking-widest font-bold">
+        <p className="text-center text-[11px] text-text-dark/50 mt-5 uppercase tracking-widest font-bold">
           Langkah {currentStep} dari {totalSteps}
         </p>
       </div>
@@ -990,8 +990,8 @@ export default function SurveiPage() {
     >
       <Suspense
         fallback={
-          <div className="min-h-screen flex items-center justify-center bg-[#070707]">
-            <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+          <div className="min-h-screen flex items-center justify-center bg-surface">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
         }
       >

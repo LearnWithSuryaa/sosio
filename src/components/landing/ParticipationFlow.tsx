@@ -6,46 +6,46 @@ import {
   ClipboardList,
   MapPin,
   Handshake,
-  TrendingUp,
+  QrCode,
   ArrowRight,
-  Zap,
+  Scan,
 } from "lucide-react";
 
 const steps = [
   {
-    icon: ClipboardList,
+    icon: MapPin,
     step: "01",
-    title: "Pelajari Panduan",
+    title: "Sekolah Terdaftar",
     description:
-      "Unduh dan pahami panduan serta template kebijakan digital untuk sekolah Anda.",
-    accent: "#38bdf8",
+      "Data sekolah seluruh Sidoarjo telah diverifikasi dan tersedia dalam sistem.",
+    accent: "#1E88E5",
     position: "top",
   },
   {
-    icon: MapPin,
+    icon: QrCode,
     step: "02",
-    title: "Terapkan Kebijakan",
+    title: "Dapatkan QR Code",
     description:
-      "Sesuaikan template dengan kondisi sekolah dan sosialisasikan kebijakan baru.",
-    accent: "#10b981",
+      "Admin akan menyediakan QR Code resmi secara unik untuk setiap sekolah.",
+    accent: "#FFB74D",
     position: "left",
   },
   {
-    icon: Handshake,
+    icon: ClipboardList,
     step: "03",
-    title: "Buat Komitmen",
+    title: "Isi Kuis & Survei",
     description:
-      "Sahkan kontrak digital dan dapatkan sertifikat resmi sebagai bukti dedikasi.",
-    accent: "#8b5cf6",
+      "Siswa dan guru memindai QR Code untuk mengisi kuis serta survei secara digital.",
+    accent: "#64B5F6",
     position: "right",
   },
   {
-    icon: TrendingUp,
+    icon: Handshake,
     step: "04",
-    title: "Lihat Dampak",
+    title: "Sahkan Komitmen",
     description:
-      "Pantau perkembangan gerakan nasional dan pelajari dari keberhasilan sekolah lain.",
-    accent: "#f59e0b",
+      "Sekolah yang berpartisipasi akan divalidasi dan disahkan dalam peta ekosistem.",
+    accent: "#2E7D32",
     position: "bottom",
   },
 ] as const;
@@ -98,16 +98,15 @@ function scaleIn(delay = 0) {
 function StepCard({ step }: { step: Step }) {
   return (
     <div
-      className="relative rounded-2xl border p-5 flex flex-col gap-3 overflow-hidden group transition-colors duration-300"
+      className="relative rounded-2xl border p-5 flex flex-col gap-3 overflow-hidden group transition-colors duration-300 bg-white shadow-sm hover:shadow-md"
       style={{
-        backgroundColor: "rgba(255,255,255,0.03)",
-        borderColor: "rgba(255,255,255,0.08)",
+        borderColor: "#e2e8f0",
       }}
     >
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
         style={{
-          background: `radial-gradient(circle at 30% 30%, ${step.accent}18 0%, transparent 65%)`,
+          background: `radial-gradient(circle at 30% 30%, ${step.accent}12 0%, transparent 65%)`,
         }}
       />
 
@@ -129,10 +128,10 @@ function StepCard({ step }: { step: Step }) {
         </div>
       </div>
 
-      <h3 className="relative z-10 font-bold text-white text-sm leading-snug">
+      <h3 className="relative z-10 font-bold text-text-dark text-sm leading-snug">
         {step.title}
       </h3>
-      <p className="relative z-10 text-white/40 text-xs leading-relaxed">
+      <p className="relative z-10 text-text-dark text-xs leading-relaxed">
         {step.description}
       </p>
 
@@ -148,38 +147,37 @@ function StepCard({ step }: { step: Step }) {
 function CenterHub() {
   return (
     <div
-      className="relative flex flex-col items-center justify-center text-center p-7 rounded-3xl border"
+      className="relative flex flex-col items-center justify-center text-center p-7 rounded-3xl border bg-white shadow-sm"
       style={{
-        backgroundColor: "rgba(249,115,22,0.06)",
-        borderColor: "rgba(249,115,22,0.20)",
-        boxShadow: "0 0 60px rgba(249,115,22,0.10)",
+        borderColor: "rgba(46, 125, 50,0.30)",
+        boxShadow: "0 0 60px rgba(46, 125, 50,0.15)",
       }}
     >
       <div
         className="absolute inset-0 rounded-3xl pointer-events-none"
         style={{
           background:
-            "radial-gradient(circle at 50% 50%, rgba(249,115,22,0.12) 0%, transparent 70%)",
+            "radial-gradient(circle at 50% 50%, rgba(46, 125, 50,0.12) 0%, transparent 70%)",
         }}
       />
 
       <div
         className="relative z-10 w-11 h-11 rounded-2xl flex items-center justify-center mb-4 border"
         style={{
-          backgroundColor: "rgba(249,115,22,0.15)",
-          borderColor: "rgba(249,115,22,0.35)",
+          backgroundColor: "rgba(46, 125, 50,0.15)",
+          borderColor: "rgba(46, 125, 50,0.35)",
         }}
       >
-        <Zap className="w-5 h-5 text-orange-400" />
+        <Scan className="w-5 h-5 text-info" />
       </div>
 
-      <p className="relative z-10 text-white/50 text-xs font-semibold uppercase tracking-widest mb-1">
-        Pusat Aksi
+      <p className="relative z-10 text-slate-500 text-xs font-semibold uppercase tracking-widest mb-1">
+        Akses Cepat
       </p>
-      <h3 className="relative z-10 font-extrabold text-white text-base leading-tight mb-4">
-        Jadikan sekolahmu
+      <h3 className="relative z-10 font-extrabold text-text-dark text-base leading-tight mb-4">
+        Pindai QR
         <br />
-        <span className="text-orange-400">bagian gerakan</span>
+        <span className="text-primary">untuk memulai</span>
       </h3>
     </div>
   );
@@ -189,18 +187,14 @@ function CenterHub() {
 export function ParticipationFlow() {
   return (
     <section
-      className="relative py-28 px-4 overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(to top right, #1a0a00, #0f1118 50%, #030712)",
-      }}
+      className="relative py-28 px-4 overflow-hidden bg-surface"
     >
       {/* Radial bg glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 50% 55%, rgba(249,115,22,0.06) 0%, transparent 60%)",
+            "radial-gradient(circle at 50% 55%, rgba(46, 125, 50,0.06) 0%, transparent 60%)",
         }}
       />
 
@@ -220,7 +214,7 @@ export function ParticipationFlow() {
                   cx={c * 24 + 10}
                   cy={r * 24 + 10}
                   r="1.5"
-                  fill="#f97316"
+                  fill="#2E7D32"
                 />
               )),
             )}
@@ -231,15 +225,15 @@ export function ParticipationFlow() {
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
         <motion.div {...fadeUp(0)} className="text-center mb-6">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-[0.15em] mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-info text-xs font-bold uppercase tracking-[0.15em] mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-info animate-pulse" />
             Alur Partisipasi
           </span>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white mt-2 mb-4 leading-tight tracking-tight">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-text-dark mt-2 mb-4 leading-tight tracking-tight">
             Bagaimana Cara{" "}
             <span
               style={{
-                background: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+                background: "linear-gradient(135deg, #2E7D32 0%, #1E88E5 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -248,7 +242,7 @@ export function ParticipationFlow() {
               Berpartisipasi?
             </span>
           </h2>
-          <p className="text-white/50 max-w-xl mx-auto text-lg font-medium">
+          <p className="text-text-dark max-w-xl mx-auto text-lg font-medium">
             Empat langkah membentuk ekosistem digital yang saling terhubung
             bukan proses linear, tapi komitmen bersama.
           </p>
@@ -268,7 +262,7 @@ export function ParticipationFlow() {
                 cx="340"
                 cy="340"
                 r="295"
-                stroke="rgba(255,255,255,0.04)"
+                stroke="rgba(0,0,0,0.05)"
                 strokeWidth="1"
               />
               {/* Middle ring */}
@@ -276,7 +270,7 @@ export function ParticipationFlow() {
                 cx="340"
                 cy="340"
                 r="205"
-                stroke="rgba(255,255,255,0.035)"
+                stroke="rgba(0,0,0,0.04)"
                 strokeWidth="1"
                 strokeDasharray="4 9"
               />
@@ -322,15 +316,12 @@ export function ParticipationFlow() {
               <motion.div
                 key={step.step}
                 {...scaleIn(0.2 + i * 0.1)}
-                className={`transform-gpu will-change-transform ${orbitPositions[step.position]}`}
+                className={`transform-gpu ${orbitPositions[step.position]}`}
                 style={{ width: 196 }}
-                whileHover={{
-                  y: -5,
-                  scale: 1.02,
-                  transition: { duration: 0.2 },
-                }}
               >
-                <StepCard step={step} />
+                <div className="transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02]">
+                  <StepCard step={step} />
+                </div>
               </motion.div>
             ))}
 
@@ -348,11 +339,11 @@ export function ParticipationFlow() {
         {/* ── MOBILE: Vertical Stack ── */}
         <div className="lg:hidden flex flex-col items-center gap-4">
           {steps.map((step, i) => (
-            <motion.div
-              key={step.step}
-              {...fadeUp(i * 0.1)}
-              className="w-full max-w-sm"
-            >
+              <motion.div
+                key={step.step}
+                {...fadeUp(i * 0.1)}
+                className="w-full max-w-sm transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02]"
+              >
               <StepCard step={step} />
             </motion.div>
           ))}

@@ -3,16 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import {
   Lock,
   Mail,
   Eye,
   EyeOff,
   Loader2,
-  ShieldCheck,
   AlertCircle,
+  ArrowRightLeft,
 } from "lucide-react";
+import Image from "next/image";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -44,211 +46,238 @@ export default function AdminLoginPage() {
     router.refresh();
   };
 
+  // Variants untuk staggered animation pada form
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 15 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring", stiffness: 300, damping: 24 },
+    },
+  };
+
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-6 overflow-hidden selection:bg-orange-500/30"
-      style={{ background: "#060606", fontFamily: "'DM Sans', sans-serif" }}
+      className="relative min-h-screen w-full overflow-hidden flex items-center justify-center md:justify-end px-4 md:px-0 md:pr-[8%] lg:pr-[12%]"
+      style={{ fontFamily: "'DM Sans', sans-serif" }}
     >
-      {/* ── Background Layers ── */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Grid */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-            maskImage:
-              "radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%)",
-          }}
-        />
-        {/* Orbs */}
-        <div
-          className="absolute top-[-15%] right-[-15%] w-[700px] h-[700px] rounded-full animate-pulse"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 65%)",
-          }}
-        />
-        <div
-          className="absolute bottom-[-15%] left-[-10%] w-[500px] h-[500px] rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 65%)",
-          }}
-        />
-        {/* Noise overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-          }}
-        />
-      </div>
-
+      {/* ── Background 5.svg ── */}
       <motion.div
-        initial={{ opacity: 0, y: 28, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full max-w-[480px] z-10"
+        initial={{ opacity: 0, scale: 1.05 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
+        className="absolute inset-0 z-0"
       >
-        {/* Card glow */}
-        <div
-          className="absolute -inset-0.5 rounded-[32px] opacity-60"
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(249,115,22,0.25), transparent 50%, rgba(249,115,22,0.1))",
-            filter: "blur(20px)",
-          }}
+        <Image
+          src="/images/login/5.svg"
+          alt="Login background"
+          fill
+          className="object-cover object-center"
+          priority
         />
+        {/* Overlay tipis untuk mobile agar card lebih terbaca jika background ramai */}
+        <div className="absolute inset-0 bg-white/30 md:hidden backdrop-blur-[2px]" />
+      </motion.div>
 
-        {/* Card */}
-        <div
-          className="relative border overflow-hidden"
+      {/* ── Foreground Character 6.svg ── */}
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+        className="hidden md:block absolute z-0 pointer-events-none"
+        style={{
+          width: "95%" /* <-- ATUR LEBAR (contoh: "775px" atau "60%") */,
+          height: "95%" /* <-- ATUR TINGGI (contoh: "552px" atau "100%") */,
+          left: "50px" /* <-- ATUR POSISI KIRI (contoh: "76.8px" atau "5%") */,
+          bottom: "0px" /* <-- ATUR POSISI BAWAH (contoh: "-20px" atau "0") */,
+          // top: "216px",    /* <-- Jika ingin menggunakan jarak dari atas (hapus 'bottom' jika pakai 'top') */
+        }}
+      >
+        <Image
+          src="/images/login/6.svg"
+          alt="Character illustration"
+          fill
+          className="object-contain"
           style={{
-            background: "rgba(255,255,255,0.025)",
-            backdropFilter: "blur(40px) saturate(180%)",
-            borderColor: "rgba(255,255,255,0.07)",
-            borderRadius: "28px",
-            padding: "48px 44px 40px",
-            boxShadow: "0 32px 64px -12px rgba(0,0,0,0.8)",
+            objectPosition:
+              "left bottom" /* <-- Atur posisi gambar di dalam wadah (misal: "center bottom") */,
+            transform:
+              "scale(1)" /* <-- Atur skala/zoom gambar (misal: "scale(1.1)") */,
+            transformOrigin: "left bottom" /* <-- Titik pusat skala zoom */,
+          }}
+          priority
+        />
+      </motion.div>
+
+      {/* ── Login Card ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="relative z-10 w-full max-w-112.5"
+      >
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="bg-white rounded-xl p-8 sm:p-10"
+          style={{
+            boxShadow:
+              "0 20px 40px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05)",
           }}
         >
-          {/* Top edge shine */}
-          <div
-            className="absolute top-0 left-[10%] right-[10%] h-px"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)",
-            }}
-          />
-
-          {/* ── Header ── */}
-          <div className="text-center mb-10">
-            {/* Spinning ring logo */}
-            <div className="relative w-[72px] h-[72px] mx-auto mb-5">
+          {/* Header */}
+          <motion.div variants={itemVariants} className="text-center mb-8">
+            <div className="flex items-center justify-center gap-3 mb-3">
               <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-                className="absolute -inset-[3px] rounded-[22px]"
-                style={{
-                  background:
-                    "conic-gradient(from 180deg, rgba(249,115,22,0.8), rgba(249,115,22,0.1), rgba(249,115,22,0.8))",
-                  WebkitMaskImage:
-                    "radial-gradient(circle, transparent 60%, black 62%)",
-                  maskImage:
-                    "radial-gradient(circle, transparent 60%, black 62%)",
-                }}
-              />
-              <motion.div
-                initial={{ rotate: -10, scale: 0.9 }}
-                animate={{ rotate: 0, scale: 1 }}
-                transition={{ delay: 0.2, type: "spring" }}
-                className="w-[72px] h-[72px] rounded-[20px] flex items-center justify-center relative z-10"
-                style={{
-                  background: "linear-gradient(145deg, #F97316, #EA580C)",
-                  boxShadow:
-                    "0 0 40px rgba(249,115,22,0.45), 0 10px 30px rgba(0,0,0,0.4)",
-                }}
+                whileHover={{ rotate: 10, scale: 1.05 }}
+                className="w-11 h-11 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: "#e8f5e9" }}
               >
-                <ShieldCheck className="w-8 h-8 text-white" />
+                <Lock className="w-5 h-5" style={{ color: "#2e7d32" }} />
               </motion.div>
+              <h1
+                className="text-[26px] font-bold"
+                style={{ color: "#1f2937" }}
+              >
+                Login Admin
+              </h1>
             </div>
-
-            <h1
-              className="text-[26px] font-black text-white tracking-tight leading-none mb-1.5"
-              style={{ fontFamily: "'Syne', sans-serif" }}
-            >
-              GESA<span className="text-orange-500">MEGA</span>
-              <span className="text-white/15 mx-2 font-light">|</span>Admin
-            </h1>
-            <p className="text-[9px] font-bold uppercase tracking-[0.35em] text-white/20">
-              Secure Management Portal
+            <p className="text-sm leading-relaxed" style={{ color: "#4b5563" }}>
+              Masuk ke portal administrasi untuk mengakses pusat kendali,
+              mengelola data pengguna, serta memantau seluruh aktivitas sistem.
             </p>
-          </div>
+          </motion.div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          {/* Form */}
+          <form onSubmit={handleLogin} className="space-y-5">
             {/* Email */}
-            <div className="space-y-1.5">
-              <label className="text-[9px] font-bold text-white/35 uppercase tracking-[0.25em] ml-0.5">
-                Email Address
+            <motion.div variants={itemVariants} className="space-y-1.5">
+              <label
+                htmlFor="admin-email"
+                className="block text-sm font-semibold"
+                style={{ color: "#374151" }}
+              >
+                Surel (Email)
               </label>
-              <div className="relative group transition-transform duration-200 focus-within:-translate-y-px">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-orange-500 transition-colors pointer-events-none" />
+              <div className="relative group">
+                <Mail
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 pointer-events-none transition-colors group-focus-within:text-green-700"
+                  style={{ color: "#9ca3af" }}
+                />
                 <input
                   type="email"
+                  id="admin-email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="username@example.id"
-                  className="w-full pl-11 pr-4 py-3.5 text-white font-medium text-sm placeholder-white/10 outline-none transition-all"
+                  placeholder="admin@gesamega.id"
+                  className="w-full pl-10 pr-4 py-3 text-sm outline-none transition-all border rounded-lg"
                   style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.07)",
-                    borderRadius: "14px",
-                    fontFamily: "'DM Sans', sans-serif",
+                    borderColor: "#e5e7eb",
+                    color: "#1f2937",
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = "rgba(249,115,22,0.45)";
-                    e.target.style.background = "rgba(249,115,22,0.08)";
-                    e.target.style.boxShadow =
-                      "0 0 0 3px rgba(249,115,22,0.08), inset 0 1px 0 rgba(255,255,255,0.03)";
+                    e.target.style.borderColor = "#2e7d32";
+                    e.target.style.boxShadow = "0 0 0 3px rgba(46,125,50,0.1)";
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = "rgba(255,255,255,0.07)";
-                    e.target.style.background = "rgba(255,255,255,0.04)";
+                    e.target.style.borderColor = "#e5e7eb";
                     e.target.style.boxShadow = "none";
                   }}
                 />
               </div>
-            </div>
+            </motion.div>
 
             {/* Password */}
-            <div className="space-y-1.5">
-              <label className="text-[9px] font-bold text-white/35 uppercase tracking-[0.25em] ml-0.5">
-                Security Password
+            <motion.div variants={itemVariants} className="space-y-1.5">
+              <label
+                htmlFor="admin-password"
+                className="block text-sm font-semibold"
+                style={{ color: "#374151" }}
+              >
+                Kata Sandi
               </label>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-orange-500 transition-colors pointer-events-none" />
+                <Lock
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 pointer-events-none transition-colors group-focus-within:text-green-700"
+                  style={{ color: "#9ca3af" }}
+                />
                 <input
                   type={showPassword ? "text" : "password"}
+                  id="admin-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  placeholder="••••••••••••"
-                  className="w-full pl-11 pr-12 py-3.5 text-white font-medium text-sm placeholder-white/10 outline-none transition-all"
+                  placeholder="••••••••••"
+                  className="w-full pl-10 pr-11 py-3 text-sm outline-none transition-all border rounded-lg"
                   style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.07)",
-                    borderRadius: "14px",
-                    fontFamily: "'DM Sans', sans-serif",
+                    borderColor: "#e5e7eb",
+                    color: "#1f2937",
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = "rgba(249,115,22,0.45)";
-                    e.target.style.background = "rgba(249,115,22,0.08)";
-                    e.target.style.boxShadow =
-                      "0 0 0 3px rgba(249,115,22,0.08)";
+                    e.target.style.borderColor = "#2e7d32";
+                    e.target.style.boxShadow = "0 0 0 3px rgba(46,125,50,0.1)";
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = "rgba(255,255,255,0.07)";
-                    e.target.style.background = "rgba(255,255,255,0.04)";
+                    e.target.style.borderColor = "#e5e7eb";
                     e.target.style.boxShadow = "none";
                   }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-white/20 hover:text-white hover:bg-white/5 transition-all"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-gray-100 transition-colors"
+                  style={{ color: "#9ca3af" }}
                 >
                   {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
+                    <EyeOff className="w-4.5 h-4.5" />
                   ) : (
-                    <Eye className="w-4 h-4" />
+                    <Eye className="w-4.5 h-4.5" />
                   )}
                 </button>
               </div>
-            </div>
+            </motion.div>
+
+            {/* Remember me + Forgot Password */}
+            <motion.div
+              variants={itemVariants}
+              className="flex items-center justify-between pt-1"
+            >
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="rounded border-gray-300 text-green-700 shadow-sm focus:border-green-700 focus:ring focus:ring-green-200 focus:ring-opacity-50 w-4 h-4 cursor-pointer"
+                  style={{ accentColor: "#2e7d32" }}
+                />
+                <span
+                  className="text-[13px] font-medium"
+                  style={{ color: "#4b5563" }}
+                >
+                  Ingat saya
+                </span>
+              </label>
+              <button
+                type="button"
+                className="text-[13px] font-semibold hover:underline"
+                style={{ color: "#2e7d32" }}
+              >
+                Lupa kata sandi?
+              </button>
+            </motion.div>
 
             {/* Error */}
             <AnimatePresence>
@@ -259,97 +288,64 @@ export default function AdminLoginPage() {
                   exit={{ opacity: 0, height: 0 }}
                   className="overflow-hidden"
                 >
-                  <div
-                    className="flex items-center gap-2.5 px-4 py-3 rounded-xl border"
-                    style={{
-                      background: "rgba(239,68,68,0.08)",
-                      borderColor: "rgba(239,68,68,0.2)",
-                    }}
-                  >
-                    <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-                    <p className="text-xs font-medium text-red-300">{error}</p>
+                  <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg border mt-2 bg-red-50 border-red-200">
+                    <AlertCircle className="w-4 h-4 text-red-500" />
+                    <p className="text-xs font-medium text-red-600">{error}</p>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* Submit */}
-            <motion.button
-              type="submit"
-              disabled={loading || !email || !password}
-              whileHover={{
-                y: -2,
-                boxShadow: "0 16px 36px rgba(249,115,22,0.45)",
-              }}
-              whileTap={{ scale: 0.98 }}
-              className="relative w-full mt-2 overflow-hidden text-white disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{
-                background: "linear-gradient(135deg, #F97316, #EA580C)",
-                borderRadius: "14px",
-                padding: "15px",
-                fontFamily: "'Syne', sans-serif",
-                fontSize: "11px",
-                fontWeight: 800,
-                letterSpacing: "0.25em",
-                textTransform: "uppercase",
-                boxShadow:
-                  "0 8px 24px rgba(249,115,22,0.35), 0 2px 4px rgba(0,0,0,0.3)",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              {/* Shimmer */}
-              <motion.div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background:
-                    "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)",
-                  x: "-100%",
-                }}
-                whileHover={{ x: "200%" }}
-                transition={{ duration: 0.6 }}
-              />
-              {/* Top shine */}
-              <div
-                className="absolute top-0 left-0 right-0 h-px"
-                style={{
-                  background:
-                    "linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)",
-                }}
-              />
-
-              <div className="relative flex items-center justify-center gap-2">
+            {/* Submit Button */}
+            <motion.div variants={itemVariants} className="pt-2">
+              <motion.button
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit"
+                disabled={loading || !email || !password}
+                className="w-full rounded-lg py-3.5 flex items-center justify-center gap-2 text-white text-sm font-bold transition-all shadow-md disabled:opacity-70 bg-primary hover:bg-primary/90"
+              >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Verifying Access...</span>
+                    <Loader2 className="w-4.5 h-4.5 animate-spin" />
+                    <span>Loading...</span>
                   </>
                 ) : (
                   <>
-                    <ShieldCheck className="w-4 h-4" />
-                    <span>Authorize Login</span>
+                    <ArrowRightLeft className="w-4.5 h-4.5" />
+                    <span>Masuk</span>
                   </>
                 )}
-              </div>
-            </motion.button>
+              </motion.button>
+            </motion.div>
           </form>
 
-          {/* Footer */}
-          <div
-            className="mt-8 pt-6 border-t text-center"
-            style={{ borderColor: "rgba(255,255,255,0.06)" }}
+          {/* Divider */}
+          <motion.div
+            variants={itemVariants}
+            className="flex items-center gap-3 mt-7 mb-5"
           >
-            <p
-              className="text-[9px] font-semibold uppercase tracking-[0.2em] leading-loose"
-              style={{ color: "rgba(255,255,255,0.12)" }}
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="text-xs font-medium" style={{ color: "#9ca3af" }}>
+              atau
+            </span>
+            <div className="flex-1 h-px bg-gray-200" />
+          </motion.div>
+
+          {/* Register Link */}
+          <motion.div variants={itemVariants} className="text-center">
+            <span className="text-[13px]" style={{ color: "#6b7280" }}>
+              Belum punya akun?{" "}
+            </span>
+            <button
+              type="button"
+              className="text-[13px] font-bold hover:underline"
+              style={{ color: "#1b5e20" }}
             >
-              Protected by GESA
-              <span style={{ color: "rgba(249,115,22,0.4)" }}>MEGA</span>{" "}
-              Security Systems
-              <br />© 2026 GESAMEGA. Hak Cipta Dilindungi
-            </p>
-          </div>
-        </div>
+              Hubungi Super Admin
+            </button>
+          </motion.div>
+        </motion.div>
       </motion.div>
     </div>
   );

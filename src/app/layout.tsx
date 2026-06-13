@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: "%s | GESAMEGA",
   },
   description:
-    "Platform kolaboratif nasional untuk mendorong penggunaan gadget yang sehat, terukur, dan berdampak positif pada kualitas pendidikan sekolah di seluruh Indonesia.",
+    "Platform kolaboratif nasional untuk mendorong penggunaan gadget yang sehat, terukur, dan berdampak positif pada kualitas pendidikan sekolah di seluruh Kota Sidoarjo.",
   keywords: [
     "gesamega",
     "gerakan sadar menggunakan gadget",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     url: "https://gesamega.web.id",
     title: "GESAMEGA | Gerakan Sekolah Bijak Mengelola Gadget",
     description:
-      "Platform kolaboratif nasional untuk mendorong penggunaan gadget yang sehat, terukur, dan berdampak positif pada kualitas pendidikan sekolah di seluruh Indonesia.",
+      "Platform kolaboratif nasional untuk mendorong penggunaan gadget yang sehat, terukur, dan berdampak positif pada kualitas pendidikan sekolah di seluruh Sidoarjo.",
     siteName: "GESAMEGA",
     images: [
       {

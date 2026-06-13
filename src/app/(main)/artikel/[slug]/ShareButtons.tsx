@@ -40,9 +40,9 @@ export default function ShareButtons({ title }: { title: string }) {
         {/* X / Twitter */}
         <button
           onClick={handleTwitter}
-          className="flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-normal text-white transition-all hover:shadow-[0_0_18px_rgba(249,115,22,0.35)]"
+          className="flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-normal text-white transition-all hover:shadow-[0_0_18px_rgba(46, 125, 50,0.35)]"
           style={{
-            background: "linear-gradient(135deg, #ea580c, #f97316)",
+            background: "linear-gradient(135deg, #1E88E5, #2E7D32)",
             border: "none",
           }}
         >

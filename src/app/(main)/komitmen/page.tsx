@@ -26,12 +26,12 @@ const PILLARS = [
 ];
 
 const inputStyle = {
-  background: "rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.10)",
-  color: "white",
+  background: "#ffffff",
+  border: "1px solid rgba(0,0,0,0.08)",
+  color: "var(--color-text-dark)",
 };
 
-const inputClass = "w-full px-4 py-3 rounded-xl outline-none transition-all text-sm font-medium placeholder:text-white/25 focus:border-orange-500/50";
+const inputClass = "w-full px-4 py-3 rounded-xl outline-none transition-all text-sm font-medium placeholder:text-text-dark/40 focus:border-primary/50";
 
 function KomitmenForm() {
   const router = useRouter();
@@ -84,7 +84,7 @@ function KomitmenForm() {
 
   if (success) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen px-4 text-center" style={{ background: "#050505" }}>
+      <div className="flex flex-col items-center justify-center min-h-screen px-4 text-center" style={{ background: "var(--color-surface)" }}>
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full" style={{ background: "radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 65%)", mixBlendMode: "screen" }} />
         </div>
@@ -92,14 +92,14 @@ function KomitmenForm() {
           className="w-24 h-24 rounded-full flex items-center justify-center mb-6" style={{ background: "rgba(16,185,129,0.15)", boxShadow: "0 0 50px rgba(16,185,129,0.30)", color: "#10b981" }}>
           <CheckCircle2 className="w-12 h-12" />
         </motion.div>
-        <motion.h2 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-3xl font-extrabold text-white mb-4">Komitmen Berhasil Disahkan!</motion.h2>
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="max-w-md mb-8 text-lg" style={{ color: "rgba(255,255,255,0.45)" }}>
-          Sertifikat PDF komitmen digital Anda telah diunduh. Terima kasih atas partisipasi aktif <strong className="text-white">{form.sekolah}</strong> dalam menjaga ekosistem pendidikan digital.
+        <motion.h2 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-3xl font-extrabold text-text-dark mb-4">Komitmen Berhasil Disahkan!</motion.h2>
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="max-w-md mb-8 text-lg" style={{ color: "rgba(55, 71, 79, 0.6)" }}>
+          Sertifikat PDF komitmen digital Anda telah diunduh. Terima kasih atas partisipasi aktif <strong className="text-text-dark">{form.sekolah}</strong> dalam menjaga ekosistem pendidikan digital.
         </motion.p>
         <motion.button initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
           onClick={() => (window.location.href = "/peta")}
           className="flex items-center gap-2 px-8 py-4 rounded-2xl font-bold text-white transition-all hover:scale-[1.02]"
-          style={{ background: "linear-gradient(135deg, #ea580c, #f97316)", boxShadow: "0 0 32px rgba(249,115,22,0.40)" }}>
+          style={{ background: "linear-gradient(135deg, #2E7D32, #66BB6A)", boxShadow: "0 0 32px rgba(46, 125, 50,0.40)" }}>
           <Download className="w-5 h-5" /> Beralih ke Peta Partisipasi
         </motion.button>
       </div>
@@ -107,12 +107,12 @@ function KomitmenForm() {
   }
 
   return (
-    <div className="min-h-screen relative pb-20" style={{ background: "#050505" }}>
+    <div className="min-h-screen relative pb-20" style={{ background: "var(--color-surface)" }}>
       {/* Glowing Mesh */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-[5%] right-[5%] w-[650px] h-[650px] rounded-full" style={{ background: "radial-gradient(circle, rgba(234,88,12,0.10) 0%, transparent 70%)", mixBlendMode: "screen" }} />
+        <div className="absolute -top-[5%] right-[5%] w-[650px] h-[650px] rounded-full" style={{ background: "radial-gradient(circle, rgba(46, 125, 50,0.10) 0%, transparent 70%)", mixBlendMode: "screen" }} />
         <div className="absolute bottom-0 left-[10%] w-[400px] h-[400px] rounded-full" style={{ background: "radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 65%)", mixBlendMode: "screen" }} />
-        <div className="absolute top-0 left-0 right-0 h-[300px]" style={{ background: "linear-gradient(180deg, rgba(234,88,12,0.05) 0%, transparent 100%)" }} />
+        <div className="absolute top-0 left-0 right-0 h-[300px]" style={{ background: "linear-gradient(180deg, rgba(46, 125, 50,0.05) 0%, transparent 100%)" }} />
       </div>
 
       <div className="max-w-2xl mx-auto px-4 pt-28 relative z-10">
@@ -120,37 +120,37 @@ function KomitmenForm() {
 
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
-          <div className="inline-flex p-4 rounded-3xl mb-5" style={{ background: "rgba(249,115,22,0.12)", border: "1px solid rgba(249,115,22,0.25)" }}>
-            <PenTool className="w-8 h-8" style={{ color: "#fb923c" }} />
+          <div className="inline-flex p-4 rounded-3xl mb-5" style={{ background: "rgba(46, 125, 50,0.12)", border: "1px solid rgba(46, 125, 50,0.25)" }}>
+            <PenTool className="w-8 h-8" style={{ color: "#64B5F6" }} />
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-3 tracking-tight">Kontrak Komitmen Bersama</h1>
-          <p className="text-lg" style={{ color: "rgba(255,255,255,0.38)" }}>Tunjukkan dedikasi nyata sekolah Anda melalui penandatanganan digital untuk menetapkan regulasi gadget yang lebih sehat.</p>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-text-dark mb-3 tracking-tight">Kontrak Komitmen Bersama</h1>
+          <p className="text-lg" style={{ color: "rgba(55, 71, 79, 0.6)" }}>Tunjukkan dedikasi nyata sekolah Anda melalui penandatanganan digital untuk menetapkan regulasi gadget yang lebih sehat.</p>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col gap-5">
 
           {/* Pilar Accordion */}
-          <div id="tour-komitmen-pilar" className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <div id="tour-komitmen-pilar" className="rounded-2xl overflow-hidden" style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.08)" }}>
             <button type="button" onClick={() => setShowPillars(!showPillars)}
-              className="w-full px-6 py-4 flex items-center justify-between transition-colors hover:bg-white/[0.03]">
+              className="w-full px-6 py-4 flex items-center justify-between transition-colors hover:bg-black/[0.03]">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "rgba(249,115,22,0.15)", color: "#fb923c" }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "rgba(46, 125, 50,0.15)", color: "#64B5F6" }}>
                   <ShieldCheck className="w-4 h-4" />
                 </div>
-                <span className="font-bold text-white text-sm">Baca 5 Pilar Komitmen Nasional</span>
+                <span className="font-bold text-text-dark text-sm">Baca 5 Pilar Komitmen Nasional</span>
               </div>
-              <ChevronDown className={`w-5 h-5 transition-transform ${showPillars ? "rotate-180" : ""}`} style={{ color: "rgba(255,255,255,0.35)" }} />
+              <ChevronDown className={`w-5 h-5 transition-transform ${showPillars ? "rotate-180" : ""}`} style={{ color: "rgba(55, 71, 79, 0.5)" }} />
             </button>
             <AnimatePresence>
               {showPillars && (
                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }} style={{ overflow: "hidden" }}>
-                  <div className="px-6 pb-6 pt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+                  <div className="px-6 pb-6 pt-2" style={{ borderTop: "1px solid rgba(0,0,0,0.07)" }}>
                     <ul className="space-y-4">
                       {PILLARS.map((p) => (
                         <li key={p.num} className="flex gap-3 text-sm">
-                          <span className="font-black shrink-0 select-none" style={{ color: "#fb923c" }}>{p.num}</span>
-                          <span style={{ color: "rgba(255,255,255,0.45)" }}>
-                            {p.text} <strong className="font-semibold text-white">{p.bold}</strong>{p.suffix ? ` ${p.suffix}` : "."}
+                          <span className="font-black shrink-0 select-none" style={{ color: "#64B5F6" }}>{p.num}</span>
+                          <span style={{ color: "rgba(55, 71, 79, 0.6)" }}>
+                            {p.text} <strong className="font-semibold text-text-dark">{p.bold}</strong>{p.suffix ? ` ${p.suffix}` : "."}
                           </span>
                         </li>
                       ))}
@@ -170,12 +170,12 @@ function KomitmenForm() {
           )}
 
           {/* Main Form Card */}
-          <div id="tour-komitmen-form" className="rounded-2xl p-6 md:p-8" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <div id="tour-komitmen-form" className="rounded-2xl p-6 md:p-8" style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.08)" }}>
             <form onSubmit={handleSubmit} className="space-y-7">
 
               {/* Sekolah */}
               <div className="space-y-2">
-                <label className="block text-sm font-bold text-white/65">Instansi / Sekolah <span className="text-red-400">*</span></label>
+                <label className="block text-sm font-bold text-text-dark/80">Instansi / Sekolah <span className="text-red-400">*</span></label>
                 <SchoolAutocomplete
                   value={form.sekolah}
                   onChange={(val, school) => {
@@ -197,8 +197,8 @@ function KomitmenForm() {
                         <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(245,158,11,0.15)", color: "#f59e0b" }}><Lock className="w-4 h-4" /></div>
                         <div>
                           <p className="font-bold text-sm mb-1" style={{ color: "#f59e0b" }}>Akses Terkunci</p>
-                          <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
-                            Sekolah <strong className="text-white">"{form.sekolah}"</strong> belum menyelesaikan Survei Diagnostik.
+                          <p className="text-sm leading-relaxed" style={{ color: "rgba(55, 71, 79, 0.6)" }}>
+                            Sekolah <strong className="text-text-dark">"{form.sekolah}"</strong> belum menyelesaikan Survei Diagnostik.
                           </p>
                           <button type="button" onClick={() => (window.location.href = "/survei")}
                             className="mt-3 text-sm font-bold px-4 py-2 rounded-lg transition-all"
@@ -214,7 +214,7 @@ function KomitmenForm() {
 
               {/* Nama PJ */}
               <div className="space-y-2">
-                <label className="block text-sm font-bold text-white/65">Nama Penanggung Jawab <span className="text-red-400">*</span></label>
+                <label className="block text-sm font-bold text-text-dark/80">Nama Penanggung Jawab <span className="text-red-400">*</span></label>
                 <input
                   type="text" value={form.penanggungJawab}
                   onChange={(e) => { setForm({ ...form, penanggungJawab: e.target.value }); if (errors.penanggungJawab) setErrors((p) => ({ ...p, penanggungJawab: "" })); }}
@@ -227,10 +227,10 @@ function KomitmenForm() {
               {/* Piagam Preview */}
               <div className="space-y-3" id="tour-komitmen-preview">
                 <div className="flex items-center justify-between">
-                  <label className="block text-sm font-bold text-white/65">Pratinjau Piagam Apresiasi</label>
-                  <span className="text-xs text-white/25">Otomatis</span>
+                  <label className="block text-sm font-bold text-text-dark/80">Pratinjau Piagam Apresiasi</label>
+                  <span className="text-xs text-text-dark/40">Otomatis</span>
                 </div>
-                <div className="relative w-full aspect-[1.414] rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.10)" }}>
+                <div className="relative w-full aspect-[1.414] rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(0,0,0,0.08)" }}>
                   <img src="/assets/Piagam-GESAMEGA.jpg" alt="Template Piagam" className="absolute inset-0 w-full h-full object-cover opacity-90" onError={(e) => { (e.target as HTMLImageElement).src = "/assets/Piagam-GESAMEGA.pdf"; }} />
                   <div className="absolute inset-0 z-10 pointer-events-none">
                     {(() => {
@@ -239,7 +239,7 @@ function KomitmenForm() {
                       const isMulti = words.length > 3;
                       return (
                         <div className={`absolute ${isMulti ? "top-[61%]" : "top-[64%]"} left-0 right-0 text-center px-20`}>
-                          <h3 className="font-serif font-bold text-slate-800 uppercase tracking-[0.05em] leading-[0.9]">
+                          <h3 className="font-serif font-bold text-text-dark uppercase tracking-[0.05em] leading-[0.9]">
                             <span className="block text-[14px] sm:text-[16px] md:text-[20px] lg:text-[26px]">{isMulti ? words.slice(0,3).join(" ") : sekolah}</span>
                             {isMulti && <span className="block text-[14px] sm:text-[16px] md:text-[20px] lg:text-[26px] mt-[2px]">{words.slice(3).join(" ")}</span>}
                           </h3>
@@ -247,7 +247,7 @@ function KomitmenForm() {
                       );
                     })()}
                     <div className="absolute top-[77%] left-3 right-0 text-center px-8">
-                      <p className="text-[8px] sm:text-[10px] md:text-[12px] font-serif font-bold text-slate-600 uppercase tracking-[0.08em]">
+                      <p className="text-[8px] sm:text-[10px] md:text-[12px] font-serif font-bold text-text-dark uppercase tracking-[0.08em]">
                         {new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long" })}
                       </p>
                     </div>
@@ -256,7 +256,7 @@ function KomitmenForm() {
                 <button type="button" disabled={!form.sekolah || downloadingPiagam}
                   onClick={async () => { if (!form.sekolah) return; setDownloadingPiagam(true); try { await generatePiagamPDF(form.sekolah); } finally { setDownloadingPiagam(false); } }}
                   className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                  style={{ background: "rgba(249,115,22,0.10)", border: "1px solid rgba(249,115,22,0.22)", color: "#fb923c" }}>
+                  style={{ background: "rgba(46, 125, 50,0.10)", border: "1px solid rgba(46, 125, 50,0.22)", color: "#64B5F6" }}>
                   <Download className="w-4 h-4" />
                   {downloadingPiagam ? "Memproses Piagam..." : "Unduh Piagam Apresiasi (.pdf)"}
                 </button>
@@ -264,13 +264,13 @@ function KomitmenForm() {
 
               {/* Signature */}
               <div id="tour-komitmen-signature" className="space-y-3">
-                <label className="block text-sm font-bold text-white/65">Tanda Tangan Digital <span className="text-red-400">*</span></label>
-                <div className={`border-2 rounded-2xl overflow-hidden relative transition-all ${isLocked ? "opacity-50 cursor-not-allowed" : errors.signature ? "border-red-500/40" : "border-white/10 hover:border-orange-500/30"}`}
+                <label className="block text-sm font-bold text-text-dark/80">Tanda Tangan Digital <span className="text-red-400">*</span></label>
+                <div className={`border-2 rounded-2xl overflow-hidden relative transition-all ${isLocked ? "opacity-50 cursor-not-allowed" : errors.signature ? "border-red-500/40" : "border-black/10 hover:border-primary/30"}`}
                   style={{ background: isLocked ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.03)" }}
                   onClick={() => { if (errors.signature) setErrors((p) => ({ ...p, signature: "" })); }}>
                   {isLocked && <div className="absolute inset-0 z-10 backdrop-blur-[1px]" />}
                   {!isLocked && (
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none flex flex-col items-center select-none" style={{ color: "rgba(255,255,255,0.10)" }}>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none flex flex-col items-center select-none" style={{ color: "rgba(55, 71, 79, 0.2)" }}>
                       <PenTool className="w-8 h-8 mb-2" />
                       <span className="text-lg font-bold uppercase tracking-widest">Tanda Tangan Di Sini</span>
                     </div>
@@ -281,7 +281,7 @@ function KomitmenForm() {
                   />
                   <button type="button" onClick={clearSignature}
                     className="absolute bottom-3 right-3 z-20 text-xs font-semibold flex items-center gap-1.5 px-3 py-2 rounded-lg transition-colors"
-                    style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.45)" }}>
+                    style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.12)", color: "rgba(55, 71, 79, 0.6)" }}>
                     <RefreshCw className="w-3.5 h-3.5" /> Bersihkan
                   </button>
                 </div>
@@ -289,17 +289,17 @@ function KomitmenForm() {
               </div>
 
               {/* reCAPTCHA note */}
-              <div className="pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-                <div className="flex items-center gap-3 text-xs font-medium" style={{ color: "rgba(255,255,255,0.25)" }}>
+              <div className="pt-4" style={{ borderTop: "1px solid rgba(0,0,0,0.07)" }}>
+                <div className="flex items-center gap-3 text-xs font-medium" style={{ color: "rgba(55, 71, 79, 0.4)" }}>
                   <ShieldCheck className="w-4 h-4 shrink-0 text-emerald-500/60" />
-                  <span>Formulir ini dilindungi oleh <span className="text-white/45 font-bold">Google reCAPTCHA v3</span>. Verifikasi berjalan otomatis.</span>
+                  <span>Formulir ini dilindungi oleh <span className="text-text-dark/60 font-bold">Google reCAPTCHA v3</span>. Verifikasi berjalan otomatis.</span>
                 </div>
               </div>
 
               {/* Submit */}
               <button type="submit" disabled={loading || isLocked || form.sekolah.length === 0}
                 className="w-full py-5 rounded-2xl font-bold text-white text-lg transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-                style={loading || isLocked || !form.sekolah ? { background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.35)" } : { background: "linear-gradient(135deg, #ea580c, #f97316)", boxShadow: "0 0 32px rgba(249,115,22,0.35)" }}>
+                style={loading || isLocked || !form.sekolah ? { background: "#ffffff", color: "rgba(55, 71, 79, 0.5)" } : { background: "linear-gradient(135deg, #2E7D32, #66BB6A)", boxShadow: "0 0 32px rgba(46, 125, 50,0.35)" }}>
                 {loading ? "Memproses Dokumen PDF & Menyimpan..." : "Sahkan & Unduh Sertifikat PDF Resmi"}
               </button>
             </form>

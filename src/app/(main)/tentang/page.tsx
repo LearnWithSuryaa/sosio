@@ -19,10 +19,10 @@ const pillars = [
     title: "Berorientasi Dampak",
     description:
       "Setiap fitur dirancang untuk menghasilkan perubahan nyata di ekosistem pendidikan digital Indonesia.",
-    glowColor: "rgba(249,115,22,0.12)",
-    glowBorder: "rgba(249,115,22,0.25)",
-    iconColor: "text-orange-400",
-    hoverGlow: "rgba(249,115,22,0.08)",
+    glowColor: "rgba(46, 125, 50,0.12)",
+    glowBorder: "rgba(46, 125, 50,0.25)",
+    iconColor: "text-info",
+    hoverGlow: "rgba(46, 125, 50,0.08)",
   },
   {
     icon: Globe2,
@@ -87,30 +87,31 @@ const fadeUp = (delay = 0) => ({
 
 export default function TentangKamiPage() {
   return (
-    <div className="bg-[#050505] min-h-screen">
+    <div className="min-h-screen" style={{ background: "var(--color-surface)" }}>
       {/* ── HERO ── */}
       <section className="relative pt-36 pb-24 px-4 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-[5%] right-[10%] w-[600px] h-[600px] bg-orange-600/10 rounded-full blur-[160px] mix-blend-screen" />
+          <div className="absolute -top-[5%] right-[10%] w-[600px] h-[600px] bg-primary/10 rounded-full blur-[160px] mix-blend-screen" />
           <div className="absolute bottom-0 left-[5%] w-[500px] h-[500px] bg-rose-500/8 rounded-full blur-[140px] mix-blend-screen" />
         </div>
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div {...fadeUp(0)}>
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-[0.15em] mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-info text-xs font-bold uppercase tracking-[0.15em] mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-info animate-pulse" />
               Tentang Kami
             </span>
           </motion.div>
 
           <motion.h1
             {...fadeUp(0.1)}
-            className="text-4xl md:text-6xl font-extrabold text-white mt-4 mb-6 leading-tight tracking-tight"
+            className="text-4xl md:text-6xl font-extrabold mt-4 mb-6 leading-tight tracking-tight"
+            style={{ color: "var(--color-text-dark)" }}
           >
             Gerakan Digital{" "}
             <span
               style={{
-                background: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+                background: "linear-gradient(135deg, #64B5F6 0%, #2E7D32 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -123,7 +124,8 @@ export default function TentangKamiPage() {
 
           <motion.p
             {...fadeUp(0.2)}
-            className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto font-medium leading-relaxed"
+            className="text-lg md:text-xl max-w-2xl mx-auto font-medium leading-relaxed"
+            style={{ color: "var(--color-text-light)" }}
           >
             GESEMEGA adalah platform kolaboratif nasional yang membantu sekolah
             membangun ekosistem digital yang sehat, terukur, dan berdampak nyata
@@ -140,7 +142,7 @@ export default function TentangKamiPage() {
               </button>
             </Link>
             <Link href="/visi-misi">
-              <button className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-white font-semibold text-sm transition-all duration-300">
+              <button className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-gray-900 font-semibold text-sm transition-all duration-300" style={{ color: "var(--color-text-dark)", borderColor: "var(--color-border)" }}>
                 Visi &amp; Misi
               </button>
             </Link>
@@ -154,7 +156,7 @@ export default function TentangKamiPage() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(135deg, rgba(249,115,22,0.85) 0%, rgba(244,63,94,0.85) 100%)",
+              "linear-gradient(135deg, rgba(46, 125, 50,0.85) 0%, rgba(244,63,94,0.85) 100%)",
           }}
         />
         {/* Glassmorphism shine overlay */}
@@ -162,7 +164,7 @@ export default function TentangKamiPage() {
         <div className="absolute top-0 inset-x-0 h-px bg-white/20" />
         <div className="absolute bottom-0 inset-x-0 h-px bg-black/20" />
 
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-white text-center relative z-10">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center relative z-10" style={{ color: "white" }}>
           {[
             { value: "3.600+", label: "Sekolah Terdaftar", icon: School },
             { value: "34", label: "Provinsi", icon: Globe2 },
@@ -189,20 +191,20 @@ export default function TentangKamiPage() {
       {/* ── PILLAR CARDS ── */}
       <section className="py-24 px-4 relative">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-[20%] left-[10%] w-[400px] h-[400px] bg-orange-500/5 rounded-full blur-[120px]" />
+          <div className="absolute top-[20%] left-[10%] w-[400px] h-[400px] bg-primary/5 rounded-full blur-[120px]" />
         </div>
         <div className="max-w-6xl mx-auto">
           <motion.div {...fadeUp(0)} className="text-center mb-14">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-[0.15em] mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-info text-xs font-bold uppercase tracking-[0.15em] mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-info animate-pulse" />
               Nilai Kami
             </span>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mt-4 mb-4 leading-tight tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-bold mt-4 mb-4 leading-tight tracking-tight" style={{ color: "var(--color-text-dark)" }}>
               Fondasi yang{" "}
               <span
                 style={{
                   background:
-                    "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+                    "linear-gradient(135deg, #64B5F6 0%, #2E7D32 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -221,8 +223,9 @@ export default function TentangKamiPage() {
                 whileHover={{ y: -6, transition: { duration: 0.2 } }}
                 className="group rounded-3xl p-6 flex flex-col items-start relative overflow-hidden transition-all duration-300"
                 style={{
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "#ffffff",
+                  border: "1px solid var(--color-border)",
+                  boxShadow: "0 2px 10px rgba(0,0,0,0.03)",
                 }}
               >
                 {/* Hover glow */}
@@ -242,10 +245,10 @@ export default function TentangKamiPage() {
                 >
                   <p.icon className={`w-7 h-7 ${p.iconColor}`} />
                 </div>
-                <h3 className="font-bold text-white mb-3 text-lg leading-snug relative z-10">
+                <h3 className="font-bold mb-3 text-lg leading-snug relative z-10" style={{ color: "var(--color-text-dark)" }}>
                   {p.title}
                 </h3>
-                <p className="text-white/50 text-sm leading-relaxed relative z-10">
+                <p className="text-sm leading-relaxed relative z-10" style={{ color: "var(--color-text-light)" }}>
                   {p.description}
                 </p>
               </motion.div>
@@ -256,20 +259,20 @@ export default function TentangKamiPage() {
 
       {/* ── MILESTONE TIMELINE ── */}
       <section className="py-24 px-4 relative">
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
 
         <div className="max-w-4xl mx-auto">
           <motion.div {...fadeUp(0)} className="text-center mb-14">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-[0.15em] mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-info text-xs font-bold uppercase tracking-[0.15em] mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-info animate-pulse" />
               Perjalanan
             </span>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mt-4 mb-4 leading-tight tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-bold mt-4 mb-4 leading-tight tracking-tight" style={{ color: "var(--color-text-dark)" }}>
               Dari Ide ke{" "}
               <span
                 style={{
                   background:
-                    "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+                    "linear-gradient(135deg, #64B5F6 0%, #2E7D32 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -282,7 +285,7 @@ export default function TentangKamiPage() {
 
           <div className="relative">
             {/* Vertical line */}
-            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-orange-500/30 via-white/30 to-transparent -translate-x-1/2" />
+            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary/30 via-gray-300 to-transparent -translate-x-1/2" />
 
             <div className="space-y-10">
               {milestones.map((m, i) => (
@@ -295,30 +298,31 @@ export default function TentangKamiPage() {
                   <div
                     className={`group rounded-2xl p-6 ml-14 md:ml-0 md:w-[calc(50%-2.5rem)] relative overflow-hidden transition-all duration-300 hover:-translate-y-1 ${i % 2 === 0 ? "md:mr-auto md:pr-10" : "md:ml-auto md:pl-10"}`}
                     style={{
-                      background: "rgba(255,255,255,0.03)",
-                      border: "1px solid rgba(255,255,255,0.08)",
+                      background: "#ffffff",
+                      border: "1px solid var(--color-border)",
+                      boxShadow: "0 2px 10px rgba(0,0,0,0.03)",
                     }}
                   >
                     <div
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                       style={{
                         background:
-                          "radial-gradient(circle at top right, rgba(249,115,22,0.07) 0%, transparent 70%)",
+                          "radial-gradient(circle at top right, rgba(46, 125, 50,0.07) 0%, transparent 70%)",
                       }}
                     />
-                    <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-widest mb-3 relative z-10">
+                    <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-info text-xs font-bold uppercase tracking-widest mb-3 relative z-10">
                       {m.year}
                     </span>
-                    <h3 className="font-bold text-white text-lg mt-2 mb-2 relative z-10">
+                    <h3 className="font-bold text-lg mt-2 mb-2 relative z-10" style={{ color: "var(--color-text-dark)" }}>
                       {m.label}
                     </h3>
-                    <p className="text-white/50 text-sm leading-relaxed relative z-10">
+                    <p className="text-sm leading-relaxed relative z-10" style={{ color: "var(--color-text-light)" }}>
                       {m.desc}
                     </p>
                   </div>
 
                   {/* Dot */}
-                  <div className="absolute left-8 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-orange-500 border-4 border-[#050505] shadow-lg shadow-orange-500/30 z-10" />
+                  <div className="absolute left-8 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-primary border-4 border-white shadow-lg shadow-primary/30 z-10" />
                 </motion.div>
               ))}
             </div>
@@ -328,30 +332,31 @@ export default function TentangKamiPage() {
 
       {/* ── CTA ── */}
       <section className="py-20 px-4 relative">
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
 
         <motion.div
           {...fadeUp(0)}
           className="max-w-3xl mx-auto rounded-3xl p-10 md:p-14 text-center relative overflow-hidden"
           style={{
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            background: "#ffffff",
+            border: "1px solid var(--color-border)",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
           }}
         >
           {/* Glow corner */}
-          <div className="absolute -top-20 -right-20 w-72 h-72 bg-orange-500/10 blur-[100px] rounded-full pointer-events-none" />
+          <div className="absolute -top-20 -right-20 w-72 h-72 bg-primary/10 blur-[100px] rounded-full pointer-events-none" />
 
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-[0.15em] mb-6 relative z-10">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-info text-xs font-bold uppercase tracking-[0.15em] mb-6 relative z-10">
+            <span className="w-1.5 h-1.5 rounded-full bg-info animate-pulse" />
             Bergabung
           </span>
 
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-4 mb-4 leading-tight tracking-tight relative z-10">
+          <h2 className="text-3xl md:text-4xl font-extrabold mt-4 mb-4 leading-tight tracking-tight relative z-10" style={{ color: "var(--color-text-dark)" }}>
             Jadikan Sekolahmu
             <br />
             <span
               style={{
-                background: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+                background: "linear-gradient(135deg, #64B5F6 0%, #2E7D32 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -361,7 +366,7 @@ export default function TentangKamiPage() {
             </span>
           </h2>
 
-          <p className="text-white/50 mb-8 text-lg font-medium relative z-10">
+          <p className="mb-8 text-lg font-medium relative z-10" style={{ color: "var(--color-text-light)" }}>
             Jelajahi berbagai wawasan dan panduan untuk membangun ekosistem
             digital yang lebih sehat di sekolah Anda.
           </p>

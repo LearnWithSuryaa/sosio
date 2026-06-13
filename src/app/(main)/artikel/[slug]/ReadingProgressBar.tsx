@@ -25,7 +25,7 @@ export default function ReadingProgressBar() {
         className="h-full transition-[width] duration-75 ease-out"
         style={{
           width: `${progress}%`,
-          background: "linear-gradient(90deg, #ea580c, #f97316, #fb923c)",
+          background: "linear-gradient(90deg, #1E88E5, #2E7D32, #64B5F6)",
         }}
       />
     </div>

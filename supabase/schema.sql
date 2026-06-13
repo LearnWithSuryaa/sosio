@@ -14,6 +14,9 @@ DROP TABLE IF EXISTS public.schools CASCADE;
 DROP TYPE IF EXISTS school_status CASCADE;
 DROP TYPE IF EXISTS validation_status CASCADE;
 DROP TABLE IF EXISTS public.articles CASCADE;
+DROP TABLE IF EXISTS public.qr_campaigns CASCADE;
+DROP VIEW IF EXISTS public.quiz_source_stats CASCADE;
+DROP VIEW IF EXISTS public.survey_source_stats CASCADE;
 
 -- 1. Table: schools
 CREATE TYPE school_status AS ENUM ('belum', 'survei', 'komitmen');
@@ -39,6 +42,7 @@ CREATE TABLE IF NOT EXISTS public.survey_results (
   school_id UUID NOT NULL REFERENCES public.schools(id) ON DELETE CASCADE,
   nama TEXT,
   jawaban JSONB NOT NULL,
+  source TEXT DEFAULT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -74,6 +78,7 @@ CREATE TABLE IF NOT EXISTS public.quiz_results (
   qualification VARCHAR(50),
   indicator_color VARCHAR(20),
   description TEXT,
+  source TEXT DEFAULT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -114,6 +119,27 @@ CREATE TABLE IF NOT EXISTS public.articles (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- 10. Table: qr_campaigns
+CREATE TABLE IF NOT EXISTS public.qr_campaigns (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  name TEXT NOT NULL,
+  source TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 11. Views: source_stats
+CREATE OR REPLACE VIEW public.quiz_source_stats AS
+SELECT source, COUNT(*) AS participant_count
+FROM public.quiz_results
+WHERE source IS NOT NULL
+GROUP BY source;
+
+CREATE OR REPLACE VIEW public.survey_source_stats AS
+SELECT source, COUNT(*) AS participant_count
+FROM public.survey_results
+WHERE source IS NOT NULL
+GROUP BY source;
+
 -- Indexing Strategy (Oracle Optimization Patterns)
 
 -- B-Tree Indexes on Foreign Keys (Crucial for Join Performance)
@@ -142,6 +168,7 @@ ALTER TABLE public.questions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.question_options ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quiz_answers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.articles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.qr_campaigns ENABLE ROW LEVEL SECURITY;
 
 -- Creating open policies
 CREATE POLICY "Public read/write access for schools" ON public.schools FOR ALL USING (true) WITH CHECK (true);
@@ -153,6 +180,7 @@ CREATE POLICY "Public read access for questions" ON public.questions FOR SELECT 
 CREATE POLICY "Public read access for question_options" ON public.question_options FOR SELECT USING (true);
 CREATE POLICY "Public read/write access for quiz_answers" ON public.quiz_answers FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Public read/write access for articles" ON public.articles FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public read/write access for qr_campaigns" ON public.qr_campaigns FOR ALL USING (true) WITH CHECK (true);
 
 -- Setting up storage
 INSERT INTO storage.buckets (id, name, public) VALUES ('signatures', 'signatures', true) ON CONFLICT DO NOTHING;

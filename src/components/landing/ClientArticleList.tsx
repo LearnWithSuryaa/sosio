@@ -28,12 +28,35 @@ const CATEGORIES = [
 ];
 
 /* Badge accent per kategori */
-const BADGE_STYLE: Record<string, { bg: string; border: string; color: string }> = {
-  literasi: { bg: "rgba(168,85,247,0.12)", border: "rgba(168,85,247,0.28)", color: "#c084fc" },
-  kebijakan: { bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.28)", color: "#34d399" },
-  kesehatan: { bg: "rgba(59,130,246,0.12)", border: "rgba(59,130,246,0.28)", color: "#60a5fa" },
-  guru: { bg: "rgba(249,115,22,0.12)", border: "rgba(249,115,22,0.28)", color: "#fb923c" },
-  default: { bg: "rgba(255,255,255,0.07)", border: "rgba(255,255,255,0.14)", color: "rgba(255,255,255,0.55)" },
+const BADGE_STYLE: Record<
+  string,
+  { bg: string; border: string; color: string }
+> = {
+  literasi: {
+    bg: "rgba(168,85,247,0.12)",
+    border: "rgba(168,85,247,0.28)",
+    color: "#c084fc",
+  },
+  kebijakan: {
+    bg: "rgba(16,185,129,0.12)",
+    border: "rgba(16,185,129,0.28)",
+    color: "#34d399",
+  },
+  kesehatan: {
+    bg: "rgba(59,130,246,0.12)",
+    border: "rgba(59,130,246,0.28)",
+    color: "#60a5fa",
+  },
+  guru: {
+    bg: "rgba(46, 125, 50,0.12)",
+    border: "rgba(46, 125, 50,0.28)",
+    color: "#64B5F6",
+  },
+  default: {
+    bg: "rgba(255,255,255,0.07)",
+    border: "rgba(255,255,255,0.14)",
+    color: "rgba(255,255,255,0.55)",
+  },
 };
 
 function getBadge(category: string) {
@@ -64,7 +87,7 @@ export default function ClientArticleList({
   return (
     <div
       className="min-h-screen pt-24 pb-20 relative overflow-hidden"
-      style={{ background: "#050505" }}
+      style={{ background: "var(--color-surface)" }}
     >
       {/* ── Ambient Glowing Mesh ── */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -73,7 +96,7 @@ export default function ClientArticleList({
           className="absolute -top-[8%] right-[-5%] w-[750px] h-[750px] rounded-full"
           style={{
             background:
-              "radial-gradient(circle, rgba(234,88,12,0.13) 0%, rgba(249,115,22,0.04) 50%, transparent 70%)",
+              "radial-gradient(circle, rgba(46, 125, 50,0.13) 0%, rgba(46, 125, 50,0.04) 50%, transparent 70%)",
             mixBlendMode: "screen",
           }}
         />
@@ -100,13 +123,12 @@ export default function ClientArticleList({
           className="absolute top-0 left-0 right-0 h-[320px]"
           style={{
             background:
-              "linear-gradient(180deg, rgba(234,88,12,0.06) 0%, transparent 100%)",
+              "linear-gradient(180deg, rgba(46, 125, 50,0.06) 0%, transparent 100%)",
           }}
         />
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-
         {/* ── Header ── */}
         <div className="text-center mb-12">
           <motion.div
@@ -114,22 +136,23 @@ export default function ClientArticleList({
             animate={{ opacity: 1, scale: 1 }}
             className="inline-flex p-3 rounded-2xl mb-5"
             style={{
-              background: "rgba(249,115,22,0.12)",
-              border: "1px solid rgba(249,115,22,0.25)",
+              background: "rgba(46, 125, 50,0.12)",
+              border: "1px solid rgba(46, 125, 50,0.25)",
             }}
           >
-            <BookOpen className="w-6 h-6" style={{ color: "#fb923c" }} />
+            <BookOpen className="w-6 h-6" style={{ color: "#64B5F6" }} />
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight"
+            className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight"
+            style={{ color: "var(--color-text-dark)" }}
           >
             Artikel &amp;{" "}
             <span
               style={{
-                background: "linear-gradient(120deg, #fb923c 0%, #f97316 100%)",
+                background: "linear-gradient(120deg, #64B5F6 0%, #2E7D32 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -143,7 +166,7 @@ export default function ClientArticleList({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="text-lg max-w-xl mx-auto"
-            style={{ color: "rgba(255,255,255,0.38)" }}
+            style={{ color: "var(--color-text-light)" }}
           >
             Wawasan, riset, dan panduan praktis untuk ekosistem pendidikan
             digital yang sehat.
@@ -159,24 +182,24 @@ export default function ClientArticleList({
             <div
               className="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all"
               style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.10)",
+                background: "#ffffff",
+                border: "1px solid var(--color-border)",
               }}
             >
-              <Search className="w-4 h-4 shrink-0" style={{ color: "rgba(255,255,255,0.25)" }} />
+              <Search className="w-4 h-4 shrink-0 text-gray-400" />
               <input
                 ref={inputRef}
                 type="text"
                 placeholder="Cari artikel..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 bg-transparent outline-none text-sm font-medium text-white placeholder:text-white/25"
+                className="flex-1 bg-transparent outline-none text-sm font-medium placeholder-gray-400"
+                style={{ color: "var(--color-text-dark)" }}
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="shrink-0 transition-colors hover:text-white"
-                  style={{ color: "rgba(255,255,255,0.30)" }}
+                  className="shrink-0 transition-colors text-gray-400 hover:text-gray-600"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -201,14 +224,14 @@ export default function ClientArticleList({
                 style={
                   active
                     ? {
-                        background: "linear-gradient(135deg, #ea580c, #f97316)",
+                        background: "linear-gradient(135deg, #1E88E5, #2E7D32)",
                         color: "white",
-                        boxShadow: "0 0 22px rgba(249,115,22,0.40)",
+                        boxShadow: "0 0 22px rgba(46, 125, 50,0.40)",
                       }
                     : {
-                        background: "rgba(255,255,255,0.04)",
-                        border: "1px solid rgba(255,255,255,0.09)",
-                        color: "rgba(255,255,255,0.40)",
+                        background: "#ffffff",
+                        border: "1px solid var(--color-border)",
+                        color: "var(--color-text-light)",
                       }
                 }
               >
@@ -221,8 +244,7 @@ export default function ClientArticleList({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="ml-2 text-xs font-bold uppercase tracking-widest"
-            style={{ color: "rgba(255,255,255,0.20)" }}
+            className="ml-2 text-xs font-bold uppercase tracking-widest text-gray-400"
           >
             {filtered.length} artikel
           </motion.span>
@@ -240,20 +262,20 @@ export default function ClientArticleList({
               className="mb-10"
             >
               <div className="flex items-center gap-2 mb-5">
-                <TrendingUp className="w-4 h-4" style={{ color: "#fb923c" }} />
+                <TrendingUp className="w-4 h-4" style={{ color: "#64B5F6" }} />
                 <span
                   className="text-xs font-black uppercase tracking-widest"
-                  style={{ color: "#fb923c" }}
+                  style={{ color: "#64B5F6" }}
                 >
                   Terbaru
                 </span>
               </div>
               <Link href={`/artikel/${hero.slug}`} className="group block">
                 <div
-                  className="relative rounded-3xl overflow-hidden transition-all duration-500 group-hover:shadow-[0_0_50px_rgba(249,115,22,0.12)]"
+                  className="relative rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-lg"
                   style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.09)",
+                    background: "#ffffff",
+                    border: "1px solid var(--color-border)",
                   }}
                 >
                   {/* top glow strip */}
@@ -261,23 +283,29 @@ export default function ClientArticleList({
                     className="absolute top-0 left-0 right-0 h-[1px]"
                     style={{
                       background:
-                        "linear-gradient(90deg, transparent, rgba(249,115,22,0.6), transparent)",
+                        "linear-gradient(90deg, transparent, rgba(46, 125, 50,0.6), transparent)",
                     }}
                   />
                   <div className="grid md:grid-cols-[1fr_380px]">
                     {/* Text */}
                     <div className="p-8 md:p-10 flex flex-col justify-between">
                       <div>
-                        <HeroBadge category={hero.category} badge={hero.badge} />
+                        <HeroBadge
+                          category={hero.category}
+                          badge={hero.badge}
+                        />
                         <h2
-                          className="text-2xl md:text-3xl font-extrabold text-white mt-4 mb-4 leading-snug group-hover:text-orange-300 transition-colors"
-                          style={{ letterSpacing: "-0.02em" }}
+                          className="text-2xl md:text-3xl font-extrabold mt-4 mb-4 leading-snug group-hover:text-info-dark transition-colors"
+                          style={{
+                            letterSpacing: "-0.02em",
+                            color: "var(--color-text-dark)",
+                          }}
                         >
                           {hero.title}
                         </h2>
                         <p
                           className="text-[15px] leading-relaxed line-clamp-3"
-                          style={{ color: "rgba(255,255,255,0.38)" }}
+                          style={{ color: "var(--color-text-light)" }}
                         >
                           {hero.excerpt}
                         </p>
@@ -287,7 +315,8 @@ export default function ClientArticleList({
                           <div
                             className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold"
                             style={{
-                              background: "linear-gradient(135deg,#ea580c,#f97316)",
+                              background:
+                                "linear-gradient(135deg,#1E88E5,#2E7D32)",
                               color: "white",
                             }}
                           >
@@ -296,26 +325,25 @@ export default function ClientArticleList({
                           <div>
                             <p
                               className="text-[12px] font-semibold"
-                              style={{ color: "rgba(255,255,255,0.60)" }}
+                              style={{ color: "var(--color-text-dark)" }}
                             >
                               {hero.author}
                             </p>
-                            <p
-                              className="text-[10px]"
-                              style={{ color: "rgba(255,255,255,0.25)" }}
-                            >
+                            <p className="text-[10px] text-gray-400">
                               {hero.date} · {hero.readTime}
                             </p>
                           </div>
                         </div>
                         <div
-                          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-semibold transition-all group-hover:shadow-[0_0_16px_rgba(249,115,22,0.3)]"
+                          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-semibold transition-all group-hover:shadow-[0_0_16px_rgba(46, 125, 50,0.3)]"
                           style={{
-                            background: "linear-gradient(135deg,#ea580c,#f97316)",
+                            background:
+                              "linear-gradient(135deg,#1E88E5,#2E7D32)",
                             color: "white",
                           }}
                         >
-                          Baca <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                          Baca{" "}
+                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                         </div>
                       </div>
                     </div>
@@ -350,20 +378,11 @@ export default function ClientArticleList({
               animate={{ opacity: 1 }}
               className="text-center py-24"
             >
-              <Search
-                className="w-12 h-12 mx-auto mb-4"
-                style={{ color: "rgba(255,255,255,0.12)" }}
-              />
-              <p
-                className="font-semibold text-lg"
-                style={{ color: "rgba(255,255,255,0.30)" }}
-              >
+              <Search className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+              <p className="font-semibold text-lg text-gray-400 hover:text-gray-600">
                 Artikel tidak ditemukan.
               </p>
-              <p
-                className="text-sm mt-1"
-                style={{ color: "rgba(255,255,255,0.18)" }}
-              >
+              <p className="text-sm mt-1 text-gray-400">
                 Coba kata kunci lain atau pilih kategori berbeda.
               </p>
             </motion.div>
@@ -388,44 +407,47 @@ export default function ClientArticleList({
             className="mt-20 rounded-3xl p-10 text-center relative overflow-hidden"
             style={{
               background:
-                "linear-gradient(135deg, rgba(234,88,12,0.09) 0%, rgba(249,115,22,0.05) 100%)",
-              border: "1px solid rgba(249,115,22,0.18)",
+                "linear-gradient(135deg, rgba(46, 125, 50,0.09) 0%, rgba(46, 125, 50,0.05) 100%)",
+              border: "1px solid rgba(46, 125, 50,0.18)",
             }}
           >
             <div
               className="absolute inset-0 rounded-3xl pointer-events-none"
               style={{
                 background:
-                  "radial-gradient(ellipse at 50% 0%, rgba(249,115,22,0.12), transparent 60%)",
+                  "radial-gradient(ellipse at 50% 0%, rgba(46, 125, 50,0.12), transparent 60%)",
               }}
             />
             <div className="relative z-10">
               <div
                 className="inline-flex p-3 rounded-2xl mb-4"
                 style={{
-                  background: "rgba(249,115,22,0.15)",
-                  border: "1px solid rgba(249,115,22,0.30)",
+                  background: "rgba(46, 125, 50,0.15)",
+                  border: "1px solid rgba(46, 125, 50,0.30)",
                 }}
               >
-                <Sparkles className="w-5 h-5" style={{ color: "#fb923c" }} />
+                <Sparkles className="w-5 h-5" style={{ color: "#64B5F6" }} />
               </div>
-              <h3 className="text-2xl font-extrabold text-white mb-2">
+              <h3
+                className="text-2xl font-extrabold mb-2"
+                style={{ color: "var(--color-text-dark)" }}
+              >
                 Ikuti Dampak Nyata
               </h3>
               <p
                 className="mb-6 max-w-sm mx-auto text-sm"
-                style={{ color: "rgba(255,255,255,0.40)" }}
+                style={{ color: "var(--color-text-light)" }}
               >
-                Lihat bagaimana sekolah-sekolah di seluruh Indonesia
+                Lihat bagaimana sekolah-sekolah di seluruh Kota Sidoarjo
                 berpartisipasi dalam gerakan GESAMEGA.
               </p>
               <Link
                 href="/peta"
                 className="inline-flex items-center gap-2 font-bold px-6 py-3 rounded-2xl transition-all"
                 style={{
-                  background: "linear-gradient(135deg, #ea580c, #f97316)",
+                  background: "linear-gradient(135deg, #1E88E5, #2E7D32)",
                   color: "white",
-                  boxShadow: "0 0 28px rgba(249,115,22,0.35)",
+                  boxShadow: "0 0 28px rgba(46, 125, 50,0.35)",
                 }}
               >
                 Lihat Peta Partisipasi <ArrowRight className="w-4 h-4" />
@@ -445,7 +467,11 @@ function HeroBadge({ category, badge }: { category: string; badge: string }) {
   return (
     <span
       className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-widest"
-      style={{ background: s.bg, border: `1px solid ${s.border}`, color: s.color }}
+      style={{
+        background: s.bg,
+        border: `1px solid ${s.border}`,
+        color: s.color,
+      }}
     >
       {badge}
     </span>
@@ -463,10 +489,10 @@ function ArticleCard({ article, index }: { article: any; index: number }) {
     >
       <Link href={`/artikel/${article.slug}`} className="group block h-full">
         <div
-          className="rounded-2xl overflow-hidden h-full flex flex-col transition-all duration-300 group-hover:shadow-[0_0_32px_rgba(249,115,22,0.10)] group-hover:translate-y-[-3px]"
+          className="rounded-2xl overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-md group-hover:translate-y-[-3px]"
           style={{
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.07)",
+            background: "#ffffff",
+            border: "1px solid var(--color-border)",
           }}
         >
           {/* Thumbnail */}
@@ -482,17 +508,15 @@ function ArticleCard({ article, index }: { article: any; index: number }) {
                 className="w-full h-full flex items-center justify-center"
                 style={{ background: "rgba(255,255,255,0.05)" }}
               >
-                <ImageIcon
-                  className="w-8 h-8"
-                  style={{ color: "rgba(255,255,255,0.15)" }}
-                />
+                <ImageIcon className="w-8 h-8 text-gray-300" />
               </div>
             )}
             {/* Overlay gradient */}
             <div
               className="absolute inset-0"
               style={{
-                background: "linear-gradient(to top, rgba(5,5,5,0.7) 0%, rgba(5,5,5,0.1) 60%, transparent 100%)",
+                background:
+                  "linear-gradient(to top, rgba(5,5,5,0.7) 0%, rgba(5,5,5,0.1) 60%, transparent 100%)",
               }}
             />
             {/* Badge over image */}
@@ -514,7 +538,7 @@ function ArticleCard({ article, index }: { article: any; index: number }) {
                 className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-medium backdrop-blur-sm"
                 style={{
                   background: "rgba(5,5,5,0.55)",
-                  border: "1px solid rgba(255,255,255,0.10)",
+                  border: "1px solid var(--color-border)",
                   color: "rgba(255,255,255,0.55)",
                 }}
               >
@@ -527,14 +551,14 @@ function ArticleCard({ article, index }: { article: any; index: number }) {
           {/* Content */}
           <div className="p-5 flex flex-col flex-1">
             <h3
-              className="font-extrabold text-white mb-2 leading-snug line-clamp-2 transition-colors group-hover:text-orange-400"
-              style={{ fontSize: "15px" }}
+              className="font-extrabold mb-2 leading-snug line-clamp-2 transition-colors group-hover:text-info"
+              style={{ fontSize: "15px", color: "var(--color-text-dark)" }}
             >
               {article.title}
             </h3>
             <p
               className="text-[13px] leading-relaxed line-clamp-2 flex-1 mb-4"
-              style={{ color: "rgba(255,255,255,0.32)" }}
+              style={{ color: "var(--color-text-light)" }}
             >
               {article.excerpt}
             </p>
@@ -542,13 +566,13 @@ function ArticleCard({ article, index }: { article: any; index: number }) {
             {/* Footer */}
             <div
               className="flex items-center justify-between pt-4"
-              style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+              style={{ borderTop: "1px solid var(--color-border)" }}
             >
               <div className="flex items-center gap-2">
                 <div
                   className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0"
                   style={{
-                    background: "linear-gradient(135deg,#ea580c,#f97316)",
+                    background: "linear-gradient(135deg,#1E88E5,#2E7D32)",
                     color: "white",
                   }}
                 >
@@ -557,22 +581,19 @@ function ArticleCard({ article, index }: { article: any; index: number }) {
                 <div>
                   <p
                     className="text-[11px] font-semibold leading-none"
-                    style={{ color: "rgba(255,255,255,0.55)" }}
+                    style={{ color: "var(--color-text-dark)" }}
                   >
                     {article.author}
                   </p>
                   <p
                     className="text-[10px] leading-none mt-0.5"
-                    style={{ color: "rgba(255,255,255,0.22)" }}
+                    style={{ color: "var(--color-text-light)" }}
                   >
                     {article.date}
                   </p>
                 </div>
               </div>
-              <ArrowRight
-                className="w-4 h-4 transition-all group-hover:text-orange-400 group-hover:translate-x-0.5"
-                style={{ color: "rgba(255,255,255,0.15)" }}
-              />
+              <ArrowRight className="w-4 h-4 transition-all group-hover:text-info group-hover:translate-x-0.5 text-gray-300" />
             </div>
           </div>
         </div>

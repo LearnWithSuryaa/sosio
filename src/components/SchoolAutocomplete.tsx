@@ -36,10 +36,10 @@ const statusConfig: Record<string, { label: string; dotColor: string; badgeBg: s
   },
   belum: {
     label: "Belum Ikut",
-    dotColor: "rgba(255,255,255,0.30)",
-    badgeBg: "rgba(255,255,255,0.07)",
-    badgeText: "rgba(255,255,255,0.45)",
-    badgeBorder: "rgba(255,255,255,0.12)",
+    dotColor: "#CFD8DC",
+    badgeBg: "var(--color-surface-alt)",
+    badgeText: "#607D8B",
+    badgeBorder: "#ECEFF1",
     icon: Circle,
   },
 };
@@ -91,7 +91,7 @@ export function SchoolAutocomplete({
       <div className="relative">
         <MapPin
           className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-          style={{ color: focused ? "#f97316" : "rgba(255,255,255,0.35)" }}
+          style={{ color: focused ? "var(--color-primary)" : "#90A4AE" }}
         />
         <input
           required
@@ -114,18 +114,18 @@ export function SchoolAutocomplete({
             borderRadius: "0.75rem",
             fontSize: "0.875rem",
             fontWeight: 500,
-            color: "#ffffff",
+            color: "var(--color-text-dark)",
             background: hasError
-              ? "rgba(239,68,68,0.08)"
+              ? "#fef2f2"
               : focused
-              ? "rgba(255,255,255,0.08)"
-              : "rgba(255,255,255,0.06)",
+              ? "#ffffff"
+              : "var(--color-surface)",
             border: hasError
               ? "1px solid rgba(239,68,68,0.40)"
               : focused
-              ? "1px solid rgba(249,115,22,0.60)"
-              : "1px solid rgba(255,255,255,0.12)",
-            boxShadow: focused ? "0 0 0 4px rgba(249,115,22,0.10)" : "none",
+              ? "1px solid var(--color-primary)"
+              : "1px solid #CFD8DC",
+            boxShadow: focused ? "0 0 0 4px rgba(46, 125, 50, 0.15)" : "none",
             outline: "none",
             transition: "all 0.2s ease",
           }}
@@ -134,7 +134,7 @@ export function SchoolAutocomplete({
         {searching && (
           <div
             className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 animate-spin"
-            style={{ borderColor: "rgba(255,255,255,0.15)", borderTopColor: "#f97316" }}
+            style={{ borderColor: "#CFD8DC", borderTopColor: "var(--color-primary)" }}
           />
         )}
       </div>
@@ -144,10 +144,10 @@ export function SchoolAutocomplete({
         <div
           className="absolute z-50 w-full mt-2 overflow-hidden"
           style={{
-            background: "#0e0e0e",
-            border: "1px solid rgba(255,255,255,0.10)",
+            background: "#ffffff",
+            border: "1px solid #ECEFF1",
             borderRadius: "1rem",
-            boxShadow: "0 24px 48px rgba(0,0,0,0.60), 0 0 0 1px rgba(255,255,255,0.04)",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.08), 0 0 0 1px #ECEFF1",
           }}
         >
           {filtered.length > 0 ? (
@@ -156,14 +156,14 @@ export function SchoolAutocomplete({
               <li
                 className="flex items-center gap-2 px-4 py-2.5"
                 style={{
-                  background: "rgba(255,255,255,0.03)",
-                  borderBottom: "1px solid rgba(255,255,255,0.07)",
+                  background: "var(--color-surface)",
+                  borderBottom: "1px solid #ECEFF1",
                 }}
               >
-                <Search className="w-3 h-3" style={{ color: "rgba(255,255,255,0.30)" }} />
+                <Search className="w-3 h-3" style={{ color: "#90A4AE" }} />
                 <span
                   className="text-[10px] font-black uppercase tracking-widest"
-                  style={{ color: "rgba(255,255,255,0.30)" }}
+                  style={{ color: "#90A4AE" }}
                 >
                   {searching ? "Mencari..." : `Sekolah Terdaftar (${filtered.length})`}
                 </span>
@@ -178,10 +178,10 @@ export function SchoolAutocomplete({
                     key={school.id}
                     onClick={() => { onChange(school.nama_sekolah, school); setIsOpen(false); }}
                     className="flex items-center gap-3 px-4 py-3 cursor-pointer transition-all duration-150"
-                    style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
+                    style={{ borderBottom: "1px solid var(--color-surface-alt)" }}
                     onMouseEnter={e => {
                       Object.assign((e.currentTarget as HTMLLIElement).style, {
-                        background: "rgba(249,115,22,0.10)",
+                        background: "var(--color-surface-alt)",
                       });
                     }}
                     onMouseLeave={e => {
@@ -202,7 +202,7 @@ export function SchoolAutocomplete({
                     {/* Name */}
                     <span
                       className="text-sm font-semibold flex-1 leading-tight"
-                      style={{ color: "rgba(255,255,255,0.85)" }}
+                      style={{ color: "var(--color-text-dark)" }}
                     >
                       {school.nama_sekolah}
                     </span>
@@ -226,14 +226,14 @@ export function SchoolAutocomplete({
             <div className="px-5 py-6 text-center">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3"
-                style={{ background: "rgba(255,255,255,0.05)" }}
+                style={{ background: "var(--color-surface-alt)" }}
               >
-                <Search className="w-5 h-5" style={{ color: "rgba(255,255,255,0.20)" }} />
+                <Search className="w-5 h-5" style={{ color: "#CFD8DC" }} />
               </div>
-              <p className="text-sm font-bold mb-1" style={{ color: "rgba(255,255,255,0.55)" }}>
+              <p className="text-sm font-bold mb-1" style={{ color: "#607D8B" }}>
                 Sekolah tidak ditemukan
               </p>
-              <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.28)" }}>
+              <p className="text-xs leading-relaxed" style={{ color: "#90A4AE" }}>
                 Pastikan nama sesuai nama resmi yang terdaftar di database nasional.
               </p>
             </div>

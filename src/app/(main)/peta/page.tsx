@@ -7,12 +7,16 @@ export const revalidate = 60; // fallback ISR: 1 menit (revalidatePath/revalidat
 
 const getCachedMapData = unstable_cache(
   async () => {
-    const [{ count: t }, { count: k }, { data: schools }] = await Promise.all([
+    const [{ count: t }, { count: k }, { count: s }, { data: schools }] = await Promise.all([
       supabase.from("schools").select("*", { count: "exact", head: true }),
       supabase
         .from("schools")
         .select("*", { count: "exact", head: true })
         .eq("status", "komitmen"),
+      supabase
+        .from("schools")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "survei"),
       supabase
         .from("schools")
         .select(
@@ -27,6 +31,7 @@ const getCachedMapData = unstable_cache(
     return {
       total: t || 0,
       komitmen: k || 0,
+      survei: s || 0,
       schools: schools || [],
     };
   },
@@ -50,7 +55,7 @@ export default async function PetaPage() {
     >
       <PetaClient
         schools={data.schools}
-        counts={{ total: data.total, komitmen: data.komitmen }}
+        counts={{ total: data.total, komitmen: data.komitmen, survei: data.survei }}
       />
     </Suspense>
   );
