@@ -168,21 +168,13 @@ export default function PetaKomponen({ schoolId, schools }: Props) {
             <Popup>
               <div className="text-center font-sans">
                 <h3 className="font-bold text-gray-900 mb-1">{school.nama_sekolah}</h3>
-                <span className={`inline-block px-2 py-1 text-xs rounded-md uppercase tracking-wider font-semibold ${
+                <span className={`inline-block px-2 py-1 text-[10px] rounded-md uppercase tracking-wider font-bold ${
                   school.status === 'komitmen' ? 'bg-emerald-100 text-emerald-700' : 
-                  school.status === 'survei' ? 'bg-surface-alt text-text-dark' : 
-                  'bg-gray-100 text-gray-700'
+                  school.status === 'survei' ? 'bg-orange-100 text-orange-700' : 
+                  'bg-slate-100 text-slate-700'
                 }`}>
-                  {school.status}
+                  {school.status === 'komitmen' ? 'Sudah Komitmen' : school.status === 'survei' ? 'Sudah Survei' : 'Belum Ikut'}
                 </span>
-
-                {school.status !== 'komitmen' && (
-                  <div className="mt-4 border-t pt-3">
-                     <a href="/komitmen" className="block text-xs bg-primary text-white px-3 py-2 rounded-md hover:bg-primary transition">
-                       Sahkan Komitmen
-                     </a>
-                  </div>
-                )}
               </div>
             </Popup>
           </Marker>

@@ -66,6 +66,8 @@ export function PetaClient({ schools, counts }: PetaClientProps) {
   const komitmenPct =
     counts.total > 0 ? Math.round((counts.komitmen / counts.total) * 100) : 0;
 
+  const totalSurveiSelesai = counts.survei + counts.komitmen;
+
   const belumIkutCount = Math.max(
     0,
     counts.total - counts.komitmen - counts.survei,
@@ -148,7 +150,6 @@ export function PetaClient({ schools, counts }: PetaClientProps) {
   return (
     <div className="min-h-screen relative overflow-hidden bg-slate-50">
       <div className="relative z-10 max-w-7xl mx-auto px-4 pt-28 pb-16">
-
         {/* Success alert */}
         {(from === "survei" || from === "komitmen") && (
           <div className="max-w-2xl mx-auto mb-8 flex items-center gap-3 px-5 py-4 rounded-2xl bg-emerald-50 border border-emerald-200">
@@ -241,13 +242,13 @@ export function PetaClient({ schools, counts }: PetaClientProps) {
             </div>
             <div>
               <div className="text-3xl font-black text-slate-900">
-                {counts.survei}
+                {totalSurveiSelesai}
               </div>
               <div className="text-sm font-semibold text-slate-700">
                 Sudah Survei
               </div>
               <div className="text-xs text-orange-500 font-medium mt-0.5">
-                Survei telah dilakukan
+                Total yang berpartisipasi mengisi survei
               </div>
             </div>
           </div>
@@ -360,7 +361,7 @@ export function PetaClient({ schools, counts }: PetaClientProps) {
                   </span>
                 </div>
                 <span className="text-orange-600 font-bold text-sm">
-                  {counts.survei} Sekolah
+                  {totalSurveiSelesai} Sekolah
                 </span>
               </div>
 
@@ -418,7 +419,10 @@ export function PetaClient({ schools, counts }: PetaClientProps) {
         </div>
 
         {/* ── Bottom Info Strip ── */}
-        <div id="tour-bottom-info" className="bg-white rounded-2xl border border-slate-100 shadow-sm p-2 flex flex-col md:flex-row relative overflow-hidden">
+        <div
+          id="tour-bottom-info"
+          className="bg-white rounded-2xl border border-slate-100 shadow-sm p-2 flex flex-col md:flex-row relative overflow-hidden"
+        >
           <div className="flex-1 flex items-center gap-5 py-5 px-6 border-b md:border-b-0 md:border-r border-slate-100">
             <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
               <Calendar className="w-6 h-6" />
