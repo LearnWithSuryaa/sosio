@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { JourneyBar } from "@/components/JourneyBar";
+
 import { TourGuide } from "@/components/TourGuide";
 import Link from "next/link";
 import Image from "next/image";
@@ -148,12 +148,6 @@ export function PetaClient({ schools, counts }: PetaClientProps) {
   return (
     <div className="min-h-screen relative overflow-hidden bg-slate-50">
       <div className="relative z-10 max-w-7xl mx-auto px-4 pt-28 pb-16">
-        {/* Journey bar */}
-        {(from === "survei" || from === "komitmen") && (
-          <div className="mb-8" id="tour-journey-bar">
-            <JourneyBar />
-          </div>
-        )}
 
         {/* Success alert */}
         {(from === "survei" || from === "komitmen") && (

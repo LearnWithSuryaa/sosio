@@ -5,7 +5,6 @@ import SignatureCanvas from "react-signature-canvas";
 import { supabase } from "@/lib/supabase";
 import { generateKomitmenPDF } from "@/lib/pdfGenerator";
 import { PenTool, Lock, ShieldCheck, AlertTriangle } from "lucide-react";
-import { JourneyBar } from "@/components/JourneyBar";
 import { TourGuide } from "@/components/TourGuide";
 import { SchoolAutocomplete } from "@/components/SchoolAutocomplete";
 import { useRouter } from "next/navigation";
