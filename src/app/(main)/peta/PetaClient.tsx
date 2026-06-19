@@ -104,6 +104,14 @@ export function PetaClient({ schools, counts }: PetaClientProps) {
           "Rincian kalkulasi status sekolah beserta informasi waktu pembaruan data terakhir.",
       },
     },
+    {
+      element: "#tour-bottom-info",
+      popover: {
+        title: "Informasi Sistem",
+        description:
+          "Detail mengenai jadwal pembaruan data, cakupan wilayah, dan status operasional sistem saat ini.",
+      },
+    },
   ];
 
   if (from === "survei" || from === "komitmen") {
@@ -416,7 +424,7 @@ export function PetaClient({ schools, counts }: PetaClientProps) {
         </div>
 
         {/* ── Bottom Info Strip ── */}
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-2 flex flex-col md:flex-row relative overflow-hidden">
+        <div id="tour-bottom-info" className="bg-white rounded-2xl border border-slate-100 shadow-sm p-2 flex flex-col md:flex-row relative overflow-hidden">
           <div className="flex-1 flex items-center gap-5 py-5 px-6 border-b md:border-b-0 md:border-r border-slate-100">
             <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
               <Calendar className="w-6 h-6" />

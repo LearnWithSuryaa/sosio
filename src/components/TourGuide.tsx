@@ -11,10 +11,17 @@ interface TourGuideProps {
 }
 
 export function TourGuide({ steps, pageName }: TourGuideProps) {
-  const [driverObj, setDriverObj] = useState<any>(null);
+  const handleStartTour = () => {
+    // Only include steps where the element actually exists in the DOM right now
+    const activeSteps = steps.filter((step) => {
+      if (typeof step.element === "string") {
+        return !!document.querySelector(step.element);
+      }
+      return true; // if it's an HTMLElement or undefined, keep it
+    });
 
-  useEffect(() => {
-    // Prevent SSR errors, load driver only on client
+    if (activeSteps.length === 0) return;
+
     const d = driver({
       showProgress: true,
       nextBtnText: "Lanjut",
@@ -22,15 +29,16 @@ export function TourGuide({ steps, pageName }: TourGuideProps) {
       doneBtnText: "Selesai",
       progressText: "Langkah {{current}} dari {{total}}",
       popoverClass: "gesamega-tour-theme", // Custom theme via globals.css
-      steps: steps,
+      steps: activeSteps,
       smoothScroll: true,
     });
-    setDriverObj(d);
-  }, [steps]);
+
+    d.drive();
+  };
 
   return (
     <button
-      onClick={() => driverObj?.drive()}
+      onClick={handleStartTour}
       className="fixed bottom-8 right-8 z-9999 w-14 h-14 bg-white border border-slate-200 text-blue-600 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center hover:shadow-[0_12px_40px_rgb(0,0,0,0.16)] hover:-translate-y-1 active:scale-95 transition-all duration-300 group"
       aria-label={`Tampilkan Panduan ${pageName}`}
     >

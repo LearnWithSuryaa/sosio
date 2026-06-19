@@ -23,7 +23,29 @@ export function Navbar() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
 
-  const isHiddenPage = pathname === "/kuis" || pathname === "/survei";
+  const [hasilLoggedIn, setHasilLoggedIn] = useState(false);
+
+  // Cek apakah user sudah login di halaman /hasil
+  useEffect(() => {
+    if (pathname !== "/hasil") return;
+    const checkSession = () => {
+      setHasilLoggedIn(!!sessionStorage.getItem("hasil_session"));
+    };
+    checkSession();
+    // Reaktif saat login/logout terjadi di tab yang sama
+    window.addEventListener("storage", checkSession);
+    // Poll ringan untuk menangkap perubahan sessionStorage (same-tab)
+    const interval = setInterval(checkSession, 500);
+    return () => {
+      window.removeEventListener("storage", checkSession);
+      clearInterval(interval);
+    };
+  }, [pathname]);
+
+  const isHiddenPage =
+    pathname === "/kuis" ||
+    pathname === "/survei" ||
+    (pathname === "/hasil" && hasilLoggedIn);
 
   const primaryLinks = [
     { href: "/", label: "Beranda" },

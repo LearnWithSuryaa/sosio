@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import { SchoolAutocomplete } from "@/components/SchoolAutocomplete";
+import { TourGuide } from "@/components/TourGuide";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Lock,
@@ -32,7 +33,10 @@ import {
   AlertOctagon,
   ClipboardList,
   Megaphone,
+  Newspaper,
+  Info,
   Trophy,
+  Cpu,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -63,6 +67,10 @@ interface QuizResult {
   qualification: string;
   indicator_color: string;
   description: string;
+  created_at: string;
+}
+
+interface CommitmentData {
   created_at: string;
 }
 
@@ -292,11 +300,322 @@ function getRecommendations(
   return recs;
 }
 
+// ─── Smart Analysis Helpers ──────────────────────────────────────────────────
+
+function getHealthConfig(key: string, val: string) {
+  if (!val || val === "—") return null;
+  if (key === "1") {
+    if (val.includes("Jarang") || val.includes("Tidak pernah"))
+      return { label: "Rendah", color: "#34d399", bg: "rgba(16,185,129,0.10)", border: "rgba(16,185,129,0.20)", emoji: "🟢" };
+    if (val.includes("Kadang") || val.includes("Beberapa"))
+      return { label: "Sedang", color: "#fbbf24", bg: "rgba(245,158,11,0.10)", border: "rgba(245,158,11,0.20)", emoji: "🟡" };
+    return { label: "Tinggi", color: "#f87171", bg: "rgba(239,68,68,0.08)", border: "rgba(239,68,68,0.20)", emoji: "🔴" };
+  }
+  if (key === "2") {
+    if (val.includes("konsisten") && !val.includes("kurang"))
+      return { label: "Konsisten", color: "#34d399", bg: "rgba(16,185,129,0.10)", border: "rgba(16,185,129,0.20)", emoji: "🟢" };
+    if (val.includes("kurang") || val.includes("Netral"))
+      return { label: "Kurang", color: "#fbbf24", bg: "rgba(245,158,11,0.10)", border: "rgba(245,158,11,0.20)", emoji: "🟡" };
+    return { label: "Tidak Ada", color: "#f87171", bg: "rgba(239,68,68,0.08)", border: "rgba(239,68,68,0.20)", emoji: "🔴" };
+  }
+  if (val.includes("baik") || val.includes("Setuju"))
+    return { label: "Sudah", color: "#34d399", bg: "rgba(16,185,129,0.10)", border: "rgba(16,185,129,0.20)", emoji: "🟢" };
+  if (val.includes("Sebagian") || val.includes("Netral"))
+    return { label: "Sebagian", color: "#fbbf24", bg: "rgba(245,158,11,0.10)", border: "rgba(245,158,11,0.20)", emoji: "🟡" };
+  return { label: "Belum", color: "#f87171", bg: "rgba(239,68,68,0.08)", border: "rgba(239,68,68,0.20)", emoji: "🔴" };
+}
+
+function generateNarrative(
+  score: number,
+  sc: ReturnType<typeof getScoreConfig>,
+  latestSurvey: SurveyResult | null,
+  quizzes: QuizResult[],
+  school: SchoolData,
+): string {
+  const parts: string[] = [];
+  parts.push(
+    `${school.nama_sekolah} berada di fase **${sc.label}** dengan skor kesiapan digital **${score}/100**.`,
+  );
+  if (latestSurvey) {
+    const j = latestSurvey.jawaban;
+    const v1 = j["1"] || "";
+    const v2 = j["2"] || "";
+    const v4 = j["4"] || "";
+    if (v1.includes("Sering") || v1.includes("Setiap"))
+      parts.push(
+        "Penggunaan gadget di luar jam belajar **sangat sering terjadi** — tantangan utama yang perlu ditangani segera.",
+      );
+    else if (v1.includes("Kadang") || v1.includes("Beberapa"))
+      parts.push(
+        "Penggunaan gadget di luar jam belajar **masih terjadi sesekali** dan perlu pemantauan lebih ketat.",
+      );
+    else if (v1)
+      parts.push(
+        "Penggunaan gadget di luar jam belajar sudah **terkontrol dengan baik**.",
+      );
+    if (v2.includes("konsisten") && !v2.includes("kurang"))
+      parts.push("Aturan penggunaan HP **diterapkan secara konsisten**.");
+    else if (v2.includes("kurang") || v2.includes("Netral"))
+      parts.push("Konsistensi penegakan aturan HP **masih perlu diperkuat**.");
+    else if (v2)
+      parts.push(
+        "Aturan penggunaan HP **belum diterapkan** — tindakan prioritas diperlukan.",
+      );
+    if (v4.includes("baik") || v4.includes("Setuju"))
+      parts.push(
+        "Sosialisasi kebijakan digital kepada warga sekolah sudah **berjalan baik**.",
+      );
+    else if (v4.includes("Sebagian") || v4.includes("Netral"))
+      parts.push(
+        "Sosialisasi kebijakan digital **baru menjangkau sebagian** warga sekolah.",
+      );
+    else if (v4)
+      parts.push("Sosialisasi dampak digital **belum dilakukan menyeluruh**.");
+  }
+  const total = quizzes.length;
+  if (total > 0) {
+    const watchCount = quizzes.filter(
+      (q) =>
+        q.result_category === "Darurat Digital" ||
+        q.result_category === "Perlu Pendampingan",
+    ).length;
+    const champCount = quizzes.filter(
+      (q) =>
+        q.result_category === "Sangat Bijak" || q.result_category === "Bijak",
+    ).length;
+    if (watchCount > 0)
+      parts.push(
+        `Dari **${total} peserta kuis**, **${watchCount} siswa (${Math.round((watchCount / total) * 100)}%)** memerlukan pendampingan perilaku digital.`,
+      );
+    else if (champCount > 0)
+      parts.push(
+        `Dari **${total} peserta kuis**, mayoritas (**${champCount} siswa**) menunjukkan literasi digital yang positif.`,
+      );
+    else
+      parts.push(
+        `Terdapat **${total} peserta kuis** refleksi digital dari sekolah ini.`,
+      );
+  } else {
+    parts.push("**Belum ada siswa** yang mengikuti kuis refleksi digital.");
+  }
+  if (school.status === "komitmen")
+    parts.push(
+      "Sekolah ini telah **resmi berkomitmen** dalam program Komitmen Digital Nasional.",
+    );
+  else
+    parts.push(
+      "Sekolah belum mengambil **Komitmen Digital Nasional** — pertimbangkan untuk mendaftar.",
+    );
+  return parts.join(" ");
+}
+
+function calcDimensions(
+  latestSurvey: SurveyResult | null,
+  quizzes: QuizResult[],
+  school: SchoolData,
+) {
+  const j = latestSurvey?.jawaban || {};
+  const v1 = (j["1"] || "").toLowerCase();
+  const v2 = (j["2"] || "").toLowerCase();
+  const v4 = (j["4"] || "").toLowerCase();
+
+  // Regulasi: Konsistensi aturan
+  const regulasi = !latestSurvey
+    ? 0
+    : v2.includes("sangat") && v2.includes("konsisten")
+      ? 100
+      : v2.includes("konsisten") && !v2.includes("kurang")
+        ? 80
+        : v2.includes("kurang") || v2.includes("sebagian")
+          ? 50
+          : v2
+            ? 20
+            : 0;
+
+  // Literasi: Sosialisasi kebijakan
+  const literasi = !latestSurvey
+    ? 0
+    : v4.includes("sangat baik") || v4.includes("sangat setuju")
+      ? 100
+      : v4.includes("baik") || v4.includes("setuju")
+        ? 80
+        : v4.includes("sebagian") || v4.includes("netral")
+          ? 50
+          : v4
+            ? 20
+            : 0;
+
+  // Kontrol: Frekuensi gadget di luar belajar (makin jarang makin baik)
+  const kontrol = !latestSurvey
+    ? 0
+    : v1.includes("tidak pernah") || v1.includes("sangat jarang")
+      ? 100
+      : v1.includes("jarang")
+        ? 80
+        : v1.includes("kadang") || v1.includes("beberapa")
+          ? 50
+          : v1.includes("sering") || v1.includes("setiap")
+            ? 20
+            : 0;
+
+  // Siswa: Persentase siswa Bijak/Sangat Bijak (skala absolut)
+  const total = quizzes.length;
+  const champCount = quizzes.filter(
+    (q) =>
+      q.result_category === "Sangat Bijak" ||
+      q.result_category === "Bijak" ||
+      q.result_category.includes("Champion"),
+  ).length;
+  const kesadaran = total > 0 ? Math.round((champCount / total) * 100) : 0;
+
+  // Komitmen: Status pendaftaran program
+  const komitmen =
+    school.status === "komitmen" ? 100 : school.status === "survei" ? 60 : 20;
+
+  return [
+    {
+      label: "Regulasi",
+      value: regulasi,
+      desc: "Konsistensi penerapan aturan penggunaan gawai di lingkungan sekolah.",
+    },
+    {
+      label: "Literasi",
+      value: literasi,
+      desc: "Upaya edukasi dan sosialisasi kebijakan digital kepada warga sekolah.",
+    },
+    {
+      label: "Kontrol",
+      value: kontrol,
+      desc: "Tingkat pembatasan frekuensi penggunaan gawai di luar jam belajar.",
+    },
+    {
+      label: "Siswa",
+      value: kesadaran,
+      desc: "Persentase siswa dengan literasi digital positif berdasarkan kuis refleksi.",
+    },
+    {
+      label: "Komitmen",
+      value: komitmen,
+      desc: "Status partisipasi sekolah dalam program Komitmen Digital Nasional.",
+    },
+  ];
+}
+
+// ─── Radar Chart Component ────────────────────────────────────────────────────
+
+function RadarChart({ dims }: { dims: { label: string; value: number }[] }) {
+  const cx = 130,
+    cy = 130,
+    r = 90;
+  const n = dims.length;
+  const angles = dims.map((_, i) => (i * 2 * Math.PI) / n - Math.PI / 2);
+  const pt = (angle: number, ratio: number) => ({
+    x: cx + ratio * r * Math.cos(angle),
+    y: cy + ratio * r * Math.sin(angle),
+  });
+  const toPath = (pts: { x: number; y: number }[]) =>
+    pts
+      .map(
+        (p, i) =>
+          `${i === 0 ? "M" : "L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`,
+      )
+      .join(" ") + " Z";
+  const levels = [0.25, 0.5, 0.75, 1];
+  const avg = dims.reduce((s, d) => s + d.value, 0) / n;
+  const strokeColor =
+    avg >= 70 ? "#34d399" : avg >= 40 ? "#fbbf24" : "#f87171";
+  const fillColor =
+    avg >= 70
+      ? "rgba(52,211,153,0.15)"
+      : avg >= 40
+        ? "rgba(251,191,36,0.12)"
+        : "rgba(248,113,113,0.12)";
+  const dataPoints = angles.map((a, i) =>
+    pt(a, Math.max(dims[i].value, 3) / 100),
+  );
+  const dataPath = toPath(dataPoints);
+  return (
+    <svg viewBox="-28 -18 316 296" className="w-full max-w-50 mx-auto">
+      {levels.map((lvl, li) => (
+        <path
+          key={li}
+          d={toPath(angles.map((a) => pt(a, lvl)))}
+          fill="none"
+          stroke="#ECEFF1"
+          strokeWidth={li === 3 ? 1.5 : 1}
+        />
+      ))}
+      {angles.map((a, i) => {
+        const outer = pt(a, 1);
+        return (
+          <line
+            key={i}
+            x1={cx}
+            y1={cy}
+            x2={outer.x.toFixed(1)}
+            y2={outer.y.toFixed(1)}
+            stroke="#ECEFF1"
+            strokeWidth="1"
+          />
+        );
+      })}
+      <path
+        d={dataPath}
+        fill={fillColor}
+        stroke={strokeColor}
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      {dataPoints.map((p, i) => (
+        <circle
+          key={i}
+          cx={p.x.toFixed(1)}
+          cy={p.y.toFixed(1)}
+          r="4"
+          fill={strokeColor}
+        />
+      ))}
+      {angles.map((a, i) => {
+        const lp = pt(a, 1.32);
+        return (
+          <g key={i}>
+            <text
+              x={lp.x.toFixed(1)}
+              y={(lp.y - 6).toFixed(1)}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fontSize="9"
+              fill="#607D8B"
+              fontWeight="700"
+              fontFamily="system-ui, sans-serif"
+            >
+              {dims[i].label}
+            </text>
+            <text
+              x={lp.x.toFixed(1)}
+              y={(lp.y + 7).toFixed(1)}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fontSize="10"
+              fill={strokeColor}
+              fontWeight="800"
+              fontFamily="system-ui, sans-serif"
+            >
+              {dims[i].value}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
 // ─── Nav Sections ─────────────────────────────────────────────────────────────
 
 const NAV_ITEMS = [
   { id: "profil", label: "Profil", icon: School },
   { id: "survei", label: "Survei", icon: FileText },
+  { id: "dimensi", label: "Dimensi", icon: BarChart3 },
   { id: "kuis", label: "Kuis", icon: Brain },
   { id: "rekomendasi", label: "Rekomendasi", icon: Star },
 ];
@@ -751,13 +1070,14 @@ function Dashboard({
 }) {
   const [surveys, setSurveys] = useState<SurveyResult[]>([]);
   const [quizzes, setQuizzes] = useState<QuizResult[]>([]);
+  const [commitment, setCommitment] = useState<CommitmentData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeNav, setActiveNav] = useState("profil");
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     async function fetch() {
-      const [{ data: sv }, { data: qz }] = await Promise.all([
+      const [{ data: sv }, { data: qz }, { data: cm }] = await Promise.all([
         supabase
           .from("survey_results")
           .select("id, school_id, nama, jawaban, created_at")
@@ -766,12 +1086,20 @@ function Dashboard({
           .limit(10),
         supabase
           .from("quiz_results")
-          .select("id, user_name, result_category")
+          .select(
+            "id, user_name, result_category, answers, description, indicator_color, qualification, created_at",
+          )
           .eq("school_id", school.id)
           .order("created_at", { ascending: false }),
+        supabase
+          .from("commitments")
+          .select("created_at")
+          .eq("school_id", school.id)
+          .maybeSingle(),
       ]);
       setSurveys((sv as SurveyResult[]) || []);
       setQuizzes((qz as QuizResult[]) || []);
+      setCommitment(cm as CommitmentData | null);
       setLoading(false);
     }
     fetch();
@@ -823,6 +1151,12 @@ function Dashboard({
       q.result_category.includes("Waspada") ||
       q.result_category.includes("Addicted"),
   ).length;
+
+  const narrative = latestSurvey
+    ? generateNarrative(score, sc, latestSurvey, quizzes, school)
+    : "";
+  const narrativeParts = narrative.split(/\*\*(.*?)\*\*/g);
+  const dims = calcDimensions(latestSurvey, quizzes, school);
 
   const fade = {
     initial: { opacity: 0, y: 20 },
@@ -907,7 +1241,7 @@ function Dashboard({
                 Laporan
               </p>
               <p
-                className="text-xs font-bold truncate max-w-[180px]"
+                className="text-xs font-bold truncate max-w-45"
                 style={{ color: "#607D8B" }}
               >
                 {school.nama_sekolah}
@@ -1129,6 +1463,59 @@ function Dashboard({
               </div>
             </motion.div>
 
+            {/* Analisis Naratif Cerdas */}
+            {narrative && (
+              <motion.div
+                {...fade}
+                transition={{ duration: 0.5, delay: 0.12 }}
+                className="rounded-3xl px-6 py-5"
+                style={{
+                  background: sc.bg,
+                  border: `1px solid ${sc.border}`,
+                }}
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+                    style={{ background: sc.glow }}
+                  >
+                    <Cpu
+                      className="w-4 h-4"
+                      style={{ color: sc.textColor }}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className="text-[10px] font-black uppercase tracking-widest mb-2"
+                      style={{ color: sc.textColor }}
+                    >
+                      Analisis Cerdas
+                    </p>
+                    <p
+                      className="text-sm leading-relaxed"
+                      style={{ color: "#607D8B" }}
+                    >
+                      {narrativeParts.map((part, idx) =>
+                        idx % 2 === 1 ? (
+                          <strong
+                            key={idx}
+                            style={{
+                              color: "var(--color-text-dark)",
+                              fontWeight: 800,
+                            }}
+                          >
+                            {part}
+                          </strong>
+                        ) : (
+                          <span key={idx}>{part}</span>
+                        )
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
             {/* ── Section: Profil ── */}
             <Section
               id="profil"
@@ -1257,6 +1644,107 @@ function Dashboard({
                   </span>
                 </motion.div>
               </div>
+
+              {/* ── Timeline Perjalanan Sekolah ── */}
+              <motion.div
+                {...fade}
+                transition={{ duration: 0.4, delay: 0.22 }}
+                className="mt-5 pt-5"
+                style={{ borderTop: "1px solid #ECEFF1" }}
+              >
+                <p
+                  className="text-[10px] font-black uppercase tracking-widest mb-4"
+                  style={{ color: "#90A4AE" }}
+                >
+                  Perjalanan Sekolah
+                </p>
+                <div className="flex items-start">
+                  {[
+                    {
+                      label: "Terdaftar",
+                      date: school.created_at,
+                      done: true,
+                      active: school.status === "belum",
+                    },
+                    {
+                      label: "Survei Dikirim",
+                      date: school.submit_timestamp,
+                      done: !!school.submit_timestamp,
+                      active: school.status === "survei",
+                    },
+                    {
+                      label: "Komitmen",
+                      date: commitment?.created_at ?? null,
+                      done: school.status === "komitmen",
+                      active: school.status === "komitmen",
+                    },
+                  ].map((step, i, arr) => (
+                    <div
+                      key={step.label}
+                      className="flex-1 flex flex-col items-center"
+                    >
+                      <div className="flex items-center w-full">
+                        {i > 0 && (
+                          <div
+                            className="flex-1 h-0.5"
+                            style={{
+                              background: step.done
+                                ? "var(--color-primary)"
+                                : "#ECEFF1",
+                            }}
+                          />
+                        )}
+                        <div
+                          className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 z-10 transition-all duration-300"
+                          style={{
+                            background: step.done
+                              ? "linear-gradient(135deg, var(--color-info), var(--color-primary))"
+                              : "#ECEFF1",
+                            boxShadow: step.active
+                              ? "0 0 0 5px rgba(46,125,50,0.15)"
+                              : "none",
+                          }}
+                        >
+                          {step.done && (
+                            <CheckCircle2
+                              className="w-3 h-3 text-white"
+                              style={{ strokeWidth: 3 }}
+                            />
+                          )}
+                        </div>
+                        {i < arr.length - 1 && (
+                          <div
+                            className="flex-1 h-0.5"
+                            style={{
+                              background: arr[i + 1].done
+                                ? "var(--color-primary)"
+                                : "#ECEFF1",
+                            }}
+                          />
+                        )}
+                      </div>
+                      <div className="mt-2 text-center px-1">
+                        <p
+                          className="text-[10px] font-black"
+                          style={{
+                            color: step.done
+                              ? "var(--color-text-dark)"
+                              : "#CFD8DC",
+                          }}
+                        >
+                          {step.label}
+                        </p>
+                        <p
+                          className="text-[10px] mt-0.5"
+                          style={{ color: "#90A4AE" }}
+                        >
+                          {step.date ? formatDate(step.date) : "Belum"}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
             </Section>
 
             {/* ── Main Grid ── */}
@@ -1289,67 +1777,87 @@ function Dashboard({
                           val: latestSurvey.jawaban["1"] || "—",
                           icon: Clock,
                           iconColor: "#64B5F6",
+                          qKey: "1",
                         },
                         {
                           label: "Konsistensi Aturan HP",
                           val: latestSurvey.jawaban["2"] || "—",
                           icon: ShieldCheck,
                           iconColor: "#60a5fa",
+                          qKey: "2",
                         },
                         {
                           label: "Sosialisasi Kebijakan Digital",
                           val: latestSurvey.jawaban["4"] || "—",
                           icon: TrendingUp,
                           iconColor: "#34d399",
+                          qKey: "4",
                         },
-                      ].map(({ label, val, icon: Icon, iconColor }, i) => (
-                        <motion.div
-                          key={label}
-                          {...fade}
-                          transition={{ duration: 0.4, delay: 0.15 + i * 0.05 }}
-                          className="flex items-start gap-4 p-4 rounded-2xl group transition-all duration-200 cursor-default"
-                          style={{
-                            background: "#ffffff",
-                            border: "1px solid #ECEFF1",
-                          }}
-                          onMouseEnter={(e) => {
-                            Object.assign(
-                              (e.currentTarget as HTMLDivElement).style,
-                              { background: "#ffffff", borderColor: "#CFD8DC" },
-                            );
-                          }}
-                          onMouseLeave={(e) => {
-                            Object.assign(
-                              (e.currentTarget as HTMLDivElement).style,
-                              { background: "#ffffff", borderColor: "#ECEFF1" },
-                            );
-                          }}
-                        >
-                          <div
-                            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                            style={{ background: `${iconColor}18` }}
+                      ].map(({ label, val, icon: Icon, iconColor, qKey }, i) => {
+                        const health = getHealthConfig(qKey, val);
+                        return (
+                          <motion.div
+                            key={label}
+                            {...fade}
+                            transition={{ duration: 0.4, delay: 0.15 + i * 0.05 }}
+                            className="flex items-start gap-4 p-4 rounded-2xl group transition-all duration-200 cursor-default"
+                            style={{
+                              background: "#ffffff",
+                              border: "1px solid #ECEFF1",
+                            }}
+                            onMouseEnter={(e) => {
+                              Object.assign(
+                                (e.currentTarget as HTMLDivElement).style,
+                                { background: "#ffffff", borderColor: "#CFD8DC" },
+                              );
+                            }}
+                            onMouseLeave={(e) => {
+                              Object.assign(
+                                (e.currentTarget as HTMLDivElement).style,
+                                { background: "#ffffff", borderColor: "#ECEFF1" },
+                              );
+                            }}
                           >
-                            <Icon
-                              className="w-5 h-5"
-                              style={{ color: iconColor }}
-                            />
-                          </div>
-                          <div>
-                            <p
-                              className="text-[10px] font-black uppercase tracking-widest mb-1"
-                              style={{ color: "#90A4AE" }}
+                            <div
+                              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                              style={{ background: `${iconColor}18` }}
                             >
-                              {label}
-                            </p>
-                            <p
-                              className="text-sm font-bold leading-relaxed"
-                              style={{ color: "var(--color-text-dark)" }}
-                            >
-                              {val}
-                            </p>
-                          </div>
-                        </motion.div>
-                      ))}
+                              <Icon
+                                className="w-5 h-5"
+                                style={{ color: iconColor }}
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-2 mb-1">
+                                <p
+                                  className="text-[10px] font-black uppercase tracking-widest"
+                                  style={{ color: "#90A4AE" }}
+                                >
+                                  {label}
+                                </p>
+                                {health && (
+                                  <span
+                                    className="text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0"
+                                    style={{
+                                      background: health.bg,
+                                      border: `1px solid ${health.border}`,
+                                      color: health.color,
+                                    }}
+                                  >
+                                    {health.emoji} {health.label}
+                                  </span>
+                                )}
+                              </div>
+                              <p
+                                className="text-sm font-bold leading-relaxed"
+                                style={{ color: "var(--color-text-dark)" }}
+                              >
+                                {val}
+                              </p>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
                       <p
                         className="text-xs text-right pt-1"
                         style={{ color: "#CFD8DC" }}
@@ -1359,6 +1867,94 @@ function Dashboard({
                           {latestSurvey.nama || "Anonim"}
                         </span>
                       </p>
+                    </div>
+                  )}
+                </Section>
+
+                {/* ── Section: Dimensi ── */}
+                <Section
+                  id="dimensi"
+                  innerRef={(el) => {
+                    sectionRefs.current["dimensi"] = el;
+                  }}
+                >
+                  <SectionHeader
+                    icon={BarChart3}
+                    label="Dimensi Kesiapan Digital"
+                    delay={0.18}
+                  />
+                  {!latestSurvey ? (
+                    <EmptyState
+                      icon={BarChart3}
+                      msg="Lengkapi survei untuk melihat analisis 5 dimensi kesiapan digital."
+                    />
+                  ) : (
+                    <div className="flex flex-col sm:flex-row items-center gap-6">
+                      <div className="shrink-0">
+                        <RadarChart dims={dims} />
+                      </div>
+                      <div className="flex-1 w-full space-y-3">
+                        {dims.map((dim) => {
+                          const dimColor =
+                            dim.value >= 70
+                              ? "#34d399"
+                              : dim.value >= 40
+                                ? "#fbbf24"
+                                : "#f87171";
+                          return (
+                            <div
+                              key={dim.label}
+                              className="flex items-center gap-3"
+                            >
+                              <div className="flex items-center gap-1.5 w-24 shrink-0 group relative">
+                                <span
+                                  className="text-xs font-bold"
+                                  style={{ color: "#607D8B" }}
+                                >
+                                  {dim.label}
+                                </span>
+                                <Info className="w-3 h-3 text-text-dark/30 cursor-help" />
+                                
+                                {/* Tooltip */}
+                                <div className="absolute left-0 bottom-full mb-2 w-48 p-2 bg-text-dark text-white text-[10px] rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10 shadow-xl pointer-events-none">
+                                  {dim.desc}
+                                  <div className="absolute top-full left-4 -mt-1 border-4 border-transparent border-t-text-dark"></div>
+                                </div>
+                              </div>
+                              <div
+                                className="flex-1 h-1.5 rounded-full overflow-hidden"
+                                style={{
+                                  background: "var(--color-surface-alt)",
+                                }}
+                              >
+                                <motion.div
+                                  className="h-full rounded-full"
+                                  style={{ background: dimColor }}
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${dim.value}%` }}
+                                  transition={{
+                                    duration: 0.8,
+                                    ease: "easeOut",
+                                    delay: 0.3,
+                                  }}
+                                />
+                              </div>
+                              <span
+                                className="text-xs font-bold w-8 text-right shrink-0"
+                                style={{ color: dimColor }}
+                              >
+                                {dim.value}
+                              </span>
+                            </div>
+                          );
+                        })}
+                        <p
+                          className="text-[10px] pt-2"
+                          style={{ color: "#CFD8DC" }}
+                        >
+                          Skala 0–100 • Data survei &amp; kuis sekolah
+                        </p>
+                      </div>
                     </div>
                   )}
                 </Section>
@@ -1678,7 +2274,7 @@ function Dashboard({
                           className="text-sm font-bold"
                           style={{ color: "#607D8B" }}
                         >
-                          ipasi
+                          Lihat Peta Partisipasi
                         </span>
                       </div>
                       <ChevronRight
@@ -1751,6 +2347,47 @@ function Dashboard({
           </div>
         )}
       </main>
+
+      <TourGuide
+        pageName="Laporan"
+        steps={[
+          {
+            element: "#profil",
+            popover: {
+              title: "Profil Sekolah",
+              description: "Informasi detail terkait identitas dan status validasi sekolah Anda dalam sistem.",
+            },
+          },
+          {
+            element: "#survei",
+            popover: {
+              title: "Hasil Survei",
+              description: "Melihat rekapitulasi jawaban dari kuesioner instansi yang telah diisi sebelumnya.",
+            },
+          },
+          {
+            element: "#dimensi",
+            popover: {
+              title: "Dimensi Kesiapan",
+              description: "Radar chart yang memvisualisasikan 5 dimensi kesiapan digital sekolah Anda: Regulasi, Literasi, Kontrol, Siswa, dan Komitmen.",
+            },
+          },
+          {
+            element: "#kuis",
+            popover: {
+              title: "Statistik Kuis",
+              description: "Menampilkan analisis agregat dari seluruh respons kuis refleksi individu.",
+            },
+          },
+          {
+            element: "#rekomendasi",
+            popover: {
+              title: "Rekomendasi Tindakan",
+              description: "Saran strategis dan langkah aksi konkrit berdasarkan pengolahan data Anda.",
+            },
+          },
+        ]}
+      />
     </div>
   );
 }

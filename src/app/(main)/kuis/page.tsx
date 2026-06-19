@@ -84,6 +84,24 @@ const KUIS_TOUR_STEPS: DriveStep[] = [
       align: "center",
     },
   },
+  {
+    element: "#quiz-result-card",
+    popover: {
+      title: "Hasil Refleksi",
+      description: "Ini adalah hasil analisis profil digital Anda berdasarkan jawaban yang telah diberikan.",
+      side: "top",
+      align: "center",
+    },
+  },
+  {
+    element: "#quiz-action-steps",
+    popover: {
+      title: "Langkah Aksi",
+      description: "Ikuti rekomendasi tindakan ini untuk membangun kebiasaan digital yang lebih sehat.",
+      side: "top",
+      align: "center",
+    },
+  },
 ];
 
 // ── Color config per result ───────────────────────────────────────────────────
@@ -149,14 +167,14 @@ function Background() {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
       <div
-        className="absolute -top-32 right-0 w-[640px] h-[640px] rounded-full"
+        className="absolute -top-32 right-0 w-160 h-160 rounded-full"
         style={{
           background:
             "radial-gradient(circle, rgba(46, 125, 50,0.09) 0%, transparent 65%)",
         }}
       />
       <div
-        className="absolute bottom-0 left-0 w-[480px] h-[480px] rounded-full"
+        className="absolute bottom-0 left-0 w-120 h-120 rounded-full"
         style={{
           background:
             "radial-gradient(circle, rgba(30, 136, 229,0.05) 0%, transparent 65%)",
@@ -234,7 +252,7 @@ function StepIndicator({ step, total }: { step: number; total: number }) {
             </div>
             {i < steps.length - 1 && (
               <ChevronRight
-                className={`w-3 h-3 ${done ? "text-primary/50" : "text-white/10"}`}
+                className={`w-3 h-3 ${done ? "text-primary/50" : "text-black/10"}`}
               />
             )}
           </div>
@@ -249,15 +267,17 @@ function Card({
   children,
   className = "",
   id,
+  overflow = "hidden",
 }: {
   children: React.ReactNode;
   className?: string;
   id?: string;
+  overflow?: "hidden" | "visible";
 }) {
   return (
     <div
       id={id}
-      className={`rounded-3xl overflow-hidden ${className}`}
+      className={`rounded-3xl ${overflow === "hidden" ? "overflow-hidden" : "overflow-visible"} ${className}`}
       style={{
         background: "#ffffff",
         border: "1px solid rgba(0,0,0,0.08)",
@@ -592,10 +612,10 @@ function KuisForm() {
                   <StepIndicator step={2} total={3} />
 
                   {/* Main result card */}
-                  <Card>
+                  <Card id="quiz-result-card">
                     {/* Gradient accent top bar */}
                     <div
-                      className={`h-1.5 w-full bg-gradient-to-r ${cfg.gradient}`}
+                      className={`h-1.5 w-full bg-linear-to-r ${cfg.gradient}`}
                     />
 
                     <div className="p-8 text-center">
@@ -632,7 +652,7 @@ function KuisForm() {
                       )}
 
                       {/* Score meter */}
-                      <div className="max-w-[280px] mx-auto">
+                      <div className="max-w-70 mx-auto">
                         <div className="flex justify-between text-[10px] font-bold text-text-dark/50 mb-2 uppercase tracking-widest">
                           <span>Kritis</span>
                           <span>Bijak</span>
@@ -642,7 +662,7 @@ function KuisForm() {
                           style={{ background: "rgba(0,0,0,0.06)" }}
                         >
                           <motion.div
-                            className={`h-full rounded-full bg-gradient-to-r ${cfg.gradient}`}
+                            className={`h-full rounded-full bg-linear-to-r ${cfg.gradient}`}
                             initial={{ width: 0 }}
                             animate={{
                               width: `${(result.totalScore / (questions.length * 3)) * 100}%`,
@@ -659,7 +679,7 @@ function KuisForm() {
                   </Card>
 
                   {/* Action steps */}
-                  <Card className="p-6">
+                  <Card className="p-6" id="quiz-action-steps">
                     <h3 className="text-sm font-black text-text-dark mb-4 flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-info" />
                       Langkah Aksi
@@ -691,7 +711,7 @@ function KuisForm() {
                   {/* CTA */}
                   <button
                     onClick={() => (window.location.href = "/")}
-                    className="w-full py-4 rounded-2xl text-text-dark/70 text-sm font-bold border border-black/[0.06] hover:bg-black/[0.04] hover:text-text-dark/80 transition-all"
+                    className="w-full py-4 rounded-2xl text-text-dark/70 text-sm font-bold border border-black/6 hover:bg-black/4 hover:text-text-dark/80 transition-all"
                   >
                     Kembali ke Beranda
                   </button>
@@ -736,7 +756,7 @@ function KuisForm() {
             !hasCompleted && (
               <motion.div key="registration" {...slideUp}>
                 <StepIndicator step={0} total={3} />
-                <Card id="registration-card" className="p-8">
+                <Card id="registration-card" className="p-8" overflow="visible">
                   {/* Card header */}
                   <div className="mb-7">
                     <h2
@@ -874,7 +894,7 @@ function KuisForm() {
                         style={{
                           background:
                             i < currentQuestion
-                              ? "#F97316"
+                              ? "#2E7D32"
                               : i === currentQuestion
                                 ? "rgba(46, 125, 50,0.4)"
                                 : "rgba(0,0,0,0.06)",
@@ -954,7 +974,7 @@ function KuisForm() {
                             </div>
                             <span
                               className={`text-sm leading-snug font-medium transition-colors duration-200
-                          ${isSelected ? "text-primary-soft" : "text-white/65 group-hover:text-white/85"}`}
+                          ${isSelected ? "text-primary-soft" : "text-text-dark/80 group-hover:text-text-dark/90"}`}
                             >
                               {opt.option_text}
                             </span>

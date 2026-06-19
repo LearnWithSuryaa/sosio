@@ -142,19 +142,20 @@ export function SchoolAutocomplete({
       {/* Dropdown */}
       {isOpen && value.length > 0 && (
         <div
-          className="absolute z-50 w-full mt-2 overflow-hidden"
+          className="absolute z-50 w-full mt-2 overflow-y-auto overflow-x-hidden"
           style={{
             background: "#ffffff",
             border: "1px solid #ECEFF1",
             borderRadius: "1rem",
             boxShadow: "0 20px 40px rgba(0,0,0,0.08), 0 0 0 1px #ECEFF1",
+            maxHeight: "260px",
           }}
         >
           {filtered.length > 0 ? (
-            <ul>
+            <ul className="relative">
               {/* Header */}
               <li
-                className="flex items-center gap-2 px-4 py-2.5"
+                className="flex items-center gap-2 px-4 py-2.5 sticky top-0 z-10"
                 style={{
                   background: "var(--color-surface)",
                   borderBottom: "1px solid #ECEFF1",

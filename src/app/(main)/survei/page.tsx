@@ -58,14 +58,14 @@ function Background() {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
       <div
-        className="absolute -top-32 right-0 w-[640px] h-[640px] rounded-full"
+        className="absolute -top-32 right-0 w-160 h-160 rounded-full"
         style={{
           background:
             "radial-gradient(circle, rgba(46, 125, 50,0.09) 0%, transparent 65%)",
         }}
       />
       <div
-        className="absolute bottom-0 left-0 w-[480px] h-[480px] rounded-full"
+        className="absolute bottom-0 left-0 w-120 h-120 rounded-full"
         style={{
           background:
             "radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 65%)",
@@ -88,15 +88,17 @@ function Card({
   children,
   className = "",
   id,
+  overflow = "hidden",
 }: {
   children: React.ReactNode;
   className?: string;
   id?: string;
+  overflow?: "hidden" | "visible";
 }) {
   return (
     <div
       id={id}
-      className={`rounded-3xl overflow-hidden ${className}`}
+      className={`rounded-3xl ${overflow === "hidden" ? "overflow-hidden" : "overflow-visible"} ${className}`}
       style={{
         background: "#ffffff",
         border: "1px solid rgba(0,0,0,0.08)",
@@ -608,7 +610,7 @@ function SurveiForm() {
           {/* ── STEP 1: IDENTITAS ── */}
           {currentStep === 1 && (
             <motion.div id="tour-survei-step1" key="step1" {...slideVariant}>
-              <Card className="p-8">
+              <Card className="p-8" overflow="visible">
                 <div className="mb-7">
                   <h2
                     className="text-xl font-black text-text-dark mb-1.5"
@@ -719,7 +721,7 @@ function SurveiForm() {
                         className="h-1 flex-1 rounded-full transition-all duration-300"
                         style={{
                           background: jawaban[q.id]
-                            ? "#F97316"
+                            ? "#2E7D32"
                             : "rgba(0,0,0,0.06)",
                         }}
                       />
@@ -812,9 +814,9 @@ function SurveiForm() {
             </motion.div>
           )}
 
-          {/* ── STEP 3: KIRIM ── */}
+          {/* ── STEP 3: KONFIRMASI ── */}
           {currentStep === 3 && (
-            <motion.div key="step3" {...slideVariant}>
+            <motion.div id="tour-survei-step3" key="step3" {...slideVariant}>
               <Card className="p-8">
                 <div className="text-center mb-8">
                   <div className="relative w-20 h-20 mx-auto mb-6">
@@ -863,7 +865,7 @@ function SurveiForm() {
                       }}
                     >
                       <Icon className="w-4 h-4 text-text-dark/50 shrink-0" />
-                      <span className="text-xs text-text-dark/60 min-w-[100px]">
+                      <span className="text-xs text-text-dark/60 min-w-25">
                         {label}
                       </span>
                       <span className="text-sm font-semibold text-text-dark/80 truncate">
@@ -903,7 +905,7 @@ function SurveiForm() {
           <button
             type="button"
             onClick={goToPrevStep}
-            className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold border border-black/[0.07] text-text-dark/60 hover:text-text-dark/80 hover:bg-black/[0.04] transition-all
+            className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold border border-black/[0.07] text-text-dark/60 hover:text-text-dark/80 hover:bg-black/4 transition-all
               ${currentStep === 1 ? "invisible" : "visible"}`}
           >
             <ChevronLeft className="w-4 h-4" /> Kembali
@@ -973,6 +975,22 @@ function SurveiForm() {
               title: "Informasi Instansi",
               description:
                 "Isi asal instansi/sekolah Anda agar data dapat dipetakan dengan akurat.",
+            },
+          },
+          {
+            element: "#tour-survei-step2",
+            popover: {
+              title: "Kuesioner Inti",
+              description:
+                "Jawab seluruh pertanyaan dengan jujur sesuai kondisi ekosistem digital di sekolah Anda.",
+            },
+          },
+          {
+            element: "#tour-survei-step3",
+            popover: {
+              title: "Konfirmasi & Kirim",
+              description:
+                "Pastikan semua data sudah benar, lalu klik 'Kirim Survei' untuk mengakhiri proses ini.",
             },
           },
         ]}

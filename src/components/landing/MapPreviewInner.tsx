@@ -26,7 +26,7 @@ function makeLucideMarker(
   border: string,
   shadow: string,
   isPending: boolean = false,
-  stroke: string = "white"
+  stroke: string = "white",
 ): L.DivIcon {
   const size = isPending ? 24 : 30;
   const iconSize = isPending ? 12 : 15;
@@ -75,7 +75,7 @@ const iconNeutral = makeLucideMarker(
   "#CBD5E1", // light gray border
   "#00000020",
   false,
-  "#64748B" // slate-500 stroke for visibility
+  "#64748B", // slate-500 stroke for visibility
 );
 
 const iconPrimaryPending = makeLucideMarker(
@@ -98,7 +98,7 @@ const iconNeutralPending = makeLucideMarker(
   "#CBD5E1",
   "#00000010",
   true,
-  "#64748B"
+  "#64748B",
 );
 
 interface School {
@@ -127,7 +127,8 @@ function DisableInteractions() {
 
 function getIcon(status: string, validasi: string) {
   const isPending = validasi === "pending";
-  if (status === "komitmen") return isPending ? iconPrimaryPending : iconPrimary;
+  if (status === "komitmen")
+    return isPending ? iconPrimaryPending : iconPrimary;
   if (status === "survei") return isPending ? iconInfoPending : iconInfo;
   return isPending ? iconNeutralPending : iconNeutral;
 }
@@ -151,16 +152,16 @@ export default function MapPreviewInner() {
       zoom={11}
       zoomControl={false}
       attributionControl={false}
-      className="w-full h-[420px]"
+      className="w-full h-105"
       style={{ cursor: "default", background: "#F5F7FA" }}
     >
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          subdomains="abcd"
-          maxZoom={19}
-        />
-        
+      <TileLayer
+        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        subdomains="abcd"
+        maxZoom={19}
+      />
+
       <DisableInteractions />
 
       {schools
